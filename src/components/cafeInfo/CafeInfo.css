@@ -1,0 +1,96 @@
+/* Загальні стилі */
+.cafe-info-container {
+  padding: 20px;
+  background-color: #f7f7f7;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  max-width: 100%;
+  margin: 40px auto;
+}
+
+.section-title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #333;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.info-section {
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.info-item {
+  margin-bottom: 20px;
+}
+
+.cafe-name-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #444;
+}
+
+
+
+/* Поля вводу */
+.cafe-name-input {
+  margin-bottom: 10px;
+}
+
+.cafe-name-input,
+.cafe-description-input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  font-size: 1rem;
+  margin-right: 20px;
+  transition: border-color 0.3s;
+}
+
+.cafe-name-input:focus,
+.cafe-description-input:focus {
+  border-color: #007BFF;
+  outline: none;
+}
+
+/* Кнопки */
+.update-btn {
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #fff;
+  background: linear-gradient(135deg, #007bff, #0056b3); /* Ваш градієнт */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.update-btn:disabled {
+  background-color: #ddd;
+  cursor: not-allowed;
+}
+
+.update-btn:hover:enabled {
+  background: linear-gradient(135deg, #0056b3, #003366); /* Темніший градієнт при ховері */
+  transform: translateY(-2px);
+}
+
+
+.coffee-name-info-btn-con {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+
+
+
+
+.update-btn-adress {
+  margin-top: 10px;
+}

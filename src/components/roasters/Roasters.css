@@ -1,0 +1,155 @@
+.roasters-main-title {
+    font-size: 2.5rem;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+    margin: 10px;
+}
+
+.roster-main-con-class-supermain {
+    height: 100vh;
+    width: 100%;
+    background-color: #f7f7f7;
+}
+
+.roasters-main-input-search  {
+    text-align: center;
+    width: 94%;
+    padding: 12px;
+    margin: 0 auto; 
+    font-size: 1.2rem;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    margin-top: 10px;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease;
+    display: block;
+  }
+  
+  .roasters-main-input-search::placeholder {
+    text-align: center;
+  }
+
+  
+  .roasters-main-input-search :focus {
+    border-color: #5c9dfb;
+    outline: none;
+  }
+  
+
+
+
+  .roaster-maincard-for-cards {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+
+  .roaster-card-con {
+    width: 300px;
+    background-color: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: all 0.3s ease-in-out;
+    margin: 20px;
+  }
+  
+  .roaster-card-con:hover {
+    scale: 1.02;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  }
+  
+  .roaster-card-img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-bottom: 4px solid #f5f5f5;
+  }
+  
+  .roaster-card-name {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #333;
+    text-align: center;
+    margin: 0;
+    text-transform: capitalize;
+    letter-spacing: 0.5px;
+  }
+  
+  .roaster-card-description {
+    font-size: 1rem;
+    color: #666;
+    text-align: center;
+    line-height: 1.6;
+    max-width: 80%;
+    margin: 0 auto;
+    padding: 0px 0;
+    font-style: italic;
+    letter-spacing: 0.2px;
+    padding-bottom: 13px;
+  }
+  
+
+
+
+
+  .roaster-ifArrayEmpty {
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    padding: 30px;
+    max-width: 600px;
+    margin: 20px auto;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .roaster-ifArrayEmpty p {
+    font-size: 1.1rem;
+    color: #555;
+    font-weight: 400;
+    line-height: 1.6;
+    margin: 0;
+    text-transform: capitalize;
+  }
+  
+  .roaster-ifArrayEmpty p::before {
+    content: "🔍"; 
+    margin-right: 10px;
+    font-size: 1.4rem;
+  }
+  
+
+  .roaster-con-forLoading {
+    margin: 20px;
+ text-align: center;
+  }
+
+  .roasters-notFound-results {
+    width: 100%; 
+    max-width: 80%; 
+    background-color: #f8d7da; 
+    color: #721c24; 
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    font-size: 16px;
+    font-family: 'Arial', sans-serif; 
+    margin: 0 auto;
+    margin-top: 20px;
+  }
+  
+  .roasters-notFound-results p {
+    margin: 0;
+    padding: 0;
+    line-height: 1.5;
+  }
+  
+  .roasters-notFound-results svg {
+    margin-right: 10px;
+    vertical-align: middle;
+  }
+  

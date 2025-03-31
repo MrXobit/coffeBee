@@ -1,0 +1,75 @@
+.contact-form-wrapper {
+    max-width: 100%;
+    margin: 40px auto;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: 0.3s ease-in-out;
+  }
+  
+  .contact-form-title {
+    text-align: center;
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  .contact-form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .contact-form-label {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+  
+  .contact-form-input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 12px;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+  }
+  
+  .contact-form-input:focus {
+    border-color: #007bff;
+    outline: none;
+  }
+  
+  .contact-form-socials {
+    border: none;
+    padding: 0;
+    margin-top: 10px;
+  }
+  
+  .contact-form-legend {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  
+  .contact-form-button {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color: white;
+    padding: 12px;
+    border-radius: 30px;
+    font-size: 16px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+    margin-top: 15px;
+    display: flex; /* Додаємо для вирівнювання вмісту */
+    align-items: center; /* Центруємо по вертикалі */
+    justify-content: center; /* Центруємо по горизонталі */
+  }
+  
+  .contact-form-button:hover {
+    background: linear-gradient(135deg, #0056b3, #003366); 
+    transform: scale(1.05); /* Можна додати плавний ефект збільшення */
+  }
+  

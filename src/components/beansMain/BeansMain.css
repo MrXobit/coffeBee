@@ -1,0 +1,471 @@
+.beansMain-container {
+    width: 100%;
+    height: 100%;
+    background-color: #f7f7f7;
+    min-height: 100vh;
+  }
+  
+  .beansMain-title {
+    font-size: 2.5rem;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+    margin: 10px;
+  }
+  
+  .beansMain-input {
+    text-align: center;
+    width: 94%;
+    padding: 12px;
+    margin: 0 auto; /* Центрує інпут по горизонталі */
+    font-size: 1.2rem;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    margin-top: 10px;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease;
+    display: block; /* Переконуємося, що інпут займає всю ширину контейнера */
+  }
+  
+  .beansMain-input::placeholder {
+    text-align: center;
+  }
+
+  
+  .beansMain-input:focus {
+    border-color: #5c9dfb;
+    outline: none;
+  }
+  
+
+
+
+
+
+
+  .beanMain-main-card-block {
+    width: 300px;
+    background-color: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: all 0.3s ease-in-out;
+    margin: 20px;
+  }
+
+
+  .idCafeBean {
+    background-color: #f0f0f0;
+  }
+  
+  .beanMain-main-card-block:hover {
+    scale: 1.02;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  }
+  
+  .beanMain-image-card {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-bottom: 4px solid #f5f5f5;
+  }
+  
+  .beanMain-details-card {
+    padding: 20px;
+  }
+  
+  .beanMain-name-card {
+    font-size: 1.6em;
+    font-weight: bold;
+    margin-bottom: 12px;
+    color: #333;
+  }
+  
+  .beanMain-country-card,
+  .beanMain-altitude-card,
+  .beanMain-sca-score-card,
+  .beanMain-flavours-card,
+  .beanMain-process-card,
+  .beanMain-variety-card,
+  .beanMain-harvest-year-card,
+  .beanMain-producer-card,
+  .beanMain-roasting-card {
+    font-size: 1em;
+    color: #333;
+    margin: 6px 0;
+  }
+  
+  .beanMain-roaster-card.heavy-text {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #333;
+    letter-spacing: 0.5px;
+  }
+  
+  .beanMain-main-card-block {
+    display: inline-block;
+    margin: 10px;
+    position: relative;
+  }
+  
+  .beanMain-button-card {
+    padding: 10px 20px;
+    background-color: #ff5722;
+    border: none;
+    border-radius: 4px;
+    color: #fff;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .beanMain-button-card:hover {
+    background-color: #e64a19;
+  }
+  
+.bean-main-con-for-cards {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+ 
+.beanMain-loader-con {
+  padding-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.beansMain-pagination-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end; /* Вирівнює елементи по низу */
+}
+
+.beansMain-pagination-list {
+  list-style-type: none;
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  gap: 10px;
+  padding: 0;
+}
+
+.beansMain-pagination-item {
+  display: inline-block;
+  border-radius: 50px;
+}
+
+.beansMain-pagination-link {
+  padding: 10px 20px;
+  text-decoration: none;
+  color: #fff;
+  font-weight: 600;
+  background-color: #5f6368;
+  border-radius: 50px;
+  transition: background 0.3s, color 0.3s, transform 0.2s ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.beansMain-pagination-link:hover {
+  background-color: #4c4f55;
+  color: #fff;
+  transform: scale(1.1);
+}
+
+.beansMain-pagination-item-active .beansMain-pagination-link {
+  background-color: #0069d9;
+  color: #fff;
+  font-weight: bold;
+}
+
+.beansMain-pagination-link:active {
+  transform: scale(0.95);
+}
+
+@media (max-width: 768px) {
+  .beansMain-pagination-list {
+    gap: 6px; 
+  }
+
+  .beansMain-pagination-link {
+    padding: 8px 18px;
+    font-size: 14px; 
+  }
+}
+
+
+@media (max-width: 480px) {
+  .beansMain-pagination-list {
+    gap: 4px;
+  }
+
+  .beansMain-pagination-link {
+    padding: 6px 14px;
+    font-size: 12px;
+  }
+}
+
+
+
+
+
+
+
+.no-beans-message {
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  margin-top: 20px;
+  border: 1px solid #ddd;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.no-beans-message:hover {
+  background-color: #f1f1f1;
+  border-color: #ccc;
+}
+
+.no-beans-message:before {
+  content: "😔";
+  font-size: 2rem;
+  margin-right: 10px;
+}
+
+.no-beans-message span {
+  font-size: 1.2rem;
+  font-weight: normal;
+  color: #555;
+}
+
+
+
+
+
+
+.beanMain-beanBy-you {
+  background-color: #e8f5e9; 
+  color: #2e7d32; 
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.beanMain-beanBy-roaster {
+  background-color: #fff3e0; 
+  color: #e65100; 
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  text-align: center;
+}
+
+
+.beanmain-three-dots {
+  position: absolute;
+  top: 10px;
+  right: 0;
+  width: 40px; 
+  height: 40px; 
+  cursor: pointer;
+}
+
+
+.beanmain-three-dots img {
+  width: 24px;
+  height: auto;
+
+}
+
+
+
+
+
+
+
+
+
+
+
+.beans-main-modalWindow-con {
+
+  padding: 27px 10px 10px 10px;
+  position: absolute;
+  top: 20px; 
+  right: 20px; 
+  width: 250px;
+  border-radius: 15px;
+  z-index: 1000;  
+  background-color: rgba(0, 0, 0, 0.5);  
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+  pointer-events: none; 
+
+}
+
+.beans-main-modal-close {
+  position: absolute; 
+  top: 10px;  
+  right: 10px;
+  width: 20px;  
+  height: 20px;  
+  cursor: pointer;  
+  transition: transform 0.3s ease;  
+}
+
+.beans-main-modal-show {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.beans-main-modal-none {
+  display: none;
+}
+
+.beans-main-modal-close:hover {
+  transform: scale(1.2);  
+}
+
+
+
+
+
+.beans-main-modalWindow-con {
+  display: flex;
+  justify-content: center;
+}
+
+.beans-main-modalWindow-con div {
+  display: flex;
+  flex-direction: column; 
+  align-items: center; 
+  width: 100%;
+}
+
+.beans-main-modalWindow-con button {
+  display: block;
+  margin: 8px auto;
+  width: 80%;
+  padding: 10px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.beanmain-btn-edit-cofebeans {
+  background: #6f42c1;
+  color: white;
+}
+
+.beanmain-btn-edit-cofebeans:hover {
+  background: #5a32a3;
+  transform: scale(1.05);
+  border-radius: 8px;
+}
+
+
+.beanmain-btn-delete-cafebeans {
+  background: #e53935;
+  color: white;
+}
+
+.beanmain-btn-delete-cafebeans:hover {
+  background: #c62828;
+  transform: scale(1.05);
+  border-radius: 8px;
+}
+
+.btn-handleDeactivate {
+  background: #FF9800;
+  color: white;
+}
+
+.btn-handleDeactivate:hover {
+  background: #f57c00;
+  transform: scale(1.05);
+  border-radius: 8px;
+}
+
+.beanMain-removeRoasterBean {
+  background: #FF5722; 
+  color: white;
+  font-weight: bold;
+  transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.beanMain-removeRoasterBean:hover {
+  background: #F4511E; 
+  transform: scale(1.05);
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+}
+
+.btn-handleActivate {
+  background: #43a047;
+  color: white;
+}
+
+
+.btn-handleActivate:hover {
+  background: #388e3c;
+  transform: scale(1.05);
+  border-radius: 8px;
+}
+
+
+
+
+
+
+
+
+.beans-main-status {
+  background-color: #4caf50; 
+  color: white; 
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: bold;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.beans-main-status-disabled {
+  background-color: red; 
+  color: white; 
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: bold;
+  transition: background-color 0.3s ease-in-out;
+  opacity: 0.7;
+  pointer-events: none; 
+}

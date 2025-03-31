@@ -1,0 +1,47 @@
+.gradient-custom {
+ 
+    background: #6a11cb;
+    
+
+    background: -webkit-linear-gradient(to right, rgba(106, 17, 203, 1), rgba(37, 117, 252, 1));
+    
+
+    background: linear-gradient(to right, rgba(106, 17, 203, 1), rgba(37, 117, 252, 1))
+    }
+
+    .form-outline {
+        position: relative;
+      }
+      
+      .form-label {
+        position: absolute;
+        top: 0;
+        left: 0;
+        color: #b0b0b0; /* Світло-сірий колір для лейблів */
+        transition: opacity 0.3s ease; /* Плавне зникнення */
+      }
+      
+      /* Лейбл зникає тільки коли в інпуті є хоча б один символ */
+      .form-control:not(:placeholder-shown) + .form-label {
+        opacity: 0;
+      }
+      
+      .form-control:focus + .form-label {
+        opacity: 0;
+      }
+      
+
+
+      .error-block {
+        padding: 15px;
+        background-color: #f8d7da;
+        border: 1px solid #f5c6cb;
+        color: #721c24;
+        border-radius: 5px;
+        margin-top: 20px;
+        margin-bottom: 20px; /* Додано відступ знизу */
+        font-size: 14px;
+        text-align: center;
+        display: block; /* Спочатку видно, але можна змінити на 'none' для прихованого стану */
+      }
+      

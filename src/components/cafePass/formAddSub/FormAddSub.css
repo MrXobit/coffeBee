@@ -1,0 +1,161 @@
+/* Контейнер форми */
+.form-add-new-sub-container {
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 40px;
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 8px 35px rgba(0, 0, 0, 0.1);
+    font-family: 'Inter', sans-serif; /* Використовуємо сучасний шрифт */
+    color: #333;
+    transition: transform 0.3s ease;
+  }
+
+
+
+  .form-add-new-sub-container::-webkit-scrollbar {
+    width: 0px; /* приховуємо вертикальний скролбар */
+    height: 0px; /* приховуємо горизонтальний скролбар */
+  }
+  
+  .form-add-new-sub-container::-webkit-scrollbar-thumb {
+    background: transparent; /* Робимо смужку скролбару прозорою */
+  }
+  
+  .form-add-new-sub-container::-webkit-scrollbar-track {
+    background: transparent; /* Робимо трек скролбару прозорим */
+  }
+  
+  /* Анімація при ховері на контейнері */
+  .form-add-new-sub-container:hover {
+    transform: translateY(-5px);
+  }
+  
+/* Заголовок форми */
+.form-add-new-sub-title {
+    text-align: center;
+    font-size: 2.8rem;
+    font-weight: 800;
+    background: linear-gradient(45deg, #0a0a0a, #2a2a2a, #444444); /* Градієнт */
+    -webkit-background-clip: text; /* Для підтримки в Chrome та Safari */
+    background-clip: text; /* Застосовуємо градієнт до тексту */
+    color: transparent; /* Робимо текст прозорим, щоб градієнт був видимий */
+    margin-bottom: 20px;
+    letter-spacing: 0.5px;
+    font-family: 'Montserrat', sans-serif; /* Сучасний шрифт */
+    text-transform: capitalize;
+    transition: transform 0.3s ease;
+    overflow-y: hidden;
+  }
+  
+  
+  
+  /* Структура форми */
+  .form-add-new-sub-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: stretch;
+  }
+  
+  /* Групи елементів (input, select, тощо) */
+  .form-add-new-sub-form-group {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Лейбли */
+  .form-add-new-sub-form-label {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #666;
+    margin-bottom: 10px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  
+  /* Введення та вибір */
+  .form-add-new-sub-form-input {
+    padding: 16px;
+    font-size: 1rem;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+  }
+  
+  /* При фокусі на поле вводу */
+  .form-add-new-sub-form-input:focus {
+    border-color: #0066cc; /* Синій колір для фокусу */
+    box-shadow: 0 0 8px rgba(0, 102, 204, 0.2);
+    outline: none;
+    background-color: #fff; /* Світліший фон при фокусі */
+  }
+  
+  /* Чекбокси для вибору типу кави */
+  .form-add-new-sub-coffee-types {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 10px;
+  }
+  
+  /* Стиль для кожного чекбокса */
+  .form-add-new-sub-coffee-checkbox {
+    display: flex;
+    align-items: center;
+    font-size: 1rem;
+    color: #333;
+    padding: 14px;
+    border-radius: 12px;
+    background: #f2f2f2;
+    transition: background 0.3s ease, transform 0.3s ease;
+  }
+  
+  /* Ховер-ефект для чекбоксів */
+  .form-add-new-sub-coffee-checkbox:hover {
+    background: #e6f2ff; /* Легкий синій ховер */
+    transform: scale(1.05); /* Легке збільшення при ховері */
+  }
+  
+  .form-add-new-sub-coffee-checkbox input {
+    margin-right: 10px;
+    accent-color: #0066cc; /* Синій колір для чекбоксів */
+  }
+  
+  /* Кнопка Submit */
+  .form-add-new-sub-submit-btn {
+    padding: 16px 22px;
+    font-size: 1.2rem;
+    background: linear-gradient(135deg, #0066cc, #3388cc); /* Градієнт синього */
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.3s ease;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  
+  /* Ховер-ефект для кнопки */
+  .form-add-new-sub-submit-btn:hover {
+    background: linear-gradient(135deg, #3388cc, #0066cc);
+  }
+  
+  /* Адаптивність для мобільних пристроїв */
+  @media (max-width: 768px) {
+    .form-add-new-sub-container {
+      padding: 20px;
+    }
+  
+    .form-add-new-sub-title {
+      font-size: 2rem;
+    }
+    
+    .form-add-new-sub-submit-btn {
+      padding: 14px 18px;
+      font-size: 1.1rem;
+    }
+  }
+  

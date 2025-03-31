@@ -1,0 +1,82 @@
+.paymant-container {
+    max-width: 450px;
+    margin: 40px auto;
+    padding: 25px;
+    background: linear-gradient(135deg, #ffffff, #f8f9fa);
+    border-radius: 12px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease-in-out;
+ 
+}
+
+.main-con-container-payment {
+    min-height: 100vh;
+    background-color: #f7f7f7;
+}
+  
+  .paymant-container:hover {
+    transform: scale(1.02);
+  }
+  
+  .paymant-title {
+    text-align: center;
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin-bottom: 25px;
+    color: #222;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  
+  .paymant-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .paymant-label {
+    font-weight: 600;
+    color: #444;
+    font-size: 1rem;
+  }
+  
+  .paymant-input {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    background: #eef1f5;
+    transition: background 0.3s, box-shadow 0.3s;
+  }
+  
+  .paymant-input:focus {
+    background: #fff;
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
+    outline: none;
+  }
+  
+  .paymant-button {
+    padding: 12px;
+    background: linear-gradient(90deg, #007bff, #0056b3);
+    color: white;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  
+  .paymant-button:hover {
+    background: linear-gradient(90deg, #0056b3, #003f7f);
+    transform: translateY(-2px);
+  }
+  
+  .paymant-error {
+    color: red;
+    font-size: 0.9rem;
+    margin-top: 5px;
+    display: block;
+  }
+  
