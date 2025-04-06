@@ -22,19 +22,16 @@ export const loginUser = createAsyncThunk(
      
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
-
+      
       return { 
         uid: user.uid, 
-        email: user.email 
+        email: user.email
       };  
     } catch (error) {
       return rejectWithValue(error.message); 
     }
   }
 );
-
-
-
 
 
 export const checkAuthStatus = createAsyncThunk(
@@ -46,10 +43,13 @@ export const checkAuthStatus = createAsyncThunk(
         if (user) {
      
           try {
-            const token = await user.getIdToken(true); 
-            localStorage.setItem('token', token);
-
-            resolve({ uid: user.uid, email: user.email });
+            const response = await axios.post('https://us-central1-coffee-bee.cloudfunctions.net/superUser'
+              , {uid: user.uid}
+            )
+            localStorage.setItem('token', response.data.token);
+            resolve({ uid: user.uid, email: user.email,
+              privileges: response.data.isSuperAdmin,
+             });
           } catch (error) {
             reject(rejectWithValue('Error fetching token'));
           }
@@ -57,7 +57,6 @@ export const checkAuthStatus = createAsyncThunk(
           reject(rejectWithValue('User is not authenticated'));
         }
       });
-
 
       return unsubscribe;
     });
@@ -186,6 +185,7 @@ const userSlice = createSlice({
         state.isAuth = true;
         state.uid = action.payload.uid;
         state.email = action.payload.email;
+        state.privileges = action.payload.privileges ? 'superAdmin' : null
       })
 
       .addCase(checkAuthStatus.rejected, (state, action) => {

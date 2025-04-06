@@ -23,15 +23,9 @@ const navigate = useNavigate()
           setLoading(false)
           return; 
         }
-        const selectedCafe = JSON.parse(localStorage.getItem('selectedCafe'));
-        const token = localStorage.getItem('token');
-         const response = await axios.post('https://us-central1-coffee-bee.cloudfunctions.net/findRoaster', {
+      
+         const response = await axios.post('https://us-central1-coffee-bee.cloudfunctions.net/getRoasterByInput', {
             roasterName: e.target.value,
-            cafeId: selectedCafe.id
-         }, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
          })
          if(Array.isArray(response.data) && response.data.length === 0) {
           setSuccess(true)
@@ -41,7 +35,7 @@ const navigate = useNavigate()
           setSuccess(false)
          }
       } catch (error) {
-         console.log(error)
+         console.log(error.response.data)
       }finally {
         setLoading(false)
       }

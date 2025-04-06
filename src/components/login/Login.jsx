@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { loginUser } from '../../store/userSlice'; 
+import { checkAuthStatus, loginUser } from '../../store/userSlice'; 
 
 
 
@@ -12,7 +12,7 @@ const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { isLoading } = useSelector((state) => state.user);
-
+  const { privileges } = useSelector((state) => state.user);
   const handleLogin = async (e) => {
     e.preventDefault();
     setErrorMessage('')
@@ -24,9 +24,14 @@ const Login = () => {
     try {
      
       await dispatch(loginUser({ email, password })).unwrap();
+      const isAdmin =  await dispatch(checkAuthStatus()).unwrap();
 
-   
-      navigate('/chooseAccount');
+      if (isAdmin.privileges === true) {
+        navigate('/super-admin');
+      } else {
+        navigate('/chooseAccount');
+      }
+     
 
     } catch (error) {
       setErrorMessage('Email or password is invalid. Please try again.')
@@ -90,7 +95,6 @@ const Login = () => {
                 </div>
 
                 {errorMessage && <div className="error-block">{errorMessage}</div>}
-                {/* {error && <div className="error-block">{error}</div>} */}
 
                 <div>
                   <p className="mb-0">

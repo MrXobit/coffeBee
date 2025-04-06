@@ -1,0 +1,114 @@
+.AddCafePage {
+    background-color: #f4f7fa; 
+    width: 100%;
+    height: 100vh;
+    padding-top: 10px;
+}
+
+.AddCafePage-btn-input-con {
+    display: flex;
+    width: 95%;
+    margin: 0 auto;
+}
+
+.AddCafePage-inputField {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+.AddCafePage-inputField:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+.AddCafePage-getInfoBtn {
+    width: 30%;
+    padding: 20px;
+    background-color: #007bff;
+    color: white;
+    border: 1px solid #007bff;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+.AddCafePage-getInfoBtn:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+.AddCafePage-loader-con {
+    text-align: center;
+    margin: 15px;
+}
+
+.AddCafePage-main-title {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #333;
+    text-align: center;
+    margin: 20px 0;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    text-transform: capitalize;
+}
+
+.AddCafePage-cafeInfo {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+    font-family: 'Arial', sans-serif;
+}
+
+.AddCafePage-cafeInfo h2 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.AddCafePage-infoItem {
+    margin-bottom: 10px;
+    font-size: 16px;
+    color: #555;
+}
+
+.AddCafePage-infoItem strong {
+    font-weight: bold;
+    color: #333;
+}
+
+.AddCafePage-infoItem div {
+    margin-left: 20px;
+    font-style: italic;
+    color: #666;
+}
+
+.AddCafePage-infoItem div:last-child {
+    margin-bottom: 0;
+}
+
+.AddCafePage-infoItem-btn-addBd {
+    background-color: #28a745;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.AddCafePage-infoItem-btn-addBd:hover {
+    background-color: #218838;
+}

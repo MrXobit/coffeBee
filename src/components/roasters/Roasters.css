@@ -31,10 +31,15 @@
   }
 
   
-  .roasters-main-input-search :focus {
+  .roasters-main-input-search:focus {
     border-color: #5c9dfb;
     outline: none;
   }
+
+  .roasters-main-input-search:focus::placeholder {
+    color: transparent;
+  }
+  
   
 
 
