@@ -193,6 +193,8 @@ const RoasteryDetails = () => {
 
   return (
     <div className='roasterDetails-main-con'>
+          <div className="con-for-roaster-and-foter">
+          
     <div className='roaster-block-main-info'>
          <img src={roaster.logo} alt="roaster logo" className="roaster-detail-img" />
         <div className='roasterDetail-name'>{roaster.name}</div>
@@ -261,6 +263,10 @@ const RoasteryDetails = () => {
         )}
   </div>
         )}
+
+    
+        </div>
+        </div>
       <div className="roaster-detail-foter-con">
       <div className='roaster-block-socials'>
         <h3>Socials</h3>
@@ -279,7 +285,7 @@ const RoasteryDetails = () => {
         <div className='roasterDetail-phone'>Phone: {roaster.contact.phone}</div>
     </div>
       </div>
-    </div>
+    
 
 </div>
   )

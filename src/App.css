@@ -5,10 +5,10 @@
   font-family: 'Roboto', sans-serif;
   overflow-x: hidden;
   overflow-y: auto;
-}
+} 
 
 
-body {
+ body {
   overflow-y: scroll;
 }
 
@@ -22,4 +22,4 @@ body {
 
 ::-webkit-scrollbar-track {
   background: transparent; 
-}
+}  

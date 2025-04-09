@@ -183,3 +183,201 @@
     padding-bottom: 13px;
   }
   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+.beansMain-pagination-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end; 
+
+}
+
+.beansMain-pagination-list {
+  list-style-type: none;
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  gap: 10px;
+  padding: 0;
+}
+
+.beansMain-pagination-item {
+  display: inline-block;
+  border-radius: 50px;
+}
+
+.beansMain-pagination-link {
+  padding: 10px 20px;
+  text-decoration: none;
+  color: #fff;
+  font-weight: 600;
+  background-color: #5f6368;
+  border-radius: 50px;
+  transition: background 0.3s, color 0.3s, transform 0.2s ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.beansMain-pagination-link:hover {
+  background-color: #4c4f55;
+  color: #fff;
+  transform: scale(0.95);
+}
+
+.beansMain-pagination-item-active .beansMain-pagination-link {
+  background-color: #0069d9;
+  color: #fff;
+  font-weight: bold;
+}
+
+.beansMain-pagination-link:active {
+  transform: scale(0.95);
+}
+
+@media (max-width: 768px) {
+  .beansMain-pagination-list {
+    gap: 6px; 
+  }
+
+  .beansMain-pagination-link {
+    padding: 8px 18px;
+    font-size: 14px; 
+  }
+}
+
+
+@media (max-width: 480px) {
+  .beansMain-pagination-list {
+    gap: 4px;
+  }
+
+  .beansMain-pagination-link {
+    padding: 6px 14px;
+    font-size: 12px;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.activeRoastersAdmin-roaster-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+  flex-direction: column;
+      align-items: center;
+}
+
+.activeRoastersAdmin-btn-edit-roaster {
+
+  padding: 12px 25px;
+  font-size: 14px;
+  font-weight: 500;
+  background: linear-gradient(145deg, #46b46e, #3e8e41);
+  color: white;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  outline: none;
+  text-align: center;
+  display: flex;
+  width: 90%;
+  justify-content: center;
+  align-items: center;
+  margin: 10px auto;
+}
+
+.activeRoastersAdmin-btn-edit-roaster:hover {
+  background: linear-gradient(145deg, #3b9e56, #2e6e32);
+  color: white;
+}
+
+.activeRoastersAdmin-btn-edit-roaster:focus {
+  color: white;
+  text-decoration: none;
+  box-shadow: 0 0 0 2px rgba(62, 142, 65, 0.4);
+}
+
+
+
+.activeRoastersAdmin-btn-delete-roaster {
+  padding: 12px 25px;
+  font-size: 14px;
+  font-weight: 500;
+  background: linear-gradient(145deg, #f44336, #c2185b);
+  color: white;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  outline: none;
+  width: 90%;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 10px auto;
+  
+}
+
+.activeRoastersAdmin-btn-delete-roaster:hover {
+  background: linear-gradient(145deg, #d32f2f, #b71c1c);
+}
+
+.activeRoastersAdmin-btn-delete-roaster:focus {
+  box-shadow: 0 0 0 2px rgba(211, 47, 47, 0.4);
+}

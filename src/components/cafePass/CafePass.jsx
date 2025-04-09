@@ -169,3 +169,7 @@ const CafePass = ({ cafeId }) => {
 };
 
 export default CafePass;
+
+
+
+

@@ -321,5 +321,14 @@
     align-items: flex-start;
     flex-wrap: wrap;
     border-top: 1px solid #ddd;
-
+    
+  
 }
+
+
+.con-for-roaster-and-foter {
+  flex: 1; 
+  overflow-y: auto
+ 
+  }
+  

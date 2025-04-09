@@ -6,12 +6,11 @@ import { checkAuthStatus } from './store/userSlice';
 import AdminRouter from './components/AdminRouter';
 
 
-
 const App = () => {
   const dispatch = useDispatch();
   const { privileges, isAuth } = useSelector((state) => state.user);
 
-  console.log('privileges' + privileges)
+
   useEffect(() => {
     dispatch(checkAuthStatus())
   }, [dispatch]);

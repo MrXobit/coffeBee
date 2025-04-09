@@ -3,6 +3,9 @@ import { signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../firebase'; 
 import { signOut } from 'firebase/auth';
 import axios from 'axios';
+import { db } from '../firebase'; 
+import { doc, getDoc } from 'firebase/firestore';
+
 
 const initialState = {
   uid: null,
@@ -22,7 +25,9 @@ export const loginUser = createAsyncThunk(
      
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
-      
+      const token = await user.getIdToken();
+      localStorage.setItem('token', token);
+      console.log(token)
       return { 
         uid: user.uid, 
         email: user.email
@@ -34,37 +39,72 @@ export const loginUser = createAsyncThunk(
 );
 
 
+// export const checkAuthStatus = createAsyncThunk(
+//   'auth/checkAuthStatus',
+//   async (_, { rejectWithValue }) => {
+//     return new Promise((resolve, reject) => {
+   
+//       const unsubscribe = onAuthStateChanged(auth, async (user) => {
+//         if (user) {
+     
+//           try {
+//             const response = await axios.post('https://us-central1-coffee-bee.cloudfunctions.net/superUser'
+//               , {uid: user.uid}
+//             )
+//             localStorage.setItem('token', response.data.token);
+//             resolve({ uid: user.uid, email: user.email,
+//               privileges: response.data.isSuperAdmin,
+//              });
+//           } catch (error) {
+//             reject(rejectWithValue('Error fetching token'));
+//           }
+//         } else {
+//           reject(rejectWithValue('User is not authenticated'));
+//         }
+//       });
+
+//       return unsubscribe;
+//     });
+//   }
+// );
+
 export const checkAuthStatus = createAsyncThunk(
   'auth/checkAuthStatus',
   async (_, { rejectWithValue }) => {
-    return new Promise((resolve, reject) => {
-   
-      const unsubscribe = onAuthStateChanged(auth, async (user) => {
-        if (user) {
-     
-          try {
-            const response = await axios.post('https://us-central1-coffee-bee.cloudfunctions.net/superUser'
-              , {uid: user.uid}
-            )
-            localStorage.setItem('token', response.data.token);
-            resolve({ uid: user.uid, email: user.email,
-              privileges: response.data.isSuperAdmin,
-             });
-          } catch (error) {
-            reject(rejectWithValue('Error fetching token'));
+    try {
+      const user = await new Promise((resolve, reject) => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+          unsubscribe(); 
+          if (user) {
+            resolve(user);
+          } else {
+            reject(new Error('User not authenticated'));
           }
-        } else {
-          reject(rejectWithValue('User is not authenticated'));
-        }
+        });
       });
 
-      return unsubscribe;
-    });
+      const token = await user.getIdToken(true);
+      localStorage.setItem('token', token);
+
+      const userRef = doc(db, 'users', user.uid);
+      const snapshot = await getDoc(userRef);
+
+      if (!snapshot.exists()) {
+        throw new Error('User data not found in Firestore');
+      }
+
+      const userData = snapshot.data();
+
+      return {
+        uid: user.uid,
+        email: user.email,
+        privileges: userData.privileges === 'superAdmin' ? true : false,
+      };
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
   }
 );
-
-
-
 
 export const logoutUser = createAsyncThunk(
   'auth/logoutUser',
