@@ -14,15 +14,63 @@ const [roasters, setRoasters] = useState([])
 const [laoding, setLoading] = useState(false)
 const [success, setSuccess] = useState(false)
 const [toggleValue, setToggleValue] = useState(true)
+  const [count, setCount] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1); 
+  const [totalPages, setTotalPages] = useState(1); 
+  const [searchActiva, setSearchActive] = useState(false)
 const navigate = useNavigate()
-  const handleSearch = debounce(async(e) => {
-      try {
-        if (!e.target.value.trim()) {
-          setRoasters([]);
-          setSuccess(false)
-          setLoading(false)
-          return; 
+
+
+const loadData = async () => {
+  
+  setSearchActive(false)
+  try {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      throw new Error('Token is not available');
+    }
+     const response = await axios.post(
+      `https://us-central1-coffee-bee.cloudfunctions.net/getAllRoasters?count=${count}&offset=${(currentPage - 1) * count}`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
         }
+      }
+    );
+    
+
+    setRoasters(response.data.roasters); 
+    setTotalPages(Math.ceil(response.data.totalCount / count)); 
+  } catch (e) {
+    console.log(e)
+  } finally {
+      setLoading(false);
+  }
+};
+
+
+const handlePageChange = (page) => {
+  if (page < 1 || page > totalPages) return; 
+  setCurrentPage(page);
+};
+
+  useEffect(() => {
+    setLoading(true);
+    loadData();
+  }, [currentPage, count]);
+
+
+  const handleSearch = debounce(async(e) => {
+    setSuccess(false);
+    setRoasters([])
+    setSearchActive(true)
+    if (!e.target.value.trim()) {
+
+      loadData();
+      return;
+    }
+      try {
       
          const response = await axios.post('https://us-central1-coffee-bee.cloudfunctions.net/getRoasterByInput', {
             roasterName: e.target.value,
@@ -67,6 +115,86 @@ const navigate = useNavigate()
   };
 
 
+
+
+
+  
+    useEffect(() => {
+      if (currentPage > totalPages) {
+        setCurrentPage(totalPages); 
+      }
+    }, [totalPages]);
+  
+    const renderPaginationButtons = () => {
+   
+      const pages = [];
+      let startPage = Math.max(1, currentPage - 2);
+      let endPage = Math.min(totalPages, currentPage + 2);
+  
+      if (totalPages > 5) {
+        if (currentPage <= 3) endPage = 5;
+        else if (currentPage >= totalPages - 2) startPage = totalPages - 4;
+      }
+  
+      for (let i = startPage; i <= endPage; i++) {
+        pages.push(i);
+      }
+  
+  
+  
+  
+  
+      return (
+        <div className="beansMain-pagination-container">
+          <ul className="beansMain-pagination-list">
+            <li className="beansMain-pagination-item">
+              <a
+                href="#"
+                className="beansMain-pagination-link"
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+              >
+                Prev
+              </a>
+            </li>
+  
+            {pages.map((page) => (
+              <li
+                key={page}
+                className={`beansMain-pagination-item ${currentPage === page ? 'beansMain-pagination-item-active' : ''}`}
+              >
+                <a
+                  href="#"
+                  className="beansMain-pagination-link"
+                  onClick={() => handlePageChange(page)}
+                >
+                  {page}
+                </a>
+              </li>
+            ))}
+  
+            <li className="beansMain-pagination-item">
+              <a
+                href="#"
+                className="beansMain-pagination-link"
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+              >
+                Next
+              </a>
+            </li>
+          </ul>
+        </div>
+      );
+    };
+
+
+
+
+
+
+
+
   return (
     <div className='roster-main-con-class-supermain'>
              <div className='beans-main-togl-btn'>
@@ -87,16 +215,12 @@ const navigate = useNavigate()
 ) : (
   roasters.length === 0 ? (
     success ? (
-     <div className='roasters-notFound-results'>
+      <div className="roasters-notFound-results">
         <p>No results. Please try another search</p>
-     </div>
-    ) : (
-      <div className="roaster-ifArrayEmpty">
-      <p>Enter a roastery name , and we'll find the best options for you!</p>
-    </div>
-    )
-
-  ) : (
+      </div>
+    ) : null
+  ) 
+ : (
 <div className="activeRoasters-maincard-for-cards">
   {roasters.map((roaster) => 
     <div key={roaster.id} className="activeRoasters-card-con" onClick={() => handleDetails(roaster)}>
@@ -116,7 +240,8 @@ const navigate = useNavigate()
       ) : (
         <ActiveRoasteries/>
       )}
-  
+   {!searchActiva && !laoding && renderPaginationButtons()}
+
     </div>
   )
 }

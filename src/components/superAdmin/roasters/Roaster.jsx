@@ -123,7 +123,6 @@ const handleEdit = (roaster) => {
       } else {
         setRoasters(response.data);
         setSuccess(false);
-        renderPaginationButtons(response.data.length)
       }
     } catch (error) {
     } finally {
@@ -148,10 +147,8 @@ const handleEdit = (roaster) => {
     }
   }, [totalPages]);
 
-  const renderPaginationButtons = (searchleangth) => {
-    if(searchleangth) {
-      
-    }
+  const renderPaginationButtons = () => {
+ 
     const pages = [];
     let startPage = Math.max(1, currentPage - 2);
     let endPage = Math.min(totalPages, currentPage + 2);

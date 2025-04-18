@@ -6,11 +6,15 @@ import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage
 import { useSelector } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
 import { useLocation, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 
 const Beans = () => {
    const location = useLocation();
   const beanToEdit = location.state?.beanData || null;
+  const cafeData = location.state?.cafeData || null;
+  const returnUrl = location.state?.returnUrl || '/admin';
+
 
   const { email } = useSelector((state) => state.user);
   const [formData, setFormData] = useState({
@@ -43,10 +47,15 @@ const Beans = () => {
 
 
   useEffect(() => {
+    if(cafeData){
+      setData(cafeData)
+    } else {
       const selectedCafe = JSON.parse(localStorage.getItem('selectedCafe'));
       if (selectedCafe) {
         setData(selectedCafe);
       }
+    }
+
 
       if (beanToEdit) {
         setFormData({
@@ -137,25 +146,39 @@ const Beans = () => {
         return;
       }
   
-      const accessRef = doc(db, 'accessAdmin', email);
-      const accessSnap = await getDoc(accessRef);
-      if (!accessSnap.exists()) {
-        console.log('mistake1');
-        return;
+
+
+      if(cafeData){
+        const token = localStorage.getItem('token');
+        const response = await axios.post('https://us-central1-coffee-bee.cloudfunctions.net/validAccesAdmin', {}, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+    
+        if (response.data.access === false) return 
+
+      } else {
+        const accessRef = doc(db, 'accessAdmin', email);
+        const accessSnap = await getDoc(accessRef);
+        if (!accessSnap.exists()) {
+          console.log('mistake1');
+          return;
+        }
+        const accessData = accessSnap.data(); 
+        if (!accessData.allowedCafeIds.includes(data.id)) {
+          console.log('mistake2');
+          return;
+        }
       }
-      const accessData = accessSnap.data(); 
-      if (!accessData.allowedCafeIds.includes(data.id)) {
-        console.log('mistake2');
-        return;
-      }
-  
+
       if(formData && beanToEdit) {
         const isDataUnchanged = Object.keys(formData).every(
           (key) => formData[key] === beanToEdit[key]
         );
         if (isDataUnchanged && imageFile === beanToEdit.imageUrl) {
           console.log('No data changed, navigating to /admin');
-          navigate('/admin');
+          navigate(returnUrl);
           return;
         }
       }
@@ -219,7 +242,7 @@ const Beans = () => {
       };
       localStorage.setItem('selectedCafe', JSON.stringify(cafeWithId));
       console.log('Navigating to admin page');
-      navigate('/admin');
+      navigate(returnUrl);
     } catch (error) {
       console.error('Error adding beans:', error);
       setError('An error occurred while adding beans. Please try again.');

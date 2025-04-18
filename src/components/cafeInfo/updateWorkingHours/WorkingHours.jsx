@@ -5,7 +5,7 @@ import axios from 'axios';
 import { db } from '../../../firebase'; 
 import { doc, getDoc } from 'firebase/firestore';
 
-const WorkingHours = () => {
+const WorkingHours = ({cafeData}) => {
     const openRefs = useRef({});
     const closeRefs = useRef({});
     const [data, setData] = useState(null);
@@ -19,27 +19,28 @@ const WorkingHours = () => {
         sunday: { open: '', close: '', closed: false }
     });
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(''); // Added error state
+    const [error, setError] = useState(''); 
 
     useEffect(() => {
-        const selectedCafe = JSON.parse(localStorage.getItem('selectedCafe'));
-        if (selectedCafe) {
-            setData(selectedCafe);
+
+        if(cafeData) {
+            setData(cafeData);
           
-            if (selectedCafe.adminData && selectedCafe.adminData.workingHours) {
+            if (cafeData.adminData && cafeData.adminData.workingHours) {
                 const formattedWorkingHours = {};
 
-                for (const day in selectedCafe.adminData.workingHours) {
-                    if (selectedCafe.adminData.workingHours[day] === 'closed') {
+                for (const day in cafeData.adminData.workingHours) {
+                    if (cafeData.adminData.workingHours[day] === 'closed') {
                         formattedWorkingHours[day] = { open: '', close: '', closed: true };
                     } else {
-                        const { open, close } = selectedCafe.adminData.workingHours[day];
+                        const { open, close } = cafeData.adminData.workingHours[day];
                         formattedWorkingHours[day] = { open, close, closed: false };
                     }
                 }
 
                 setWorkingHours(formattedWorkingHours);
-            }
+        }
+
         }
     }, []);
 
@@ -73,7 +74,7 @@ const WorkingHours = () => {
     const handleSubmit = async () => {
         try {
             setLoading(true);
-            setError(''); // Clear previous errors
+            setError('');
 
             for (const day in workingHours) {
                 const { open, close, closed } = workingHours[day];

@@ -6,6 +6,10 @@ import SubLoader from './loader/SubLoader';
 import MainPage from './superAdmin/mainPage/MainPage';
 import AddNewRoaster from './superAdmin/roasters/addNewRoaster/AddNewRoaster';
 import EditRoaster from './superAdmin/roasters/editRoaster/EditRoaster';
+import CafeInfoAdmin from './superAdmin/cafes/сafeInfo/CafeInfoAdmin';
+import AddBeans from './beans/AddBeans';
+import CafeInfo from './cafeInfo/CafeInfo';
+
 
 const AdminRouter = () => {
     const { isAuth, isLoading, privileges} = useSelector((state) => state.user);
@@ -24,6 +28,9 @@ const AdminRouter = () => {
                 <Route path="*" element={<MainPage />} />
                 <Route path="/add-new-roaster" element={<AddNewRoaster />} />
                 <Route path="/edit-roaster" element={<EditRoaster />} />
+                <Route path="/cafe-info/:id" element={<CafeInfoAdmin/>} />
+                <Route path="/add-coffee-bean" element={<AddBeans/>} />
+                <Route path="/edit-coffeeInfo" element={<CafeInfo/>} />
               </>
             )}
           </Routes>
@@ -32,3 +39,4 @@ const AdminRouter = () => {
     }      
 
 export default AdminRouter
+

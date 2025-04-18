@@ -27,17 +27,6 @@ const AddCafePage = () => {
                 return 
             }
 
-            const isValidMapUrl = (url) => {
-                const regex = /@(-?\d+(\.\d+)?),(-?\d+(\.\d+)?),\d+z/;
-                return regex.test(url);
-            };
-
-            if (!isValidMapUrl(inputValue)) {
-                setCafeData(null)
-                notifyError('The URL is not valid');
-                return 
-            }
-
             const response = await axios.post(
                 `https://us-central1-coffee-bee.cloudfunctions.net/getCafeDataByUrl`,
                 {
@@ -48,7 +37,7 @@ const AddCafePage = () => {
             setCafeData(response.data);
             console.log(response.data);
         } catch (error) {
-            console.log(error)
+            console.log(error.response.data)
             notifyError('Error fetching cafe data');
         } finally {
             setLoading(false);
@@ -59,6 +48,7 @@ const AddCafePage = () => {
         e.preventDefault();
         setLoadingAdd(true);
         try {
+      
             const cafeDocRef = doc(db, 'cafe', cafeData.place_id);
             const cafeDocSnap = await getDoc(cafeDocRef);
 
@@ -66,24 +56,29 @@ const AddCafePage = () => {
                 return notifyError('This cafe already exists');
             }
 
+
+ 
             const cafe = {
                 admin_data: {},
                 google_info: {
                     cafeData
                 },
+                ...cafeData
             };
-
+        
             const cafeRef = doc(db, 'cafe', cafeData.place_id);
             await setDoc(cafeRef, cafe);
             notifySuccess('Cafe added successfully');
             setCafeData(null);
             setInputValue('');
         } catch (e) {
+            console.log(e)
             notifyError('Error adding cafe');
         } finally {
             setLoadingAdd(false);
         }
     };
+
 
 
     return (

@@ -7,6 +7,7 @@ import { doc, getDoc } from 'firebase/firestore';
 import WorkingHours from './updateWorkingHours/WorkingHours';
 import Contact from './contact/Contact';
 import MapBlock from './mapBlock/MapBlock';
+import { useLocation } from 'react-router-dom';
 
 
 
@@ -20,13 +21,51 @@ const CafeInfo = () => {
   const [selectedPosition, setSelectedPosition] = useState(null);
  
 
-  useEffect(() => {
-    const selectedCafe = JSON.parse(localStorage.getItem('selectedCafe'));
-    if (selectedCafe) {
-      setData(selectedCafe);
-      setEditedName(selectedCafe.adminData && selectedCafe.adminData.name ? selectedCafe.adminData.name : (selectedCafe.name || ''));
-      setEditedDescription(selectedCafe?.adminData?.description || '');
+   const location = useLocation();
+   const cafeData = location.state?.cafeData || null;
+
+  const loadData = async () => {
+    try {
+
+      if(cafeData) {
+        setData(cafeData);
+        setEditedName(cafeData.adminData?.name || cafeData.name || '');
+        setEditedDescription(cafeData?.adminData?.description || '');
+      } else {
+        const selectedCafe = JSON.parse(localStorage.getItem('selectedCafe'));
+      
+        if (!selectedCafe || !selectedCafe.id) {
+          console.error("No selected cafe or ID found in localStorage");
+          return;
+        }
+  
+        const cafeRef = doc(db, 'cafe', selectedCafe.id);
+        const cafeSnap = await getDoc(cafeRef);
+  
+        if (!cafeSnap.exists()) {
+          console.log('Cafe not found in the database');
+          return;
+        }
+  
+        const updatedCafeData = { id: selectedCafe.id, ...cafeSnap.data() };
+        setData(updatedCafeData);
+        setEditedName(updatedCafeData.adminData?.name || updatedCafeData.name || '');
+        setEditedDescription(updatedCafeData?.adminData?.description || '');
+      }
+    } catch (e) {
+      console.error('Error loading data:', e);
     }
+  };
+
+
+
+
+
+  useEffect(() => {
+
+  loadData()
+
+
   }, []);
 
   const handleUpdateName = async () => {
@@ -55,7 +94,6 @@ const CafeInfo = () => {
   
         
         setData(updatedCafeData);
-        setEditedName(updatedCafeData.adminData.name)
 
         localStorage.setItem('selectedCafe', JSON.stringify(updatedCafeData));
       }  
@@ -100,7 +138,6 @@ const CafeInfo = () => {
         
         setData(updatedCafeData);
   
-        setEditedDescription(updatedCafeData.adminData.description)
         localStorage.setItem('selectedCafe', JSON.stringify(updatedCafeData));
       }  
 
@@ -215,10 +252,10 @@ const CafeInfo = () => {
               {loadingAdress ? 'Updating...' : 'Update Address'}
             </button>
           </div> */}
-          <WorkingHours/>
+          <WorkingHours cafeData={data}/>
         </div>
         <div className="info-item center-content">
-          <Contact/>
+          <Contact cafeData={data}/>
         </div>
       </div>
     </div>
