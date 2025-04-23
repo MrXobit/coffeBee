@@ -1,0 +1,58 @@
+.coffee-network-container {
+    min-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(to bottom right, #fff7e6, #fffbe6);
+    padding: 20px;
+    font-family: sans-serif;
+    overflow: hidden;
+  }
+  
+  .coffee-network-title {
+    font-size: 36px;
+    font-weight: bold;
+    margin-bottom: 40px;
+    color: #333;
+  }
+  
+  .coffee-network-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+    max-width: 400px;
+  }
+  
+  .coffee-network-button {
+    width: 100%;
+    padding: 20px;
+    font-size: 24px;
+    font-weight: 600;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border: none;
+  }
+  
+  .coffee-network-button.coffee-network-primary {
+    background-color: #f5b342;
+    color: white;
+  }
+  
+  .coffee-network-button.coffee-network-primary:hover {
+    background-color: #e3a134;
+  }
+  
+  .coffee-network-button.coffee-network-secondary {
+    background-color: white;
+    color: #f5b342;
+    border: 2px solid #f5b342;
+  }
+  
+  .coffee-network-button.coffee-network-secondary:hover {
+    background-color: #fff1d6;
+  }
+  

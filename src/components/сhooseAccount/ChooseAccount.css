@@ -31,7 +31,7 @@
     padding: 12px 20px;
     background-color: white;
     border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  
     width: 320px;
     cursor: pointer;
     transition: all 0.4s ease-in-out; /* Додано all, щоб трансформації теж були плавні */
@@ -39,7 +39,6 @@
 
 .account-card:hover {
     background: linear-gradient(90deg, #f0f0f0, #d9d9d9);
-    transform: scale(1.05); /* Плавне збільшення */
     border-radius: 25px;
 }
   

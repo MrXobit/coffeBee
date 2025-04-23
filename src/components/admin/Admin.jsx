@@ -10,6 +10,7 @@ import BurgerMenu from '../burgerMenu/BurgerMenu';
 import Paymant from '../paymant/Paymant';
 import BeansMain from '../beansMain/BeansMain';
 import Roasters from '../roasters/Roasters';
+import CoffeeNetwork from '../CoffeeNetwork/CoffeeNetwork';
 
 const Admin = () => {
   const dispatch = useDispatch();
@@ -68,6 +69,7 @@ const Admin = () => {
           <div className={`navbar-main-admin ${activeTab === 'Payment Details' ? 'active' : ''}`} onClick={() => handleTabChange('Payment Details')}>Payment Details</div>
           <div className={`navbar-main-admin ${activeTab === 'Beans' ? 'active' : ''}`} onClick={() => handleTabChange('Beans')}>Coffee Beans</div>
           <div className={`navbar-main-admin ${activeTab === 'Roasters' ? 'active' : ''}`} onClick={() => handleTabChange('Roasters')}>Roasters</div>
+          <div className={`navbar-main-admin ${activeTab === 'Coffee Network' ? 'active' : ''}`} onClick={() => handleTabChange('Coffee Network')}>Coffee Network</div>
           <div className="navbar-main-admin logout-main-admin-btn" onClick={() => dispatch(logoutUser())}>Logout</div>
         </div>
       </div>
@@ -78,6 +80,10 @@ const Admin = () => {
 
 {activeTab === '' && (
     <ChooseSection/>
+  )}
+
+{activeTab === 'Coffee Network' && (
+    <CoffeeNetwork/>
   )}
 
 {activeTab === 'Beans' && (

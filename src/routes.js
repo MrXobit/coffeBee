@@ -8,6 +8,7 @@ import UpdatePasword from "./components/updatePasword/UpdatePasword";
 import ChooseAccount from "./components/сhooseAccount/ChooseAccount";
 import AddBeans from "./components/beans/AddBeans";
 import RoasteryDetails from "./components/roasters/roasteryDetails/RoasteryDetails";
+import AdminNetwork from "./components/CoffeeNetwork/AdminNetwork/AdminNetwork";
 
 export const authRoutes = [
     {
@@ -38,7 +39,9 @@ export const authRoutes = [
     {
         path: '/roaster/:id',
         element: <RoasteryDetails/>
-    }
+    },
+
+
 ];
 
 export const publicRoutes = [
