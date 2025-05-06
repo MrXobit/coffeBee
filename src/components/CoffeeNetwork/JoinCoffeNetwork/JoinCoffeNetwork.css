@@ -1,0 +1,116 @@
+.JoinCoffeNetwork-con {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: linear-gradient(to bottom right, #fff7e6, #fffbe6);
+    padding: 40px 20px 20px 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    gap: 20px;
+  }
+  
+  .createCoffeNetwork-imgBack {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+  
+  .createCoffeNetwork-imgBack:hover {
+    transform: scale(1.1);
+  }
+  
+  .joinCoffeNetwork-title {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #5c3a00;
+    margin-top: 60px;
+    text-align: center;
+  }
+  
+  .JoinCoffeNetwork-con input {
+    width: 100%;
+    max-width: 500px;
+    padding: 15px 20px;
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    font-size: 1rem;
+    transition: box-shadow 0.3s ease;
+  }
+  
+  .JoinCoffeNetwork-con input:focus {
+    outline: none;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  }
+  
+  @media (max-width: 950px) {
+    .JoinCoffeNetwork-con {
+      min-height: 90vh;
+      padding-top: 30px;
+    }
+  
+    .joinCoffeNetwork-title {
+      font-size: 1.7rem;
+      margin-top: 50px;
+    }
+  }
+  
+
+
+  .JoinCoffeNetwork-network-con {
+    width: 100%;
+    background: #fffdfa;
+    border: 1px solid #f2e6d9;
+    border-radius: 15px;
+    padding: 20px 25px;
+    margin-top: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
+  }
+  
+  .JoinCoffeNetwork-network-con:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+  }
+  
+  .JoinCoffeNetwork-network-con h1 {
+    font-size: 1.3rem;
+    color: #5c3a00;
+    margin-bottom: 8px;
+  }
+  
+  .JoinCoffeNetwork-network-con p {
+    font-size: 0.95rem;
+    color: #7d5a3a;
+  }
+  
+
+  .JoinCoffeNetwork-join-network-button {
+    margin-top: 15px;
+    padding: 10px 20px;
+    background-color: #ff914d;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    width: 100%;
+  }
+  
+  .JoinCoffeNetwork-join-network-button:hover {
+    background-color: #ff7a26;
+    transform: translateY(-1px);
+  }
+  
+  .JoinCoffeNetwork-join-network-button:active {
+    transform: scale(0.98);
+  }
+  

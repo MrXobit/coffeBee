@@ -56,7 +56,7 @@ const ChooseAccount = () => {
 
     const handleChangeCofe = (cafe) => {
         localStorage.setItem('selectedCafe', JSON.stringify(cafe));
-        console.log(JSON.parse(localStorage.getItem('selectedCafe')));
+        console.log(cafe)
         if(localStorage.getItem('activeTab')) {
             localStorage.removeItem('activeTab');
           }

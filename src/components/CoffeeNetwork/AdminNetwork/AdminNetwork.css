@@ -6,6 +6,7 @@
     overflow: hidden;
     transition: all 0.3s ease-in-out;
     margin: 20px;
+    
   }
   
   .AdminNetwork-card-con:hover {
@@ -55,6 +56,7 @@
     align-items: center;
     justify-content: center;
     flex-wrap: wrap;
+    
   }
 
 
@@ -72,11 +74,12 @@
     flex-direction: column;
     align-items: center;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    position: relative;
   }
   
   .AdminNetwork-main-title {
     display: inline-block;
-    margin: 40px auto 30px;
+    margin: 20px 60px 10px 60px;
     padding: 25px 60px;
     font-size: 48px;
     font-weight: 800;
@@ -90,6 +93,7 @@
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
     border-radius: 12px;
     transition: all 0.3s ease-in-out;
+  
   }
   
   /* Медіа-запит для мобільних пристроїв */
@@ -136,3 +140,12 @@
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
   }
   
+
+
+
+/* @media (max-width: 950px) {
+  .AdminNetwork-main-con-forMod {
+     margin: 11% 10px 0 0;
+  }
+    
+ } */

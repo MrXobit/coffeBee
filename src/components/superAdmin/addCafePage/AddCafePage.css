@@ -112,3 +112,81 @@
 .AddCafePage-infoItem-btn-addBd:hover {
     background-color: #218838;
 }
+
+
+.connnnnnnnn {
+    margin: 20px 40px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+
+
+
+.Add-Coffesby-txt-file {
+    margin: 0 auto;
+    padding: 12px 24px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    text-transform: uppercase;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUppppp 0.6s forwards;
+  }
+  
+  .Add-Coffesby-txt-file:hover {
+    background-color: #45a049;
+    transform: translateY(-2px);
+  }
+  
+  @keyframes fadeInUppppp {
+    0% {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+
+
+
+
+
+
+  .AddCafePage-faildUrl {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    border-radius: 8px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+}
+
+.AddCafePage-faildUrl-p {
+    color: #721c24;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    line-height: 1.5;
+}
+
+.AddCafePage-faildUrl h2 {
+    color: #721c24;
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}

@@ -44,7 +44,6 @@ const Admin = () => {
     localStorage.setItem('activeTab', tab); 
     if (window.innerWidth < 950) {
       setBurger(prev => !prev); 
-      console.log("BURGER" + burger)
     }
   };
 

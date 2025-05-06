@@ -1,0 +1,16 @@
+.AdminNetwork-leave-net {
+    background: linear-gradient(135deg, #ff2e2e, #ff7b00);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.AdminNetwork-leave-net:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}

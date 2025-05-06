@@ -1,0 +1,117 @@
+.NetworkDetails-dennid {
+    text-align: center;
+    margin-top: 100px;
+    font-size: 32px;
+    color: #ff4d4f;
+    font-weight: bold;
+    letter-spacing: 1px;
+    animation: fadeIn 1s ease-in-out;
+  }
+  
+  
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+
+  .NetworkDetails-con {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    flex-direction: column;
+  }
+
+
+
+  .NetworkDetails-removeBy-net {
+    background-color: #e63946;
+    color: white;
+    padding: 12px 30px;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 25px;
+    text-align: center;
+    cursor: pointer;
+    width: 85%;
+    margin: 20px auto;
+    border: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+  }
+  
+  .NetworkDetails-removeBy-net:hover {
+    background-color: #d62828;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+  }
+  
+  .NetworkDetails-removeBy-net:active {
+    background-color: #9e2121;
+    transform: translateY(0);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+
+  .AdminNetwork-loader-class {
+    padding: 15px;
+  }
+
+
+  .NetworkDetails-con-togle {
+    padding: 20px 10px 30px 10px;
+  }
+
+  .NetworkAddCoffeForNet-con {
+    width: 100%;
+    height: 100vh;
+  }
+
+
+
+
+
+  .NetworkAddCoffeForNet-addCafe-forNet {
+    background-color: #4CAF50; 
+    color: white;
+    width: 100%;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+
+  .NetworkAddCoffeForNet-olredyIs {
+    background-color: #fdecea; 
+    color: #c62828;
+    border: 1px solid #f5c6cb;
+    padding: 12px 16px;
+    margin: 10px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 500;
+    margin-top: 10px;
+    display: inline-block;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  }
+  
+  .NetworkAddCoffeForNet-olredyIs span {
+    font-weight: 600;
+    color: #b71c1c; 
+    background-color: #fbe9e7; 
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+  

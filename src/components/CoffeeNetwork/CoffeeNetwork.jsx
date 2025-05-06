@@ -6,10 +6,12 @@ import { db } from '../../firebase'
 import { doc, getDoc } from "firebase/firestore";
 import AdminNetwork from './AdminNetwork/AdminNetwork'
 import SubLoader from '../loader/SubLoader'
+import AdminNetworkMember from './AdminNetworkMember/AdminNetworkMember'
 
 const CoffeeNetwork = () => {
     const [choice, setChoice] = useState(null)
     const [superAdmin, setSuperAdmin] = useState(false)
+    const [justMember, setJustMember] = useState(false)
     const [loading, setLoading] = useState(false);
     const loadInfo = async() => {
       setLoading(true)
@@ -23,10 +25,15 @@ const CoffeeNetwork = () => {
               setLoading(false)
                setSuperAdmin(true)
                return 
-            } else {
-            
             }
         }
+     
+        if(cafeData.network?.isCreator === false) {
+          setLoading(false)
+          setJustMember(true)
+          return 
+      }
+      
         setChoice(1)
       } catch(e) {
         console.log(e)
@@ -53,9 +60,13 @@ const CoffeeNetwork = () => {
 
 
     if(superAdmin) {
-      return <AdminNetwork/>
+      return <AdminNetwork setChoice={setChoice} setSuperAdmin={setSuperAdmin}/>
     }
-
+    
+    if(justMember) {
+      return <AdminNetworkMember setChoice={setChoice} setJustMember={ setJustMember}/>
+    }
+    
 
   return (
     <>

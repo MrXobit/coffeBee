@@ -9,6 +9,8 @@ import EditRoaster from './superAdmin/roasters/editRoaster/EditRoaster';
 import CafeInfoAdmin from './superAdmin/cafes/сafeInfo/CafeInfoAdmin';
 import AddBeans from './beans/AddBeans';
 import CafeInfo from './cafeInfo/CafeInfo';
+import NetworkDetails from './superAdmin/networks/networkDetails/NetworkDetails';
+import AddNet from './superAdmin/networks/addNet/AddNet';
 
 
 const AdminRouter = () => {
@@ -31,6 +33,8 @@ const AdminRouter = () => {
                 <Route path="/cafe-info/:id" element={<CafeInfoAdmin/>} />
                 <Route path="/add-coffee-bean" element={<AddBeans/>} />
                 <Route path="/edit-coffeeInfo" element={<CafeInfo/>} />
+                <Route path="/network-info/:id" element={<NetworkDetails/>} />
+                <Route path="/add-network" element={<AddNet/>} />
               </>
             )}
           </Routes>
