@@ -1,0 +1,109 @@
+.ModerationCafe-con {
+    min-width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    
+}
+
+
+.ModerationCafe-apply,
+.ModerationCafe-reject {
+  padding: 12px 20px;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 8px;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.ModerationCafe-apply {
+  background-color: #4CAF50; 
+  color: white;
+}
+
+.ModerationCafe-reject {
+  background-color: #f44336; 
+  color: white;
+}
+
+.ModerationCafe-apply:hover {
+  background-color: #45a049;
+}
+
+.AdminNetworkRequests-reject:hover {
+  background-color: #d32f2f;
+}
+
+.ModerationCafe-apply:active,
+.ModerationCafe-reject:active {
+  transform: scale(0.98);
+}
+
+
+
+.AdminNetworkRequests-ModerationCafe-actions {
+    display: flex;
+    justify-content: space-around;
+    padding: 5px 10px;
+} 
+
+
+.ModerationCafe-noRequests {
+    text-align: center;
+    margin-top: 40px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    color: #666;
+    border: 1px dashed #ccc;
+    border-radius: 12px;
+    font-size: 18px;
+    font-weight: 500;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+  
+
+  .ModerationCafe-title {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #333;
+    text-align: center;
+    margin: 20px 0;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    text-transform: capitalize;
+}
+
+.ModerationCafe-loader-con {
+    margin: 0 auto;
+    padding: 20px;
+}
+
+
+.activeRoasters-card {
+  text-align: center;
+  justify-content: center;
+  padding: 10px;
+  margin: 10px;
+  display: inline-block;
+  background-color: #e0f2ff; 
+  color: #004c75;          
+  text-decoration: none;
+  border-radius: 8px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  font-size: 14px;
+  box-shadow: 0 2px 8px rgba(0, 76, 117, 0.1);
+}
+
+.activeRoasters-card:hover {
+  background-color: #cce8ff; 
+  color: #002f4d;
+}

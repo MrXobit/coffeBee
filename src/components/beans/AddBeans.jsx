@@ -119,7 +119,7 @@ const Beans = () => {
       const fileExtension = file.name.toLowerCase().split('.').pop();
       if (fileExtension && supportedExtensions.includes(fileExtension)) {
         setImageFile(URL.createObjectURL(file));
-        setImageFileObject(file); // Збереження файлу
+        setImageFileObject(file); 
         setError(null);
       } else {
         setError('Extension not supported');

@@ -80,7 +80,7 @@ const Roaster = () => {
           console.error('Помилка під час видалення обжарщика та картинки:', error);
         }
       } else {
-        console.error('Немає доступу до цієї операції');
+        return console.error('Немає доступу до цієї операції');
       }
       setRoasters(prev => prev.filter(roaster => roaster.id !== roasterId));
     } catch (e) {

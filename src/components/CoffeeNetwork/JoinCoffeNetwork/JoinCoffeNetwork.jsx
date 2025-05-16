@@ -196,7 +196,7 @@ const handleToggle = (isAllBeans) => {
   network.map((network) => (
     <div key={network.name} className="JoinCoffeNetwork-network-con">
       <h1>Network name: <strong>{network.name}</strong></h1>
-      <p>members: {Array.isArray(network.cafeIds) ? network.cafeIds.length - 1 : 0}</p>
+      <p>members: {network.cafeIds.length}</p>
       <button 
       disabled={localLoading?.disabled || sended.includes(network.name)} 
       onClick={() => handleSendJoinRequest(network.name)} 

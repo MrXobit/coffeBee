@@ -27,6 +27,9 @@ const AddCafePage = () => {
    
     const [existCafes, setExistsCafe] = useState([])
     const [loadingBtn, setLoadingBtn] = useState(false)
+
+    const apiKey = 'AIzaSyB4MlQ2k46i9a_sMQe67Rk6MHGzCsaRaU8'
+
     const handleGetInfo = async (e) => {
         e.preventDefault();
         setLoading(true);
@@ -67,18 +70,27 @@ const AddCafePage = () => {
                 return notifyError('This cafe already exists');
             }
 
+    const token = localStorage.getItem('token');
 
- 
-            const cafe = {
-                admin_data: {},
-                google_info: {
-                    cafeData
-                },
-                ...cafeData
-            };
+                  const response = await axios.post('https://us-central1-coffee-bee.cloudfunctions.net/uploadImage', 
+  { cafeData },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+);
+
+
+
+
+            // const cafe = {
+            //     admin_data: {},
+            //     ...cafeData
+            // };
         
-            const cafeRef = doc(db, 'cafe', cafeData.place_id);
-            await setDoc(cafeRef, cafe);
+            // const cafeRef = doc(db, 'cafe', cafeData.place_id);
+            // await setDoc(cafeRef, cafe);
             notifySuccess('Cafe added successfully');
             setCafeData(null);
             setInputValue('');
@@ -131,17 +143,30 @@ const AddCafePage = () => {
               notifyError('This cafe already exists');
               continue;
             }
+
+
+
+                const token = localStorage.getItem('token');
+
+                  const response = await axios.post('https://us-central1-coffee-bee.cloudfunctions.net/uploadImage', 
+    { cafeData: cafeArray[i] }, 
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+);
+
+
+
       
-            const cafe = {
-              admin_data: {},
-              google_info: {
-                cafeData: cafeArray[i],
-              },
-              ...cafeArray[i],
-            };
+            // const cafe = {
+            //   admin_data: {},
+            //   ...cafeArray[i],
+            // };
       
-            const cafeRef = doc(db, 'cafe', cafeArray[i].place_id);
-            await setDoc(cafeRef, cafe);
+            // const cafeRef = doc(db, 'cafe', cafeArray[i].place_id);
+            // await setDoc(cafeRef, cafe);
             notifySuccess('Cafe added successfully');
           }
       
