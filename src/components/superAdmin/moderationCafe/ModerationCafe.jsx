@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import './ModerationCafe.css'
 import axios from 'axios'
 import { db } from '../../../firebase'
-import { collection, deleteDoc, doc, getDoc, getDocs, setDoc, updateDoc } from 'firebase/firestore';
+import { collection, deleteDoc, deleteField, doc, getDoc, getDocs, setDoc, updateDoc } from 'firebase/firestore';
 import Loader from '../../loader/Loader';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'; 
@@ -98,7 +98,7 @@ const ModerationCafe = () => {
            }
 
            await setDoc(cafeRef, {
-            admin_data: {},
+            adminData: cafeItem.adminData,
             ...cafeItem.google_info,    
           });
 
@@ -117,7 +117,8 @@ const ModerationCafe = () => {
        }
 
 
-  
+
+      
 
 
     useEffect(() => {
@@ -135,7 +136,7 @@ const ModerationCafe = () => {
              {cafe.map((item) => (
   <div key={item.id} className="activeRoasters-card-con">
     <img
-      src={item.google_info.icon}
+       src={Object.values(item.adminData.photos)[0]}
       alt="Cafe Logo"
       className="activeRoasters-card-img"
     />
@@ -159,7 +160,7 @@ const ModerationCafe = () => {
           ) : (
             <div className="ModerationCafe-noRequests">No moderation requests available</div>
           )}
-           <ToastContainer />
+           <ToastContainer />     
         </div>
       );
 }      

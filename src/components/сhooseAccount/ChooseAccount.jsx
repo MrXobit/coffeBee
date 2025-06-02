@@ -79,7 +79,7 @@ const ChooseAccount = () => {
                 <div className="acc-main-choose-con">
                     {cafes.map((cafe) => (
                         <div key={cafe.place_id} onClick={() => handleChangeCofe(cafe)} className="account-card">
-                            <img src={cafe.icon} alt="logo" className="account-logo" />
+                            <img src={Object.values(cafe.adminData.photos)[0]} alt="logo" className="account-logo" />
                             <p className="account-text">{cafe.name}</p>
                         </div>
                     ))}

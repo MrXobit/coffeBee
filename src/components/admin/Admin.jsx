@@ -56,7 +56,7 @@ const Admin = () => {
     <div  className={`main-container-admin ${burger ? 'show' : ''}`}>
       <div className="left-part-admin">
         <div className="cafe-mainInfo-admin">
-          <img onClick={() => navigate('/chooseAccount')} src={data.icon} alt="cafe-logo-admin" className="cafe-logo-admin" />
+          <img onClick={() => navigate('/chooseAccount')} src={Object.values(data.adminData.photos)[0]} alt="cafe-logo-admin" className="cafe-logo-admin" />
           <p onClick={() => navigate('/chooseAccount')}>{data.name}</p>
           <div onClick={handleBurger} className='burger-menu-admin'>
             <BurgerMenu isChecked={burger}/>

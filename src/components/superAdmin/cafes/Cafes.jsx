@@ -200,7 +200,7 @@ const Cafes = () => {
    <Link to={`/cafe-info/${roaster.id}`}>
    <div key={roaster?.placeid} className="activeRoasters-card-con">
      <img
-       src={roaster.icon}
+      src={Object.values(roaster.adminData.photos)[0]}
        alt="Roaster Logo"
        className="activeRoasters-card-img"
      />
@@ -209,7 +209,7 @@ const Cafes = () => {
        {roaster.vicinity}
      </div>
      <div className="activeRoastersAdmin-roaster-actions">
-       {/* Тут можеш додавати додаткові елементи */}
+    
      </div>
    </div>
  </Link>

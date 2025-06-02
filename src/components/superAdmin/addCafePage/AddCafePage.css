@@ -190,3 +190,95 @@
     font-weight: bold;
     margin-bottom: 10px;
 }
+
+
+
+
+
+
+
+.AddCafePage-failAddToBd {
+  font-size: 20px;
+  font-weight: bold;
+  color: #d9534f;
+  margin-bottom: 10px;
+}
+
+.AddCafePage-failAddToBdList {
+  list-style-type: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.AddCafePage-failAddToBdItem {
+  margin-bottom: 6px;
+}
+
+.AddCafePage-failAddToBdLink {
+  color: #d9534f;
+  text-decoration: underline;
+  transition: 0.2s;
+}
+
+.AddCafePage-failAddToBdLink:hover {
+  color: #c9302c;
+}
+
+
+
+
+.AddCafePage-try-add-oneMoretime {
+  margin: 20px;
+  padding: 10px 20px;
+  background-color: #4caf50; 
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.пофанудів {
+    align-items: center;
+    justify-content: center;
+}
+
+
+
+
+
+.AddCafePag-clearInput {
+  display: block;              
+  margin: 20px auto;            
+  width: 80%;
+  max-width: 400px;             
+  padding: 12px 16px;
+  background-color: #e57373;  
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+
+.AddCafePage-unglyBtn {
+  display: block;
+  width: 100%;
+  max-width: 300px;
+  margin: 20px auto;
+  padding: 12px 20px;
+  background-color: #4CAF50; 
+  color: white;
+  font-size: 16px;
+  font-weight: 500;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
