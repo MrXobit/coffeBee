@@ -1,0 +1,95 @@
+.mainAdmin-roasters-input-btn-con {
+    margin: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px; 
+  }
+  
+  .mainAdmin-roasters-setFilter {
+    padding: 15px 12px;
+    font-size: 14px;
+    background-color: #4f46e5; 
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    margin-top: 9px;
+  }
+  
+  .mainAdmin-roasters-setFilter:hover {
+    background-color: #4338ca;
+  }
+  
+
+  .mainAdmin-roasters-setFilterGreen {
+    background-color: #22c55e;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+  }
+  
+  .mainAdmin-roasters-setFilterGreen:hover {
+    background-color: #16a34a; 
+    transform: scale(1.03); 
+  }
+  
+
+
+  
+  .superAdmin-cafes-posibleVarients {
+    margin: 20px;
+    background: #ffffff;
+    border: 1.5px solid #a0aec0; 
+    border-radius: 8px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12);
+    max-height: 240px;
+    overflow-y: auto;
+    margin-top: 8px;
+    z-index: 20;
+    font-size: 15px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  .SuperAdmin-cafes-potentions-options {
+    padding: 10px 16px;
+    cursor: pointer;
+    color: #2d3748; 
+    border-bottom: 1px solid #e2e8f0; 
+    transition: background-color 0.25s ease, color 0.25s ease;
+  }
+  
+  .SuperAdmin-cafes-potentions-options:last-child {
+    border-bottom: none; 
+  }
+  
+  .SuperAdmin-cafes-potentions-options:hover {
+    background-color: #5a67d8; 
+    color: #f7fafc; 
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(90, 103, 216, 0.3);
+    border-radius: 6px;
+  }
+  
+
+
+
+
+.roaster-con-forLoading {
+    padding: 20px;
+    margin: 20px;
+}
+
+
+
+
+
+  .mainAdmin-roasters-main-title span {
+    margin-left: 8px;
+    padding: 2px 8px;
+    background-color: #e0e7ff; 
+    color: #3730a3;
+    font-weight: 600;
+    font-size: 21px;
+    border-radius: 6px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  }
+  

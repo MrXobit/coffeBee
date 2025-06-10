@@ -29,7 +29,7 @@ const AdminNetwork = ({setChoice, setSuperAdmin}) => {
           ...cafeData
         }) 
         
-        const networkRef = doc(db, 'networks', cafeData.network.name)
+        const networkRef = doc(db, 'coffeeChain', cafeData.network.name)
         const networkSnap = await getDoc(networkRef)
         const networkData = networkSnap.data()
         setNetworkData(networkData)
@@ -66,7 +66,7 @@ const AdminNetwork = ({setChoice, setSuperAdmin}) => {
   const handleRemoveNet = async() => {
     setLocalLoading({disabled: true, mot: 1})
     try {
-      const networkRef = doc(db, "networks", networkData.name);
+      const networkRef = doc(db, "coffeeChain", networkData.name);
 
       for (let i = 0; i < networkData.cafeIds.length; i++) {
         const cafeRef = doc(db, "cafe", networkData.cafeIds[i]);
@@ -79,6 +79,28 @@ const AdminNetwork = ({setChoice, setSuperAdmin}) => {
         const filteredRequests = cafeData.networkRequests?.filter(
           (req) => req.name !== networkData.name
         ) || [];
+
+
+         for(let i = 0; i < networkData.requestsCafes.length; i++) {
+                    const cafeRef = doc(db, "cafe", networkData.requestsCafes[i]);
+                    const cafeSnap = await getDoc(cafeRef);
+              
+                    if (!cafeSnap.exists()) continue;
+              
+                    const cafeData = cafeSnap.data();
+        
+                    if (Array.isArray(cafeData.networkRequests)) {
+                      const updatedRequests = cafeData.networkRequests.filter(
+                        (req) => req.name !== networkData.name
+                      );
+                  
+                     
+                      await updateDoc(cafeRef, {
+                        networkRequests: updatedRequests,
+                      });
+                    }
+                  }
+
   
         await updateDoc(cafeRef, {
           network: {}, 
@@ -157,7 +179,7 @@ const AdminNetwork = ({setChoice, setSuperAdmin}) => {
   <div key={roaster.id} to={`/cafe-info/${roaster.id}`} >
     <div className="AdminNetwork-card-con">
       <img
-        src={roaster.icon}
+        src={Object.values(roaster.adminData.photos)[0]}
         alt="Roaster Logo"
         className="AdminNetwork-card-img"
       />

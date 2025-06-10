@@ -3,7 +3,7 @@ import './ModerationBeans.css'
 import Loader from '../../loader/Loader'
 import axios from 'axios'
 import { db } from '../../../firebase'
-import { doc, updateDoc } from 'firebase/firestore'
+import { collection, doc, getDoc, getDocs, updateDoc } from 'firebase/firestore'
 
 const ModerationBeans = () => {
 
@@ -57,6 +57,11 @@ const ModerationBeans = () => {
            setLocalLoading({id: '', loading: false})
         }
     }
+
+    
+ 
+
+
 
   return (
     <div className='ModerationBeans-con'>

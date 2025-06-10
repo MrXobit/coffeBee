@@ -7,6 +7,8 @@ import './CafeInfo.css'
 import axios from 'axios';
 import { deleteObject, ref } from 'firebase/storage';
 import Loader from '../../../loader/Loader';
+import close from '../../../../assets/close.png';
+import threeDots from '../../../../assets/threeDots.png'
 const CafeInfo = () => {
     const navigate = useNavigate()
     const { id } = useParams(); 
@@ -14,6 +16,9 @@ const CafeInfo = () => {
     const [beans, setBeans] = useState()
     const [loading, setLoading] = useState(false)
     const [findData, setFindData] = useState(false)
+    const [modal, setModal] = useState(false); 
+    const [localLoading2, setLocalLoading2] = useState({disabled: false, mot: 0})
+
     const [localLoading, setLocalLoading] = useState(false)
     useEffect(() => {
       loadData()
@@ -131,6 +136,55 @@ const handleEditCafeInfo = () => {
   });
 }
 
+
+const handleModalClose = () => {
+  setModal(false); 
+};
+
+const handleModalOpen = () => {
+  setModal(true)
+}
+
+
+const handleDeleteCafe = async () => {
+  setLocalLoading2({disabled: true, mot: 1});
+  try {
+  
+    const cafeRef = doc(db, 'cafe' ,cafe.id)
+    const docSnap = await getDoc(cafeRef);
+
+    const data = docSnap.data();
+
+    if (data?.network?.name){
+      const netRef = doc(db, 'coffeeChain', data.network.name);
+      const netDoc = await getDoc(netRef);
+      
+      if (netDoc.exists()) {
+        const netData = netDoc.data();
+        let cafeIds = netData.cafeIds || []; 
+        
+       
+        cafeIds = cafeIds.filter(id => id !== cafe.id);
+        
+        
+        await updateDoc(netRef, {
+          cafeIds: cafeIds
+        });
+      }
+    }
+    await deleteDoc(cafeRef)
+
+    const imagePath = `cafe/${cafe.id}/photos/cafe`;
+    const imageRef = ref(storage, imagePath);
+    await deleteObject(imageRef);
+    navigate('/super-admin')
+  } catch (e) {
+    console.log(e);
+  } finally {
+    setLocalLoading2({disabled: false, mot: 0});
+  }
+};
+
     
 // стилі з CafeBeans частично
   return (
@@ -140,11 +194,37 @@ const handleEditCafeInfo = () => {
       ) : findData ? (
           
          <div className='cafeInfoAdmin-con'>
-            <div className="cafeIngoAdmin-name">{cafe.name}</div>
-            <img src={cafe.icon} alt="cafe icon" className="cafeIngoAdmin-img" />
-            <div className="cafeInfoAdmin-locations">{cafe.vicinity}</div>
-            <button className='cafeInfoAdmin-editcafe' onClick={handleEditCafeInfo}>Edit Admin Data</button>
 
+
+
+
+<div className='AdminNetwork-main-con-forMod'>
+   <img className={`beanmain-three-dots ${modal ? 'beans-main-modal-none' : ''}`} 
+       src={threeDots} alt="threeDots" 
+      onClick={() => handleModalOpen()} 
+      />
+
+   <div className={`beans-main-modalWindow-con ${modal ? 'beans-main-modal-show' : ''}`}>
+          <img className='beans-main-modal-close' src={close} alt="" onClick={handleModalClose} />
+        {modal && (
+             <div>
+             <button disabled={localLoading2.disabled} onClick={handleDeleteCafe} className='AdminNetwork-leave-net'>
+             {(localLoading2.disabled && localLoading2.mot === 1) ? "loading..." : "Remove Caffe"} 
+              </button>  
+              <button className='cafeInfoAdmin-editcafe' onClick={handleEditCafeInfo}>Edit Admin Data</button>
+
+         </div>
+        )}
+       </div>
+
+     </div>
+
+
+
+            <div className="cafeIngoAdmin-name">{cafe.name}</div>
+            <img  src={Object.values(cafe.adminData.photos)[0]} alt="cafe icon" className="cafeIngoAdmin-img" />
+            <div className="cafeInfoAdmin-locations">{cafe.vicinity}</div>
+         
             {localLoading ? (
                <Loader />
             ) : (

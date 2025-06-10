@@ -17,7 +17,7 @@ const AdminNetworkRequests = ({setNetworkData, networkName, setCafeData}) => {
   const loadData = async () => {
     setLoading(true);
     try {
-      const networkSnap = await getDoc(doc(db, 'networks', networkName));
+      const networkSnap = await getDoc(doc(db, 'coffeeChain', networkName));
       
       if (!networkSnap.exists()) {
         console.log("Network not found");
@@ -52,7 +52,7 @@ const AdminNetworkRequests = ({setNetworkData, networkName, setCafeData}) => {
     SetLoacalLoading({disabled: true, cafeId: cafeId, met: 1})
     try {
  
-      const networkRef = doc(db, 'networks', networkName)
+      const networkRef = doc(db, 'coffeeChain', networkName)
       await updateDoc(networkRef, {
         requestsCafes: arrayRemove(cafeId)
       });
@@ -89,7 +89,7 @@ const AdminNetworkRequests = ({setNetworkData, networkName, setCafeData}) => {
   const handleAplly =async (cafeId) => {
     SetLoacalLoading({disabled: true, cafeId: cafeId, met: 2})
     try {
-        const networkRef = doc(db, 'networks', networkName)
+        const networkRef = doc(db, 'coffeeChain', networkName)
         
 
         const cafeRef = doc(db, "cafe", cafeId);
@@ -147,7 +147,7 @@ const AdminNetworkRequests = ({setNetworkData, networkName, setCafeData}) => {
           <div  key={roaster.id}>
             <div className="activeRoasters-card-con">
               <img
-                src={roaster.icon}
+                src={Object.values(roaster.adminData.photos)[0]}
                 alt="Roaster Logo"
                 className="activeRoasters-card-img"
               />

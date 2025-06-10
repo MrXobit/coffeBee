@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "coffee-bee"
-  }
+    "default": "coffee-bee",
+    "coffee-bee": "coffee-bee"
+  },
+  "targets": {},
+  "etags": {}
 }

@@ -14,7 +14,7 @@ const NetworkAddCoffeForNet = ({networkName, setNetworkKafes}) => {
         const [roasters, setRoasters] = useState([]);
         const [loading, setLoading] = useState(false);
         const [success, setSuccess] = useState(false);
-        const [localLoading, setLocalLoading] = useState(false)
+        const [localLoading, setLocalLoading] = useState({loading: false, cafeId: null})
 
   const notifySuccess = (message) => toast.success(message);
   const notifyError = (message) => toast.error(message);
@@ -56,9 +56,9 @@ const NetworkAddCoffeForNet = ({networkName, setNetworkKafes}) => {
     
 
       const handleAdd = async(cafeId) => {
-        setLocalLoading(true)
+        setLocalLoading({loading: true, cafeId: cafeId})
         try {
-          const networkRef = doc(db, 'networks', networkName)
+          const networkRef = doc(db, 'coffeeChain', networkName)
         
 
           const cafeRef = doc(db, "cafe", cafeId);
@@ -89,7 +89,7 @@ const NetworkAddCoffeForNet = ({networkName, setNetworkKafes}) => {
           console.log(e)
           notifyError('Something went wrong. Please try again later.');
         }finally {
-          setLocalLoading(false)
+          setLocalLoading({loading: false, cafeId: null})
         }
       }
 
@@ -121,7 +121,7 @@ const NetworkAddCoffeForNet = ({networkName, setNetworkKafes}) => {
                 <Link key={roaster.id}>
                   <div className="activeRoasters-card-con">
                     <img
-                      src={roaster.icon}
+                      src={Object.values(roaster.adminData.photos)[0]}
                       alt="Roaster Logo"
                       className="activeRoasters-card-img"
                     />
@@ -133,9 +133,9 @@ const NetworkAddCoffeForNet = ({networkName, setNetworkKafes}) => {
                       {roaster?.network?.name ? (
                        <div className='NetworkAddCoffeForNet-olredyIs'>This cafe is already in the network: <span>{roaster.network.name}</span></div>
                       ) : (
-                        <button disabled={localLoading} className='NetworkAddCoffeForNet-addCafe-forNet' 
+                        <button disabled={localLoading.loading && localLoading.cafeId === roaster.id} className='NetworkAddCoffeForNet-addCafe-forNet' 
                         onClick={() => handleAdd(roaster.id)}>
-                          {localLoading ? "loading..." : "Add Cafe to Network"}</button>
+                          {(localLoading.loading && localLoading.cafeId === roaster.id) ? "loading..." : "Add Cafe to Network"}</button>
                       )}
                   
                     </div>

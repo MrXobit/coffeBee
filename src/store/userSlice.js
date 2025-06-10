@@ -27,7 +27,6 @@ export const loginUser = createAsyncThunk(
       const user = userCredential.user;
       const token = await user.getIdToken();
       localStorage.setItem('token', token);
-      console.log(token)
       return { 
         uid: user.uid, 
         email: user.email
@@ -85,6 +84,7 @@ export const checkAuthStatus = createAsyncThunk(
 
       const token = await user.getIdToken(true);
       localStorage.setItem('token', token);
+     
 
       const userRef = doc(db, 'users', user.uid);
       const snapshot = await getDoc(userRef);

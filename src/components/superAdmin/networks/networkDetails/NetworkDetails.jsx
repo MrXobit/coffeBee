@@ -51,7 +51,7 @@ const NetworkDetails = () => {
                 setAccses(true)
 
                        
-                       const networkRef = doc(db, 'networks', id)
+                       const networkRef = doc(db, 'coffeeChain', id)
                        const networkSnap = await getDoc(networkRef)
                        const networkData = networkSnap.data()
                        setNetworkData(networkData)
@@ -118,7 +118,7 @@ const NetworkDetails = () => {
             return;
           }
       
-          const networkRef = doc(db, "networks", id);
+          const networkRef = doc(db, "coffeeChain", id);
       
           for (let i = 0; i < networkData.cafeIds.length; i++) {
             const cafeRef = doc(db, "cafe", networkData.cafeIds[i]);
@@ -137,6 +137,29 @@ const NetworkDetails = () => {
               networkRequests: filteredRequests
             });
           }
+
+
+          for(let i = 0; i < networkData.requestsCafes.length; i++) {
+            const cafeRef = doc(db, "cafe", networkData.requestsCafes[i]);
+            const cafeSnap = await getDoc(cafeRef);
+      
+            if (!cafeSnap.exists()) continue;
+      
+            const cafeData = cafeSnap.data();
+
+            if (Array.isArray(cafeData.networkRequests)) {
+              const updatedRequests = cafeData.networkRequests.filter(
+                (req) => req.name !== networkData.name
+              );
+          
+             
+              await updateDoc(cafeRef, {
+                networkRequests: updatedRequests,
+              });
+            }
+          }
+
+
       
           await deleteDoc(networkRef);
       
@@ -173,7 +196,7 @@ const NetworkDetails = () => {
           const cafeSnap = await getDoc(cafeRef);
           const cafeData = cafeSnap.data();
       
-          // Перевіряємо, чи існує поле networkRequests, якщо ні, то використовуємо порожній масив
+        
           const cafeDataNetReq = Array.isArray(cafeData.networkRequests) 
             ? cafeData.networkRequests.filter(req => req.name !== cafeData.network?.name) 
             : [];
@@ -183,7 +206,7 @@ const NetworkDetails = () => {
             networkRequests: cafeDataNetReq
           });
       
-          const networkRef = doc(db, "networks", cafeData.network.name);
+          const networkRef = doc(db, "coffeeChain", cafeData.network.name);
       
           await updateDoc(networkRef, {
             cafeIds: arrayRemove(cafe.id)
@@ -231,8 +254,33 @@ const NetworkDetails = () => {
   ) : (
     <>
       {Array.isArray(networkKafes) && networkKafes.map((roaster) => (
-        <div key={roaster.name}>
-          <div className='AdminNetwork-main-con-forMod'>
+        <div key={roaster.id}>
+          <div to={`/cafe-info/${roaster.id}`}>
+            <div className="AdminNetwork-card-con">
+              <img
+                // src={roaster.icon}
+                src={Object.values(roaster.adminData.photos)[0]}
+                alt="Roaster Logo"
+                className="AdminNetwork-card-img"
+              />
+              {roaster.id === networkData.creatorId && <div className="AdminNetwork-card-creator">Creator</div>}
+              <div className="AdminNetwork-card-name">{roaster.name}</div>
+              <div className="AdminNetwork-card-description">
+                {roaster.vicinity}
+              </div>
+              <p className="NetworkDetails-removeBy-net" onClick={() => handleRemove(roaster)}>
+                {(localLoading.disabled && localLoading.mot === 2) ? "loading..." : "Remove"}
+              </p>
+            </div>
+          </div>
+        </div>
+      ))}
+    </>
+  )}
+
+
+
+<div className='AdminNetwork-main-con-forMod'>
             <img 
               className={`beanmain-three-dots ${modal ? 'beans-main-modal-none' : ''}`} 
               src={threeDots} 
@@ -260,27 +308,7 @@ const NetworkDetails = () => {
             </div>
           </div>
 
-          <div to={`/cafe-info/${roaster.id}`}>
-            <div className="AdminNetwork-card-con">
-              <img
-                src={roaster.icon}
-                alt="Roaster Logo"
-                className="AdminNetwork-card-img"
-              />
-              {roaster.id === networkData.creatorId && <div className="AdminNetwork-card-creator">Creator</div>}
-              <div className="AdminNetwork-card-name">{roaster.name}</div>
-              <div className="AdminNetwork-card-description">
-                {roaster.vicinity}
-              </div>
-              <p className="NetworkDetails-removeBy-net" onClick={() => handleRemove(roaster)}>
-                {(localLoading.disabled && localLoading.mot === 2) ? "loading..." : "Remove"}
-              </p>
-            </div>
-          </div>
-        </div>
-      ))}
-    </>
-  )}
+
  
 </div>
           </>

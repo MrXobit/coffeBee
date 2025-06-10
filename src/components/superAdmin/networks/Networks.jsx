@@ -5,6 +5,7 @@ import bluePlus from '../../../assets/blue-plus.png';
 import Loader from '../../loader/Loader';
 import axios from 'axios';
 import debounce from 'lodash.debounce';
+import NetworkAutoAssign from './networkAutoAssign/NetworkAutoAssign';
 
 const Networks = () => {
   const [networks, setNetworks] = useState([]);
@@ -79,8 +80,8 @@ const Networks = () => {
   };
 
   const renderPaginationButtons = () => {
-    if(networks.length < 10) {
-       return
+    if (totalPages <= 1) {
+      return null; // Якщо сторінок 1 або менше — не показуємо пагінацію
     }
     const pages = [];
     let startPage = Math.max(1, currentPage - 2);
@@ -153,6 +154,8 @@ const Networks = () => {
   return (
     <div className="Networks-con">
       <h1 className="networks-mainTitle">Networks</h1>
+
+      <NetworkAutoAssign loadData={loadData}/>
 
       <Link to="/add-network" className="Networks-add-new-cafe-pass-con">
         <div className="Networks-block-for-cafe-pass-img-plus">

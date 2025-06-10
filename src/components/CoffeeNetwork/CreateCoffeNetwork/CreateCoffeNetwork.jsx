@@ -24,7 +24,7 @@ const CreateCoffeNetwork = ({setChoice, setSuperAdmin}) => {
             return
         }
         try {
-            const networkRef = doc(db, 'networks', name); 
+            const networkRef = doc(db, 'coffeeChain', name); 
             const networkDoc = await getDoc(networkRef);
             if(networkDoc.exists()) {
                 notifyError(`A network with this name already exists`);

@@ -31,7 +31,7 @@ const AdminNetworkMember = ({setChoice, setJustMember}) => {
           ...cafeData
         }) 
         
-        const networkRef = doc(db, 'networks', cafeData.network.name)
+        const networkRef = doc(db, 'coffeeChain', cafeData.network.name)
         const networkSnap = await getDoc(networkRef)
         const networkData = networkSnap.data()
         setNetworkData(networkData)
@@ -79,7 +79,7 @@ const AdminNetworkMember = ({setChoice, setJustMember}) => {
         })
 
 
-        const networkRef = doc(db, "networks", cafeData.network.name)
+        const networkRef = doc(db, "coffeeChain", cafeData.network.name)
 
         updateDoc(networkRef, {
            cafeIds: arrayRemove(selectedCafe.id)
@@ -133,7 +133,8 @@ const AdminNetworkMember = ({setChoice, setJustMember}) => {
 <div key={roaster.id} to={`/cafe-info/${roaster.id}`} >
 <div className="AdminNetwork-card-con">
  <img
-   src={roaster.icon}
+  //  src={roaster.icon}
+   src={Object.values(roaster.adminData.photos)[0]}
    alt="Roaster Logo"
    className="AdminNetwork-card-img"
  />

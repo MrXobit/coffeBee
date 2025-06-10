@@ -67,6 +67,7 @@ const handleSearch = debounce(async(e) => {
        const response = await axios.post('https://us-central1-coffee-bee.cloudfunctions.net/getNetworkByInput', {
         networkName: e.target.value,
        })
+       console.log(response.data)
        if(Array.isArray(response.data) && response.data.length === 0) {
         setSuccess(true)
         setNetwork([]);
@@ -126,7 +127,7 @@ const handleSendJoinRequest = async(name) => {
     }
 
 
-    const networkRef = doc(db, 'networks', name);
+    const networkRef = doc(db, 'coffeeChain', name);
 
 
     await updateDoc(networkRef, {

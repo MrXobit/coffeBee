@@ -1,233 +1,332 @@
-import React, { useEffect, useState } from 'react';
-import './Cafes.css'
+import React, { useEffect, useRef, useState } from 'react';
+import './Cafes.css';
 import bluePlus from '../../../assets/blue-plus.png';
 import { Link, useNavigate } from 'react-router-dom';
-import debounce from 'lodash.debounce'; 
+import debounce from 'lodash.debounce';
 import axios from 'axios';
 import Loader from '../../loader/Loader';
 import { db, storage } from '../../../firebase';
 import { deleteDoc, doc } from 'firebase/firestore';
 import { deleteObject, listAll, ref } from 'firebase/storage';
-// стилі взяв з roasters.css
+import { countrysArray } from './country';
+import noImage from '../../../assets/noImage.jpeg';
 
 const Cafes = () => {
-    const [roasters, setRoasters] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [success, setSuccess] = useState(false);
-    const [count, setCount] = useState(10);
-    const [currentPage, setCurrentPage] = useState(1); 
-    const [totalPages, setTotalPages] = useState(1); 
-    const [searchActiva, setSearchActive] = useState(false)
-    const navigate = useNavigate()
-    const loadData = async () => {
-    
-      setSearchActive(false)
-      try {
-        const token = localStorage.getItem('token');
-        if (!token) {
-          throw new Error('Token is not available');
-        }
-         const response = await axios.post(
-          `https://us-central1-coffee-bee.cloudfunctions.net/getAllCoffe?count=${count}&offset=${(currentPage - 1) * count}`,
-          {},
-          {
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
-          }
-        );
-        
-  
-        setRoasters(response.data.roasters); 
-        setTotalPages(Math.ceil(response.data.totalCount / count)); 
-      } catch (e) {
-        console.log(e)
-      } finally {
-          setLoading(false);
+  const [roasters, setRoasters] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [count, setCount] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [searchActiva, setSearchActive] = useState(false);
+  const [activeFilter, setActiveFilter] = useState({ active: false, country: '' });
+  const [potentialInputValue, setPotentialInputValue] = useState([]);
+  const [inputState, setInputState] = useState('');
+
+  const navigate = useNavigate();
+  const controllerRef = useRef(null);
+
+  const loadData = async (num) => {
+    if (num !== 1) {
+      if (activeFilter.active && activeFilter.country.trim() !== '') {
+        return loadCafesByCountry(activeFilter.country);
       }
-    };
-  
-    
-    const handlePageChange = (page) => {
-      if (page < 1 || page > totalPages) return; 
-      setCurrentPage(page);
-    };
-  
-  
-  
-    const handleSearch = debounce(async (e) => {
-  
-      setSuccess(false);
-      setRoasters([])
-      setSearchActive(true)
-      if (!e.target.value.trim()) {
-  
-        loadData();
-        return;
+    }
+
+    setSearchActive(false);
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) throw new Error('Token is not available');
+
+      const response = await axios.post(
+        `https://us-central1-coffee-bee.cloudfunctions.net/getAllCoffe?count=${count}&offset=${(currentPage - 1) * count}`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      setRoasters(response.data.roasters);
+      setTotalPages(Math.ceil(response.data.totalCount / count));
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePageChange = (page) => {
+    if (page < 1 || page > totalPages) return;
+    setCurrentPage(page);
+  };
+
+  const handleSearch = async (e) => {
+    const query = e.target.value.trim();
+    setInputState(query);
+    setSuccess(false);
+    setSearchActive(true);
+    setRoasters([]);
+
+    if (!query) {
+      loadData();
+      return;
+    }
+
+    if (controllerRef.current) {
+      controllerRef.current.abort();
+    }
+
+    const controller = new AbortController();
+    controllerRef.current = controller;
+
+    try {
+      const res = await axios.post(
+        'https://us-central1-coffee-bee.cloudfunctions.net/searchCafes',
+        { coffeName: query, country: activeFilter.country },
+        { signal: controller.signal }
+      );
+
+      if (Array.isArray(res.data) && res.data.length === 0) {
+        setSuccess(true);
+        setRoasters([]);
+      } else {
+        setRoasters(res.data);
+        setSuccess(false);
       }
-      try {
-      
-  
-        const response = await axios.post('https://us-central1-coffee-bee.cloudfunctions.net/getCoffeByInput', {
-            coffeName: e.target.value,
-        });
-        
-        if (Array.isArray(response.data) && response.data.length === 0) {
-          setSuccess(true);
-          setRoasters([]);
-        } else {
-          setRoasters(response.data);
-          setSuccess(false);
-        }
-      } catch (error) {
-        console.log(error.response.data)
-      } finally {
+
+      setLoading(false);
+    } catch (err) {
+      if (axios.isCancel(err) || err.name === 'CanceledError' || err.code === 'ERR_CANCELED') {
+        console.log('🚫 Запит було скасовано');
+      } else {
+        console.error('🔥 ПОМИЛКА:', err.message);
         setLoading(false);
       }
-    }, 500);
-  
-    const handleSearchMain = (e) => {
+    }
+  };
+
+  const handleSearchMain = (e) => {
+    setInputState(e.target.value);
+
+    if (activeFilter.active && activeFilter.country.trim() !== '') {
       setLoading(true);
-      handleSearch(e);
-    };
-  
-    useEffect(() => {
-      setLoading(true);
-      loadData();
-    }, [currentPage, count]);
-  
-  
-    useEffect(() => {
-      if (currentPage > totalPages) {
-        setCurrentPage(totalPages); 
-      }
-    }, [totalPages]);
-  
+      return handleSearch(e);
+    }
 
-  
-    
+    if (activeFilter.active && activeFilter.country.trim() === '') {
+      const maxSuggestions = 5;
+      const countrys = [];
+      const value = e.target.value.trim();
 
+      if (value === '') {
+        setPotentialInputValue([]);
+        return;
+      }
 
-    const renderPaginationButtons = () => {
-   
-      const pages = [];
-      let startPage = Math.max(1, currentPage - 2);
-      let endPage = Math.min(totalPages, currentPage + 2);
-  
-      if (totalPages > 5) {
-        if (currentPage <= 3) endPage = 5;
-        else if (currentPage >= totalPages - 2) startPage = totalPages - 4;
+      for (let i = 0; i < countrysArray.length; i++) {
+        const country = countrysArray[i];
+        if (country.toLowerCase().startsWith(value.toLowerCase())) {
+          countrys.push(country);
+          if (countrys.length === maxSuggestions) break;
+        }
       }
-  
-      for (let i = startPage; i <= endPage; i++) {
-        pages.push(i);
-      }
-  
-  
-  
-  
-  
-      return (
-        <div className="beansMain-pagination-container">
-          <ul className="beansMain-pagination-list">
-            <li className="beansMain-pagination-item">
-              <a
-                href="#"
-                className="beansMain-pagination-link"
-                onClick={() => handlePageChange(currentPage - 1)}
-                disabled={currentPage === 1}
-              >
-                Prev
-              </a>
-            </li>
-  
-            {pages.map((page) => (
-              <li
-                key={page}
-                className={`beansMain-pagination-item ${currentPage === page ? 'beansMain-pagination-item-active' : ''}`}
-              >
-                <a
-                  href="#"
-                  className="beansMain-pagination-link"
-                  onClick={() => handlePageChange(page)}
-                >
-                  {page}
-                </a>
-              </li>
-            ))}
-  
-            <li className="beansMain-pagination-item">
-              <a
-                href="#"
-                className="beansMain-pagination-link"
-                onClick={() => handlePageChange(currentPage + 1)}
-                disabled={currentPage === totalPages}
-              >
-                Next
-              </a>
-            </li>
-          </ul>
-        </div>
+
+      setPotentialInputValue(countrys);
+      return;
+    }
+
+    setLoading(true);
+    handleSearch(e);
+  };
+
+  useEffect(() => {
+    setLoading(true);
+    loadData(2);
+  }, [currentPage, count]);
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [totalPages]);
+
+  const handleChoiceCountry = (country) => {
+    setPotentialInputValue([]);
+    setActiveFilter({ active: true, country });
+    setInputState('');
+    loadCafesByCountry(country);
+  };
+
+  const loadCafesByCountry = async (country) => {
+    setLoading(true);
+    setSearchActive(false);
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) throw new Error('Token is not available');
+
+      const response = await axios.post(
+        'https://us-central1-coffee-bee.cloudfunctions.net/getCafesByCountry',
+        {
+          country,
+          limitCount: count,
+          offset: (currentPage - 1) * count
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
       );
-    };
-  
+
+      setRoasters(response.data.cafes);
+      setTotalPages(Math.ceil(response.data.totalCount / count));
+    } catch (e) {
+      console.log(e.response?.data || e.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const btnChangeState = () => {
+    if (activeFilter.active) {
+      setActiveFilter({ active: false, country: '' });
+      setLoading(true);
+      loadData(1);
+    } else {
+      setActiveFilter({ active: true, country: '' });
+    }
+  };
+
+  const renderPaginationButtons = () => {
+    const pages = [];
+    let startPage = Math.max(1, currentPage - 2);
+    let endPage = Math.min(totalPages, currentPage + 2);
+
+    if (totalPages > 5) {
+      if (currentPage <= 3) endPage = 5;
+      else if (currentPage >= totalPages - 2) startPage = totalPages - 4;
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(i);
+    }
+
     return (
-      <div className='MainAdmin-roaster-page-con'>
-  
-        <h1 className="mainAdmin-roasters-main-title">Find Cafe</h1>
-  
+      <div className="beansMain-pagination-container">
+        <ul className="beansMain-pagination-list">
+          <li className="beansMain-pagination-item">
+            <a
+              href="#"
+              className="beansMain-pagination-link"
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              Prev
+            </a>
+          </li>
+
+          {pages.map((page) => (
+            <li
+              key={page}
+              className={`beansMain-pagination-item ${currentPage === page ? 'beansMain-pagination-item-active' : ''}`}
+            >
+              <a href="#" className="beansMain-pagination-link" onClick={() => handlePageChange(page)}>
+                {page}
+              </a>
+            </li>
+          ))}
+
+          <li className="beansMain-pagination-item">
+            <a
+              href="#"
+              className="beansMain-pagination-link"
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+            >
+              Next
+            </a>
+          </li>
+        </ul>
+      </div>
+    );
+  };
+
+  return (
+    <div className="MainAdmin-roaster-page-con">
+      <h1 className="mainAdmin-roasters-main-title">
+        Find Cafe {activeFilter.country && <span>on {activeFilter.country}</span>}
+      </h1>
+
+      <div className="mainAdmin-roasters-input-btn-con">
         <input
+          value={inputState}
           type="text"
           className="main-adminroasters-main-input-search"
           onChange={handleSearchMain}
-          placeholder='Search for roasters'
+          placeholder={
+            activeFilter.active
+              ? activeFilter.country
+                ? `Find a cafe in ${activeFilter.country}`
+                : 'Set a country to filter'
+              : 'Find cafes in all countries'
+          }
         />
-  
-  {loading ? (
-    <div className='roaster-con-forLoading'>
-      <Loader />
-    </div>
-  ) : roasters.length === 0 ? (
-    success ? (
-      <div className="roasters-notFound-results">
-        <p>No results. Please try another search</p>
-      </div>
-    ) : null
-  ) : (
-    <>
-      <div className="activeRoasters-maincard-for-cards">
-      {roasters.map((roaster, index) => (
-   <Link to={`/cafe-info/${roaster.id}`}>
-   <div key={roaster?.placeid} className="activeRoasters-card-con">
-     <img
-      src={Object.values(roaster.adminData.photos)[0]}
-       alt="Roaster Logo"
-       className="activeRoasters-card-img"
-     />
-     <div className="activeRoasters-card-name">{roaster.name}</div>
-     <div className="activeRoasters-card-description">
-       {roaster.vicinity}
-     </div>
-     <div className="activeRoastersAdmin-roaster-actions">
-    
-     </div>
-   </div>
- </Link>
- 
-       
-      ))}
-    </div>
-   {!searchActiva && !loading && renderPaginationButtons()}
-  
-    </>
-  
-  
-  )}
-  
-  
-      </div>
-    );
-  }
-  
-  export default Cafes;
 
+        <button
+          onClick={btnChangeState}
+          className={`mainAdmin-roasters-setFilter ${activeFilter.active ? 'mainAdmin-roasters-setFilterGreen' : ''}`}
+        >
+          Filter
+        </button>
+      </div>
+
+      {potentialInputValue.length > 0 && (
+        <div className="superAdmin-cafes-posibleVarients">
+          {potentialInputValue.map((countryy, index) => (
+            <div
+              key={index}
+              className="SuperAdmin-cafes-potentions-options"
+              onClick={() => handleChoiceCountry(countryy)}
+            >
+              {countryy}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {loading ? (
+        <div className="roaster-con-forLoading">
+          <Loader />
+        </div>
+      ) : roasters.length === 0 ? (
+        success && (
+          <div className="roasters-notFound-results">
+            <p>No results. Please try another search</p>
+          </div>
+        )
+      ) : (
+        <>
+          <div className="activeRoasters-maincard-for-cards">
+            {roasters.map((roaster) => (
+              <Link to={`/cafe-info/${roaster.id}`} key={roaster?.placeid}>
+                <div className="activeRoasters-card-con">
+                  <img
+                    src={
+                      roaster?.adminData?.photos && Object.values(roaster.adminData.photos).length > 0
+                        ? Object.values(roaster.adminData.photos)[0]
+                        : noImage
+                    }
+                    alt="Roaster Logo"
+                    className="activeRoasters-card-img"
+                  />
+                  <div className="activeRoasters-card-name">{roaster.name}</div>
+                  <div className="activeRoasters-card-description">
+                    {roaster.vicinity}, {roaster.city}, {roaster.country}
+                  </div>
+                  <div className="activeRoastersAdmin-roaster-actions"></div>
+                </div>
+              </Link>
+            ))}
+          </div>
+          {!searchActiva && !loading && renderPaginationButtons()}
+        </>
+      )}
+    </div>
+  );
+};
+
+export default Cafes;
