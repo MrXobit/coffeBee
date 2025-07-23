@@ -1,0 +1,113 @@
+.ProductDetailsRo-wrapper {
+    
+    padding: 40px 30px;
+    max-width: 900px;
+    margin: 30px auto;
+    background: linear-gradient(135deg, #f0f4ff, #d9e2ff);
+    border-radius: 24px;
+    box-shadow: 0 15px 35px rgba(31, 45, 80, 0.15);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #2a2a2a;
+  }
+  
+  .ProductDetailsRo-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #1a237e;
+    text-align: center;
+    margin-bottom: 30px;
+    text-shadow: 0 1px 3px rgba(26, 35, 126, 0.3);
+    letter-spacing: 0.04em;
+  }
+  
+  .ProductDetailsRo-image {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 0 auto 30px auto;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(31, 45, 80, 0.15);
+  }
+  
+  .ProductDetailsRo-field {
+    font-size: 16.5px;
+    line-height: 1.55;
+    margin: 8px 0;
+    color: #3c3c3c;
+    user-select: text;
+  }
+  
+  .ProductDetailsRo-field strong {
+    color: #1a237e;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+  }
+  
+  .ProductDetailsRo-priceList {
+    margin: 15px 0 25px 20px;
+    list-style-type: disc;
+    color: #2a2a2a;
+  }
+  
+  .ProductDetailsRo-priceItem {
+    margin-bottom: 8px;
+    font-size: 16px;
+    line-height: 1.4;
+  }
+  
+  .ProductDetailsRo-link {
+    text-align: center;
+    margin-top: 30px;
+  }
+  
+  .ProductDetailsRo-link a {
+    color: #1a237e;
+    font-weight: 700;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  
+  .ProductDetailsRo-link a:hover,
+  .ProductDetailsRo-link a:focus {
+    color: #0d1456;
+    text-decoration: underline;
+  }
+  
+  /* Адаптивність */
+  @media (max-width: 600px) {
+    .ProductDetailsRo-wrapper {
+      padding: 25px 15px;
+      margin: 20px 10px;
+    }
+  
+    .ProductDetailsRo-title {
+      font-size: 22px;
+    }
+  
+    .ProductDetailsRo-field {
+      font-size: 14.5px;
+    }
+  
+    .ProductDetailsRo-priceItem {
+      font-size: 14px;
+    }
+  }
+  
+
+
+  .ProductDetailsRo-back {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    width: 34px;
+    height: 34px;
+    cursor: pointer;
+    z-index: 10;
+    user-select: none;
+    transition: transform 0.2s ease;
+  }
+  
+  .ProductDetailsRo-back:hover {
+    transform: scale(1.1);
+  }
+  

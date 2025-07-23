@@ -8,9 +8,9 @@ import { BsDiscord } from 'react-icons/bs';
 import { FaTelegram } from "react-icons/fa";
 import { RiWechatFill } from 'react-icons/ri';
 import { db} from '../../../firebase'; 
-import { arrayRemove, doc, getDoc, updateDoc} from 'firebase/firestore';
+import { arrayRemove, collection, doc, getDoc, getDocs, query, updateDoc, where} from 'firebase/firestore';
 import Loader from '../../loader/Loader';
-import CircleCheckbox from '../../../utils/CircleCheckbox';
+import noImage from '../../../assets/noImage.jpeg'
 
 const RoasteryDetails = () => {
       const {id} = useParams()
@@ -21,6 +21,8 @@ const RoasteryDetails = () => {
       const [isEmpty, setIsEmpty] = useState(true)
       const [loadingBeans, setLoadingBeans] = useState({});
       const roaster = location.state?.roaster;
+      const [beansImages, setBeansImages] = useState({});
+
 
       const popularSocials = {
         'facebook': <AiFillFacebook size={24}/>,
@@ -41,13 +43,30 @@ const RoasteryDetails = () => {
         try {
           const selectedCafe = JSON.parse(localStorage.getItem('selectedCafe'));
           const beanDataArray = [];
-           for(let i = 0; i < roaster.beansId.length; i++) {
-             const beanRef = doc(db, 'beans', roaster.beansId[i])
-             const beanDoc = await getDoc(beanRef)
-             if (beanDoc.exists()) {
-              beanDataArray.push(beanDoc.data()); 
+
+          const productsRef = collection(db, 'roasters', roaster.id, 'products'); 
+          const snapshot = await getDocs(productsRef);
+          const result = {};
+
+          snapshot.forEach(doc => {
+            const data = doc.data();
+            if (data.beansId && data.pack_image_url) {
+              result[data.beansId] = data.pack_image_url;
             }
-           }
+          });
+  
+          setBeansImages(result);
+      
+          console.log('resultttttttt', result)
+          const beansQuery = query(
+            collection(db, 'beans'),
+            where('roaster', '==', roaster.id)
+          )
+
+          const querySnapshot = await getDocs(beansQuery)
+          querySnapshot.forEach((doc) => {
+            beanDataArray.push({ id: doc.id, ...doc.data() });
+          })
 
            if(!selectedCafe.roasterBeans) {
             setIsEmpty(false)
@@ -188,7 +207,7 @@ const RoasteryDetails = () => {
     };
     
     
-    
+
     
 
   return (
@@ -222,7 +241,7 @@ const RoasteryDetails = () => {
           {beans?.length > 0 ? (
           beans.map((bean) => (
             <div key={bean.id} className='roasterDetail-main-main-card-block'>
-              <img src={bean.imageUrl} alt={bean.name} className="roasterDetail-image-card" />
+              <img src={beansImages[bean.id]|| noImage} alt={bean.name} className="roasterDetail-image-card" />
               <div className="roasterDetail-main-con-for-cards">
                 <div className="roasterDetail-details-card">
                   <h2 className="roasterDetail-name-card">{bean.name}</h2>
@@ -234,8 +253,6 @@ const RoasteryDetails = () => {
                   <p className="roasterDetail-variety-card">Variety: {bean.variety}</p>
                   <p className="roasterDetail-harvest-year-card">Harvest Year: {bean.harvestYear}</p>
                   <p className="roasterDetail-producer-card">Producer: {bean.producer}</p>
-                  <p className="roasterDetail-roaster-card heavy-text">Roaster: {bean.roaster}</p>
-                  <p className="roasterDetail-roasting-card">Roasting: {bean.roasting}</p>
                   {cafeRoaster.includes(bean.id) ? (
   <button 
     onClick={() => handleDelete(bean.id)} 

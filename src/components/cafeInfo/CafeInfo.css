@@ -94,3 +94,99 @@
 .update-btn-adress {
   margin-top: 10px;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Google Map Info Block */
+.google-map-data-block {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  margin-top: 30px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.cafe-name,
+.cafe-website,
+.cafe-address {
+  font-size: 1.1rem;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.cafe-website a {
+  color: #007bff;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.cafe-website a:hover {
+  color: #0056b3;
+  text-decoration: underline;
+}
+
+/* Робочі години */
+.working-hours-block {
+  margin-top: 20px;
+}
+
+.working-hours-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #444;
+  margin-bottom: 10px;
+}
+
+.working-hours-list {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.working-hours-item {
+  padding: 6px 10px;
+  margin-bottom: 6px;
+  border-radius: 5px;
+  background-color: #f1f1f1;
+  color: #333;
+  font-size: 0.95rem;
+}
+
+.working-hours-empty {
+  color: #888;
+  font-style: italic;
+  font-size: 0.95rem;
+}
+
+/* Кнопка оновлення Google Maps */
+.update-google-data-btn {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: 600;
+  background: linear-gradient(135deg, #28a745, #218838); /* Зелений градієнт */
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.update-google-data-btn:hover {
+  background: linear-gradient(135deg, #218838, #1e7e34);
+  transform: translateY(-1px);
+}

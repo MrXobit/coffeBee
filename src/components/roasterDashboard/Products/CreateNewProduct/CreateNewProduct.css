@@ -1,0 +1,297 @@
+/* Wrapper and General Styles */
+.CreateProduct-wrapper {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 30px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  font-family: 'Segoe UI', sans-serif;
+  color: #333;
+}
+
+.CreateProduct-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.CreateProduct-subtitle {
+  font-size: 1rem;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+/* Beans Scroll Area */
+.CreateProduct-beansScrollable {
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+  margin-bottom: 25px;
+}
+
+.CreateProduct-beansGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 15px;
+}
+
+.CreateProduct-beanCard {
+  background-color: #fff;
+  padding: 12px;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.CreateProduct-beanCard.selected {
+  border-color: #4caf50;
+  background-color: #e8f5e9;
+}
+
+.CreateProduct-beanCard p {
+  margin: 5px 0;
+  font-size: 0.9rem;
+  color: #444;
+}
+
+/* Add Prices Button */
+.CreateProduct-addPricesBtn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: #4caf50;
+  color: #fff;
+  padding: 12px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-bottom: 20px;
+  transition: background-color 0.3s ease;
+}
+
+.CreateProduct-addPricesBtn:hover {
+  background-color: #43a047;
+}
+
+.CreateProduct-addPricesIcon {
+  width: 24px;
+  height: 24px;
+}
+
+.CreateProduct-addPricesTitle {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+/* Prices List */
+.CreateProduct-pricesList {
+  background: #f1f8e9;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 30px;
+}
+
+.CreateProduct-pricesTitle {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.CreateProduct-pricesUl {
+  list-style: none;
+  padding-left: 0;
+}
+
+.CreateProduct-priceItem {
+  padding: 8px 0;
+  border-bottom: 1px solid #c5e1a5;
+  font-size: 0.95rem;
+  color: #333;
+}
+
+/* Modal Form */
+.CreateProduct-modal {
+  margin-bottom: 20px;
+  min-width: 100%;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+}
+
+.CreateProduct-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.CreateProduct-label {
+  display: flex;
+  flex-direction: column;
+  font-weight: 600;
+  color: #555;
+}
+
+.CreateProduct-input {
+  margin-top: 6px;
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  transition: border-color 0.2s ease;
+}
+
+.CreateProduct-input:focus {
+  border-color: #4caf50;
+  outline: none;
+}
+
+.CreateProduct-saveBtn {
+  padding: 12px;
+  background-color: #4caf50;
+  color: #fff;
+  font-weight: 700;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.CreateProduct-saveBtn:hover {
+  background-color: #388e3c;
+}
+
+.CreateProduct-modalClose {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  align-self: flex-end;
+}
+
+
+.CreateProduct-pricesUl {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.CreateProduct-priceItemWrapper {
+  position: relative;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 12px;
+}
+
+.CreateProduct-imgPrices {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.2s ease;
+}
+
+.CreateProduct-imgPrices:hover {
+  opacity: 1;
+}
+
+.CreateProduct-priceItem {
+  font-size: 15px;
+  color: #333;
+}
+
+
+.CreateProduct-select {
+  width: 100%;
+  padding: 8px;
+  margin-top: 4px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  background-color: #fff;
+  color: #333;
+  transition: border-color 0.2s;
+}
+
+.CreateProduct-select:focus {
+  outline: none;
+  border-color: #888;
+}
+
+
+.CreateProduct-addPricesBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  padding: 12px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+
+.CreateProduct-addPricesTitle {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.CreateProduct-addPricesIcon {
+  width: 20px;
+  height: 20px;
+}
+
+
+.CreateProduct-activeModalCon {
+  width: 100%;
+display: flex;
+align-items: center;
+justify-content: center;
+}
+
+
+
+
+.AddProduct-btnWrapper {
+  opacity: 0;
+  transform: scale(0.95);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  pointer-events: none; /* щоб не клікався */
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.AddProduct-btnWrapper.visible {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
+}
+
+.AddProduct-btnSave {
+  background-color: #4CAF50;
+  color: white;
+  font-size: 16px;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.AddProduct-btnSave:hover {
+  background-color: #45a049;
+}

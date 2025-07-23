@@ -1,0 +1,559 @@
+.roasterInfo-mainContainer {
+    padding: 40px 20px;
+    display: flex;
+    justify-content: center;
+    background-color: #fefefe;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  .roasterInfo-con {
+    max-width: 900px;
+    width: 100%;
+    background-color: #ffffff;
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+  }
+  
+  /* ---------------------- ЛОГОТИП ---------------------- */
+  
+  .roasterImg-roasterImg-block {
+    margin: 0 auto 15px auto;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    width: 120px;
+    height: 120px;
+    cursor: pointer;
+  }
+  
+  .roasterInfo-roasterLogo {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+    border-radius: 50%;
+    border: 2px solid #e0e0e0;
+    display: block;
+  }
+  
+  .roasterInfo-roasterLogoEditImg {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 30px;
+    height: 30px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 5px rgba(0,0,0,0.15);
+    transition: transform 0.3s ease;
+  }
+  
+  .roasterInfo-roasterLogoEditImg img {
+    width: 18px;
+    height: 18px;
+    pointer-events: none;
+  }
+  
+  .roasterImg-roasterImg-block:hover .roasterInfo-roasterLogoEditImg {
+    transform: scale(1.2);
+  }
+  
+  /* ---------------------- НАЗВА ---------------------- */
+  
+  .roasterInfo-roasterName-block {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    max-width: 300px;
+    margin: 0 auto 10px auto;
+  }
+  
+  .roasterInfo-roasterName {
+    font-size: 32px;
+    font-weight: 700;
+    color: #333;
+  }
+  
+  .roasterInfo-roasterName-block img {
+    width: 22px;
+    height: 22px;
+    cursor: pointer;
+    transition: transform 0.2s ease, filter 0.2s ease;
+  }
+  
+  .roasterInfo-roasterName-block img:hover,
+  .roasterInfo-roasterName-block img:focus {
+    transform: scale(1.2);
+    filter: brightness(1.2);
+  }
+  
+  /* ---------------------- КРАЇНА ---------------------- */
+  
+  .roasterCountry-roasterCountry-block {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    max-width: 300px;
+    margin: 10px auto 30px auto;
+  }
+  
+  .roasterInfo-roasterCountry {
+    font-size: 18px;
+    font-weight: 600;
+    user-select: none;
+    color: #222;
+  }
+  
+  .roasterCountry-roasterCountry-block img {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    transition: transform 0.2s ease, filter 0.2s ease;
+  }
+  
+  .roasterCountry-roasterCountry-block img:hover,
+  .roasterCountry-roasterCountry-block img:focus {
+    transform: scale(1.2);
+    filter: brightness(1.2);
+  }
+  
+  /* ---------------------- ОПИС ---------------------- */
+  
+  .roasterInfo-roasterDescription-block {
+    position: relative;
+    overflow: visible;
+    max-width: 600px;
+    margin: 0 auto 40px auto;
+    padding: 20px;
+    background-color: #f5f5f5;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    font-size: 16px;
+    line-height: 1.5;
+    color: #333;
+    white-space: normal;
+    word-wrap: break-word;
+  }
+  
+  .roasterInfo-descriptionEditIcon {
+    position: absolute;
+    top: -12px;
+    right: -12px;
+    width: 30px;
+    height: 30px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease;
+    cursor: pointer;
+  }
+  
+  .roasterInfo-descriptionEditIcon img {
+    width: 18px;
+    height: 18px;
+    pointer-events: none;
+  }
+  
+  .roasterInfo-roasterDescription-block:hover .roasterInfo-descriptionEditIcon {
+    transform: scale(1.2);
+  }
+  
+  /* ---------------------- БАНК + БІЗНЕС ---------------------- */
+  
+  .roasterInfo-bankDetails-wrapper,
+  .roasterInfo-businessInfo-wrapper {
+    position: relative;
+    overflow: visible;
+    max-width: 600px;
+    margin: 0 auto 30px auto;
+    padding: 25px 30px;
+    background-color: #f5f5f5;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    font-size: 16px;
+    line-height: 1.5;
+    color: #333;
+    border: 1px solid #e3e3e3;
+  }
+  
+  .roasterInfo-bankDetails-wrapper p,
+  .roasterInfo-businessInfo-wrapper p {
+    font-size: 16px;
+    color: #333;
+    margin: 8px 0;
+  }
+  
+  .roasterInfo-bankDetails-wrapper strong,
+  .roasterInfo-businessInfo-wrapper strong {
+    color: #555;
+  }
+  
+  /* Заголовки секцій */
+  .roasterInfo-sectionTitle {
+    margin-top: 0;
+    margin-bottom: 16px;
+    font-size: 18px;
+    font-weight: 600;
+    color: #222;
+  }
+  
+  /* Іконки редагування */
+  .roasterInfo-editIcon--bank,
+  .roasterInfo-editIcon--business {
+    position: absolute;
+    top: -12px;
+    right: -12px;
+    width: 30px;
+    height: 30px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease;
+    cursor: pointer;
+    z-index: 10;
+  }
+  
+  .roasterInfo-editIcon--bank img,
+  .roasterInfo-editIcon--business img {
+    width: 18px;
+    height: 18px;
+    pointer-events: none;
+  }
+  
+  .roasterInfo-bankDetails-wrapper:hover .roasterInfo-editIcon--bank,
+  .roasterInfo-businessInfo-wrapper:hover .roasterInfo-editIcon--business {
+    transform: scale(1.2);
+  }
+  
+ 
+  
+  @media (max-width: 768px) {
+    .roasterInfo-con {
+      padding: 25px;
+    }
+  
+    .roasterInfo-roasterName {
+      font-size: 26px;
+    }
+  
+    .roasterInfo-sectionTitle {
+      font-size: 18px;
+    }
+  
+    .roasterInfo-bankDetails-wrapper,
+    .roasterInfo-businessInfo-wrapper {
+      padding: 20px;
+    }
+  }
+
+
+
+  .roasterInfo-invisibleBlockForName {
+    position: relative;
+    max-width: 300px;
+    margin: 10px auto 30px auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border: 1px solid #e3e3e3;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  
+    /* Основні стилі для анімації */
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+  
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  
+    /* Плавна анімація */
+    transition: max-height 0.5s ease, opacity 0.4s ease, padding 0.4s ease, margin 0.4s ease;
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-bottom: 0;
+  }
+  
+  .roasterInfo-invisibleBlockForName-show {
+    max-height: 500px; /* або підігнати під контент */
+    opacity: 1;
+  
+    /* Відновлюємо падінги і відступ */
+    padding-top: 20px;
+    padding-bottom: 20px;
+    margin-bottom: 30px;
+  }
+  
+  
+  
+  .roasterInfo-invisibleBlockForName p {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 500;
+    color: #333;
+  }
+  
+  .roasterInfo-invisibleBlockForName input {
+    width: 100%;
+    padding: 10px 14px;
+    font-size: 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 0.2s ease;
+  }
+  
+  .roasterInfo-invisibleBlockForName input:focus {
+    border-color: #999;
+  }
+  
+  .roasterInfo-invisibleBlockForName button {
+    width: 100%;
+    padding: 10px 18px;
+    font-size: 15px;
+    font-weight: 500;
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+  }
+  
+  .roasterInfo-invisibleBlockForName button:hover {
+    background-color: #555;
+    transform: scale(1.03);
+  }
+  
+
+
+
+  .roasterInfo-invisibleBlockForName img {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+  }
+  
+  .roasterInfo-invisibleBlockForName img:hover {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+  
+
+.roasterInfo-invisibleBlockForName-hiden {
+  display: none;
+}
+
+
+.roasterInfo-invisibleBlockForName-open {
+  display: flex;
+}
+
+
+
+/* Більший розмір контейнера опису */
+.largeDescriptionBlock {
+  max-width: 600px; /* збільшуємо ширину */
+  margin: 20px auto 40px auto;
+}
+
+/* Контейнер редагування опису */
+.roasterInfo-descriptionEditBlock {
+  max-width: 600px; /* той самий розмір, що й блок опису */
+  padding: 30px 25px; /* більше паддінгів для простору */
+  border-radius: 16px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+/* textarea більший і зручніший */
+.roasterInfo-descriptionTextArea {
+  width: 100%;
+  min-height: 150px;
+  padding: 14px 16px;
+  font-size: 16px;
+  border-radius: 10px;
+  border: 1.5px solid #bbb;
+  resize: vertical;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  transition: border-color 0.3s ease;
+}
+
+.roasterInfo-descriptionTextArea:focus {
+  border-color: #555;
+  outline: none;
+}
+
+
+.roasterInfo-inputLabel {
+  font-weight: 600;
+  font-size: 12px;       /* Зменшили розмір шрифту */
+  margin: 4px 0 2px 0;   /* Зменшили відступи */
+  color: #666;           /* Трохи світліший відтінок для меншої ваги */
+  user-select: none;
+  text-align: left;      /* Вирівнювання зліва */
+}
+
+
+
+
+.roasterInfo-countrySelect {
+  width: 100%;
+  padding: 10px 14px;
+  font-size: 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  outline: none;
+  background-color: #fff;
+  transition: border-color 0.2s ease;
+  appearance: none;
+}
+
+.roasterInfo-countrySelect:focus {
+  border-color: #999;
+}
+
+
+
+
+
+
+.roasterInfo-logoUploadBlock {
+  position: relative;
+  max-width: 320px;
+  margin: 20px auto 40px auto;
+  padding: 25px 20px;
+  background: #fff;
+  border: 2px dashed #a0a0a0;
+  border-radius: 16px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+  cursor: pointer;
+}
+
+.roasterInfo-logoUploadBlock:hover {
+  border-color: #4a90e2;
+  background-color: #f5faff;
+}
+
+.roasterInfo-uploadLabel {
+  font-size: 16px;
+  font-weight: 700;
+  color: #2c3e50;
+  user-select: none;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  padding: 10px 16px;
+  border-radius: 8px;
+  background-color: #e8f0fe;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.roasterInfo-uploadLabel:hover {
+  background-color: #d2e3fc;
+  color: #1a73e8;
+}
+
+.roasterInfo-fileInput {
+  display: none;
+}
+
+.roasterInfo-uploadHint {
+  font-size: 14px;
+  color: #7f8c8d;
+  text-align: center;
+  user-select: none;
+}
+
+.roasterInfo-uploadError {
+  font-size: 13px;
+  color: #e74c3c;
+  background-color: #fdecea;
+  padding: 8px 14px;
+  border-radius: 8px;
+  width: 100%;
+  text-align: center;
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(231, 76, 60, 0.3);
+}
+
+
+
+
+.roasterInfo-logoPreview {
+  position: static !important;
+  width: auto !important;
+  height: auto !important;
+  max-width: 100%;
+  max-height: 200px;
+  border-radius: 8px;
+  box-shadow: none; /* прибираємо тінь */
+  margin-top: 12px;
+  display: block;
+  transition: none; /* прибираємо анімації */
+  
+}
+
+
+
+.roasterInfo-uploadBtn {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  padding: 12px 28px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  background-color: #4a90e2;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(74, 144, 226, 0.3);
+  user-select: none;
+  margin-top: 15px;
+}
+
+.roasterInfo-uploadBtn.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.roasterInfo-uploadBtn:hover {
+  background-color: #357ABD;
+  box-shadow: 0 6px 14px rgba(53, 122, 189, 0.5);
+  transform: translateY(-2px);
+  transition: all 0.25s ease;
+}
+.roasterInfo-logoPreview,
+.roasterInfo-logoPreview:hover,
+.roasterInfo-roasterLogo,
+.roasterInfo-roasterLogo:hover {
+  transform: none !important;
+  filter: none !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
+}

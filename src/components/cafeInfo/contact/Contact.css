@@ -53,15 +53,15 @@
   }
   
   .contact-form-button {
-    background: linear-gradient(135deg, #007bff, #0056b3);
+    background-color: #007bff; /* синій базовий колір */
     color: white;
-    padding: 12px 24px; /* Встановлюємо конкретні значення для вертикальних і горизонтальних відступів */
+    padding: 12px 24px;
     border-radius: 30px;
     font-size: 16px;
     font-weight: 600;
     border: none;
     cursor: pointer;
-    transition: background 0.3s ease, transform 0.2s ease;
+    transition: background-color 0.4s ease;
     margin-top: 15px;
     display: flex;
     align-items: center;
@@ -69,6 +69,6 @@
   }
   
   .contact-form-button:hover {
-    background: linear-gradient(135deg, #0056b3, #003366); 
+    background-color: #0056b3; /* трохи темніший синій при наведенні */
   }
   

@@ -6,14 +6,14 @@ import axios from 'axios';
 import Loader from '../loader/Loader';
 import ToggleSwitch from '../toggleSwitch/ToggleSwitch';
 import CafeBeans from '../cafeBeans/CafeBeans';
-import { doc, getDoc } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, query, where } from 'firebase/firestore';
 import { db, storage } from '../../firebase';
 import threeDots from '../../assets/threeDots.png';
 import close from '../../assets/close.png';
 import { useSelector } from 'react-redux';
 import { updateDoc, arrayRemove, deleteDoc } from 'firebase/firestore';
 import { deleteObject, ref } from 'firebase/storage';
-
+import noImage from '../../assets/noImage.jpeg'
 
 const BeansMain = () => {
   const navigate = useNavigate()
@@ -25,13 +25,17 @@ const BeansMain = () => {
   const [disabledBeans, setDisabledBeans] = useState([])
   const { email } = useSelector((state) => state.user);
 
+   const [beansImages, setBeansImages] = useState({});
+
 
   const loadData = async () => {
     setLoading(true);
     try {
       const selectedCafe = JSON.parse(localStorage.getItem('selectedCafe')) 
+      setCafedata(selectedCafe)
       const cafeBeansArray = [];
       const roasterBeansArray = [];
+      const result = {}
       const cafeBeansPromise = Array.isArray(selectedCafe.cafeBeans) && selectedCafe.cafeBeans.length > 0
       ? Promise.all(
           selectedCafe.cafeBeans.map(async (id) => {
@@ -44,7 +48,23 @@ const BeansMain = () => {
     const roasterBeansPromise = Array.isArray(selectedCafe.roasterBeans) && selectedCafe.roasterBeans.length > 0
     ? Promise.all(
         selectedCafe.roasterBeans.flatMap(bean => bean.id).map(async (id) => {
+    
           const roasterDoc = await getDoc(doc(db, 'beans', id));
+          const beanData = roasterDoc.data();
+          console.log('roaster id:', beanData.roaster, 'bean id:', id);
+  
+          const productsRef = collection(db, 'roasters', beanData.roaster, 'products');
+          const q = query(productsRef, where('beansId', '==', id));
+  
+          const querySnapshot = await getDocs(q);
+  
+          let productData = null;
+          querySnapshot.forEach(docSnap => {
+            productData = docSnap.data();  
+            result[id] = productData.pack_image_url;
+          });
+
+
           return roasterDoc.exists() ? roasterDoc.data() : null;
         })
       )
@@ -53,7 +73,7 @@ const BeansMain = () => {
     
 
     const [cafeDocs, roasterDocs] = await Promise.all([cafeBeansPromise, roasterBeansPromise]);
-    
+    setBeansImages(result);
     setDisabledBeans(selectedCafe?.disabledBeans || [])
     cafeBeansArray.push(...cafeDocs.filter(Boolean));
     roasterBeansArray.push(...roasterDocs.filter(Boolean));
@@ -69,8 +89,6 @@ const BeansMain = () => {
 
   useEffect(() => {
     loadData();
-    const selectedCafe = JSON.parse(localStorage.getItem('selectedCafe')) 
-    setCafedata(selectedCafe)
     const beanPage = JSON.parse(localStorage.getItem('allbeans'));
     if (beanPage !== null && beanPage !== undefined) {
       setAllBeans(beanPage);
@@ -225,7 +243,6 @@ const handleModalClose = () => {
      if (cafeSnap.exists()) {
        const updatedCafeData = { id: selectedCafe.id, ...cafeSnap.data() };
        localStorage.setItem('selectedCafe', JSON.stringify(updatedCafeData));
-       console.log(updatedCafeData);
      }
      setModal(null)
      } catch(e) {
@@ -282,7 +299,7 @@ const handleModalClose = () => {
     <div key={bean.id} className='beanMain-main-card-block'>
        <div className={`beans-main-modalWindow-con ${bean.id === modal ? 'beans-main-modal-show' : ''}`}>
           <img className='beans-main-modal-close' src={close} alt="" onClick={handleModalClose} />
-          {cafeData.cafeBeans.includes(bean.id) ? (
+          {cafeData?.cafeBeans?.includes(bean.id) ? (
             <div>
       <button className="beanmain-btn-edit-cofebeans" onClick={() => handleEdit(bean)}>Edit</button>
       <button className="beanmain-btn-delete-cafebeans" onClick={() => handleDelete(bean)}>Delete</button>
@@ -307,7 +324,7 @@ const handleModalClose = () => {
        src={threeDots} alt="threeDots" 
       onClick={() => handleModalOpen(bean.id)} 
       />
-      <img src={bean.imageUrl} alt={bean.name} className="beanMain-image-card" />
+      <img src={beansImages[bean.id]|| noImage}  className="beanMain-image-card" />
      
         <div className={` ${disabledBeans.includes(bean.id) ? 'beans-main-status-disabled' : 'beans-main-status'}`}>Status: {disabledBeans.includes(bean.id) ? 'disabled' : 'active'}</div>
     
@@ -322,9 +339,8 @@ const handleModalClose = () => {
           <p className="beanMain-variety-card">Variety: {bean.variety}</p>
           <p className="beanMain-harvest-year-card">Harvest Year: {bean.harvestYear}</p>
           <p className="beanMain-producer-card">Producer: {bean.producer}</p>
-          <p className="beanMain-roaster-card heavy-text">Roaster: {bean.roaster}</p>
           <p className="beanMain-roasting-card">Roasting: {bean.roasting}</p>
-          {cafeData.cafeBeans.includes(bean.id) ? (
+          {cafeData?.cafeBeans?.includes(bean.id) ? (
    <div className='beanMain-beanBy-you'>Beans you added</div>
           ) : (
             <div className='beanMain-beanBy-roaster'>Beans from the roastery</div>

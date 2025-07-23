@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { checkAuthStatus, loginUser } from '../../store/userSlice'; 
-
+import './Login.css'
 
 
 const Login = () => {
@@ -30,7 +30,11 @@ const Login = () => {
 
       if (isAdmin.privileges === true) {
         navigate('/super-admin');
-      } else {
+      }
+      if(isAdmin.privileges === 'roaster') {
+        navigate('/chooseAccount');
+      }
+       else {
         navigate('/chooseAccount');
       }
      

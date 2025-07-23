@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { auth, db } from '../../firebase'; // Оновлений шлях до firebase-config
 import { createUserWithEmailAndPassword, fetchSignInMethodsForEmail } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
-import { loginUser } from '../../store/userSlice';
+import { checkAuthStatus, loginUser } from '../../store/userSlice';
 import { useDispatch } from 'react-redux';
 
 const Signup = () => {
@@ -57,9 +57,17 @@ const Signup = () => {
 
        await dispatch(loginUser({ email, password })).unwrap();
      
-        
-           navigate('/chooseAccount');
-
+        const isAdmin =  await dispatch(checkAuthStatus()).unwrap();
+  
+        if (isAdmin.privileges === true) {
+          navigate('/super-admin');
+        }
+        if(isAdmin.privileges === 'roaster') {
+          navigate('/chooseAccount');
+        }
+         else {
+          navigate('/chooseAccount');
+        }
     } catch (error) {
       if (error.code === 'auth/email-already-in-use') {
         setError('A user with this email already exists. Please try another email.');
@@ -69,6 +77,8 @@ const Signup = () => {
     }
   };
 
+
+
   return (
     <section className="vh-100 gradient-custom">
       <div className="container py-5 h-100">
@@ -77,7 +87,15 @@ const Signup = () => {
             <div className="card bg-dark text-white" style={{ borderRadius: '1rem' }}>
               <div className="card-body p-5 text-center">
                 <div className="mb-md-5 mt-md-4 pb-5">
+                  
                   <h2 className="fw-bold mb-2 text-uppercase">Sign Up</h2>
+
+
+
+
+
+
+
                   <p className="text-white-50 mb-5">Please enter your email and password to create an account!</p>
 
                   <form onSubmit={handleSignup}>

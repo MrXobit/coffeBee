@@ -20,6 +20,9 @@ const ResetPasword = () => {
           if (response?.status === 'success') {
             setSuccess(`A password reset email has been sent to: `);
           } 
+
+        
+
          } catch(e) {
           console.log(e)
           setError("Something went wrong. Please try again.");

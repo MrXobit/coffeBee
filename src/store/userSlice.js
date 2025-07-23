@@ -85,6 +85,7 @@ export const checkAuthStatus = createAsyncThunk(
       const token = await user.getIdToken(true);
       localStorage.setItem('token', token);
      
+      const interfaceType = localStorage.getItem('interfaceType');
 
       const userRef = doc(db, 'users', user.uid);
       const snapshot = await getDoc(userRef);
@@ -98,7 +99,14 @@ export const checkAuthStatus = createAsyncThunk(
       return {
         uid: user.uid,
         email: user.email,
-        privileges: userData.privileges === 'superAdmin' ? true : false,
+        privileges:
+          userData.privileges === 'superAdmin'
+            ? 'superAdmin'
+            : interfaceType === 'roaster'
+              ? 'roaster'
+              : interfaceType === 'cafe'
+                ? 'cafe'
+                : null,
       };
     } catch (error) {
       return rejectWithValue(error.message);
@@ -139,6 +147,7 @@ export const EmailReset = createAsyncThunk (
         uid: response.data.uid
       };
       localStorage.setItem('resetData', JSON.stringify(resetData));
+      console.log(resetData)
       return { status: 'success'};
     } catch (error) {
       return rejectWithValue(error.message); 
@@ -188,6 +197,17 @@ const userSlice = createSlice({
       state.isAuth = action.payload;
     },
 
+    setPrivileges(state, action) {
+      const privileges = action.payload;
+      if (privileges === 'superAdmin' || privileges === 'roaster' || privileges === 'cafe') {
+        state.privileges = privileges;
+      } else {
+        state.privileges = null;
+      }
+    },
+    
+
+
     clearUser(state) {
       state.uid = null;
       state.email = "";
@@ -225,7 +245,9 @@ const userSlice = createSlice({
         state.isAuth = true;
         state.uid = action.payload.uid;
         state.email = action.payload.email;
-        state.privileges = action.payload.privileges ? 'superAdmin' : null
+
+        state.privileges = action.payload.privileges; 
+        
       })
 
       .addCase(checkAuthStatus.rejected, (state, action) => {

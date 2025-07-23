@@ -1,0 +1,80 @@
+/* Основний контейнер */
+.OllBeansRo-wrapper {
+    padding: 40px 30px;
+    max-width: 900px;
+    margin: 30px auto;
+    background: linear-gradient(135deg, #f0f4ff, #d9e2ff);
+    border-radius: 24px;
+    box-shadow: 0 15px 35px rgba(31, 45, 80, 0.15);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #2a2a2a;
+    transition: background-color 0.3s ease;
+  }
+  
+  /* Центрування лоадера */
+  .OllBeansRo-center-loader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 180px;
+  }
+  
+  /* Статусне повідомлення */
+  .OllBeansRo-statusMessage {
+    font-size: 22px;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 35px;
+    color: #1a237e; /* глибокий синій */
+    text-shadow: 0 1px 3px rgba(26, 35, 126, 0.3);
+    letter-spacing: 0.04em;
+  }
+  
+  /* Картка з інформацією про біб */
+  .OllBeansRo-beanItem {
+    background: #ffffffcc; /* прозорий білий */
+    border-radius: 16px;
+    padding: 22px 28px;
+    margin-bottom: 22px;
+    box-shadow: 0 8px 20px rgba(42, 42, 42, 0.12);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    cursor: default;
+  }
+  
+  .OllBeansRo-beanItem:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(42, 42, 42, 0.22);
+  }
+  
+  /* Текст кожного поля */
+  .OllBeansRo-beanField {
+    font-size: 16.5px;
+    line-height: 1.55;
+    margin: 7px 0;
+    color: #3c3c3c;
+    user-select: text;
+    transition: color 0.25s ease;
+  }
+  
+  .OllBeansRo-beanField strong {
+    color: #1a237e;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+  }
+  
+  /* Анімація появи картки */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(15px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .OllBeansRo-beanItem {
+    animation: fadeInUp 0.5s ease forwards;
+  }
+  

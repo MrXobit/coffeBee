@@ -5,7 +5,7 @@ import Loader from '../../loader/Loader';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { db } from '../../../firebase';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { collection, doc, getCountFromServer, getDoc, getDocs, query, setDoc, where } from 'firebase/firestore';
 
 const AddCafePage = () => {
   const [imageFile, setImageFile] = useState(null);
@@ -30,10 +30,14 @@ const AddCafePage = () => {
   const [faildCafesFile, setCafesFailed] = useState([])
  
 
+  const [cafeNameLinks, setCafeNameLinks] = useState([]); 
 
+  // const firstElemToLoad = 6100;
+  // const lastElemToLoad = 25000
 
-  const firstElemToLoad = 1000;
-  const lastElemToLoad = 2500
+    const firstElemToLoad = 0;
+  const lastElemToLoad = 100000
+  // 2158
 
 
 
@@ -96,80 +100,114 @@ const AddCafePage = () => {
     }
   };
 
- const handleAddCoffes = async () => {
-  setExistsCafe([]);
-  setFailUrls([]);
-  setLoadingBtn(true);
 
-  const cafeArray = [];
-  const failedUrlsArray = [];
 
-  try {
-    for (let i = 0; i < txtLines.length; i++) {
-      try {
-        const response = await axios.post(
-          'https://us-central1-coffee-bee.cloudfunctions.net/getCafeDataByUrl',
-          { url: txtLines[i] }
-        );
 
-        if (response.data && response.data.name) {
-          cafeArray.push(response.data);
-        } else {
-          failedUrlsArray.push(txtLines[i]);
-        }
-      } catch (error) {
-        failedUrlsArray.push(txtLines[i]);
-      }
-    }
 
-    setCafeDatasByTxt(cafeArray);
-    setFailUrls(failedUrlsArray);
-    console.log(cafeArray);
+
+
+
+  
+
+  const handleAddCoffes = async () => {
+    setExistsCafe([]);
+    setFailUrls([]);
+    setLoadingBtn(true);
+  
+    const cafeArray = [];
+    const failedUrlsArray = [];
+    const failedCafes = [];
+  
 
     try {
-      const failedCafes = [];
+      for (let i = 0; i < txtLines.length; i++) {
+        const url = txtLines[i];
+        const found = cafeNameLinks.find(item => item.link === url);
+        console.log('index' + i)
 
-      for (let i = 0; i < cafeArray.length; i++) {
-        try {
-          const cafeDocRef = doc(db, 'cafe', cafeArray[i].place_id);
-          const cafeDocSnap = await getDoc(cafeDocRef);
-
-          if (cafeDocSnap.exists()) {
-            setExistsCafe((prev) => [...prev, cafeArray[i]]);
-            notifyError('This cafe already exists');
-            continue;
-          }
-
-          const token = localStorage.getItem('token');
-
-          await axios.post(
-            'https://us-central1-coffee-bee.cloudfunctions.net/uploadImage',
-            { cafeData: cafeArray[i] },
-            {
-              headers: {
-                Authorization: `Bearer ${token}`
-              }
-            }
+        if (found) {
+          const normalizedName = found.name
+          console.log(found.name)
+          // Запит до Firestore за ім'ям
+          const cafeByNameQuery = query(
+            collection(db, 'cafe'),
+            where('name', '==', normalizedName)
           );
+          const nameSnapshot = await getDocs(cafeByNameQuery);
+      
+          if (!nameSnapshot.empty) {
+            nameSnapshot.forEach(docSnap => {
+              const existingCafe = docSnap.data();
+              setExistsCafe(prev => [...prev, existingCafe]);
+              notifyError(`This cafe already exists (by name): ${existingCafe.name}`);
+              console.log('без запиту до гугл апі (дублікати по імені)');
+            });
+            continue; // Переходимо до наступного URL, не робимо запит до API
+          }
+        }
 
-          notifySuccess('Cafe added successfully');
-        } catch (err) {
-          console.error(`Error with cafe at index ${i}:`, cafeArray[i], err);
-          failedCafes.push(cafeArray[i]);
+
+
+      console.log('з запиту до гугл апі')
+        try {
+          const response = await axios.post(
+            'https://us-central1-coffee-bee.cloudfunctions.net/getCafeDataByUrl',
+            { url }
+          );
+  
+          const cafeData = response.data;
+  
+          if (cafeData && cafeData.name) {
+            try {
+              const cafeDocRef = doc(db, 'cafe', cafeData.place_id);
+              const cafeDocSnap = await getDoc(cafeDocRef);
+  
+              if (cafeDocSnap.exists()) {
+                setExistsCafe((prev) => [...prev, cafeData]);
+                notifyError(`This cafe already exists: ${cafeData.name}`);
+                continue;
+              }
+  
+              const token = localStorage.getItem('token');
+  
+              await axios.post(
+                'https://us-central1-coffee-bee.cloudfunctions.net/uploadImage',
+                { cafeData },
+                {
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                  },
+                }
+              );
+  
+              notifySuccess(`Cafe added successfully: ${cafeData.name}`);
+            } catch (err) {
+              console.error(`Error adding cafe "${cafeData.name}" at index ${i}:`, err);
+              failedCafes.push(cafeData);
+            }
+  
+            cafeArray.push(cafeData);
+          } else {
+            failedUrlsArray.push(url);
+          }
+        } catch (error) {
+          console.error(`Failed to fetch cafe data from URL: ${url}`, error);
+          failedUrlsArray.push(url);
         }
       }
-setCafesFailed(failedCafes)
+  
+      setCafeDatasByTxt(cafeArray);
+      setFailUrls(failedUrlsArray);
+      setCafesFailed(failedCafes);
       setTxtLines([]);
       setFileName('');
     } catch (e) {
-      console.error('Error during the process: ', e);
+      console.error('Unexpected error during the process: ', e);
+    } finally {
+      setLoadingBtn(false);
     }
-  } catch (e) {
-    console.error('Error during fetching cafe data: ', e);
-  } finally {
-    setLoadingBtn(false);
-  }
-};
+  };
+  
 
 const secondAdd = async () => {
   if (!Array.isArray(faildCafesFile) || faildCafesFile.length === 0) {
@@ -215,8 +253,6 @@ const secondAdd = async () => {
     notifyError('An unexpected error occurred');
   }
 };
-
-
 
 
 
@@ -297,6 +333,19 @@ const handleCantFindNestTry = async (faildUrls) => {
 
 
 
+
+const allowedCountries = [
+  'Portugal',
+  'Spain',
+  'Netherlands',
+  'Belgium',
+  'Denmark',
+  'Luxembourg',
+  'Norway',
+  'Sweden',
+  'Finland',
+];
+
 const handleTxtFileChange = (e) => {
   const file = e.target.files[0];
   if (!file) return;
@@ -304,58 +353,96 @@ const handleTxtFileChange = (e) => {
   setFileName(file.name);
   const fileExtension = file.name.toLowerCase().split('.').pop();
 
-  if (fileExtension === 'txt') {
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const text = event.target.result;
-      const lines = text
+  const reader = new FileReader();
+
+  reader.onload = (event) => {
+    const text = event.target.result;
+    let links = [];
+
+    // Функція для вилучення країни з адреси
+    const extractCountryFromAddress = (address) => {
+      const parts = address.split(',').map(p => p.trim());
+      if (parts.length === 0) return null;
+      // беремо останню частину адреси
+      return parts[parts.length - 1].toLowerCase();
+    };
+
+    if (fileExtension === 'csv') {
+      const lines = text.split(/\r?\n/).filter(line => line.trim() !== '');
+      const startLine = lines[0].includes('"id"|||"name"') ? 1 : 0;
+
+      for (let i = startLine; i < lines.length; i++) {
+        const parts = lines[i].split('|||');
+        if (parts.length > 3) {
+          const addressRaw = parts[2].trim().replace(/(^"|"$)/g, '');
+          const link = parts[3].trim().replace(/(^"|"$)/g, '');
+          const name = parts[1].trim().replace(/(^"|"$)/g, '');
+
+          const countryInAddress = extractCountryFromAddress(addressRaw);
+
+          // Шукаємо чи є країна у списку allowedCountries
+          const country = allowedCountries.find(
+            c => c.toLowerCase() === countryInAddress
+          );
+
+          if (country && link.trim().toLowerCase().startsWith('http')) {
+            links.push({ country, link, name });
+          }
+        }
+      }
+
+    } else if (fileExtension === 'txt') {
+      const rawLines = text
         .split(/\r?\n/)
         .map(line => line.trim())
         .filter(line => line !== '');
 
-      const links = [];
       let currentLink = '';
-
-      lines.forEach(line => {
+      rawLines.forEach(line => {
         if (line.includes('https://')) {
-          if (currentLink) links.push(currentLink.trim());
+          if (currentLink) links.push({ country: 'unknown', link: currentLink.trim(), name: 'unknown' });
           currentLink = line.trim();
         } else {
           currentLink += ' ' + line.trim();
         }
       });
+      if (currentLink) links.push({ country: 'unknown', link: currentLink.trim(), name: 'unknown' });
 
-      if (currentLink) links.push(currentLink.trim());
-      setTxtLines(links);
-      console.log('Links:', links);
-      setError(null);
-    };
-    reader.readAsText(file);
-  } else if (fileExtension === 'csv') {
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const text = event.target.result;
-      const lines = text.split('\n');
-      const links = [];
-
-        for (let i = firstElemToLoad; i < lastElemToLoad && i < lines.length; i++) {
-      const parts = lines[i].split('|||');
-      const link = parts[parts.length - 1].trim();
-      if (link.startsWith('http')) {
-        links.push(link);
-      }
+    } else {
+      setError('Extension not supported (only .txt or .csv allowed)');
+      setTxtLines([]);
+      return;
     }
 
-      setTxtLines(links);
-      console.log('Links:', links);
-      setError(null);
-    };
-    reader.readAsText(file);
-  } else {
-    setError('Extension not supported (only .txt or .csv allowed)');
-    setTxtLines([]);
-  }
+    // Перевірка на наявність "Combi Coffee Roasters"
+    const foundCombi = links.some(item => item.name === 'Combi Coffee Roasters');
+    if (foundCombi) {
+      console.log('Знайдено кафе "Combi Coffee Roasters" у файлі');
+    } else {
+      console.log('Кафе "Combi Coffee Roasters" не знайдено у файлі');
+    }
+
+    // Обрізка діапазону
+    const slicedLinks = links.slice(firstElemToLoad, lastElemToLoad);
+    console.log('Загальна кількість посилань:', links.length);
+
+    // Записуємо у стан лише посилання (як раніше)
+    setTxtLines(slicedLinks.map(item => item.link));
+
+    // Записуємо у стан об'єкти {name, link}
+    setCafeNameLinks(slicedLinks.map(({ name, link }) => ({ name, link })));
+
+    setError(null);
+  };
+
+  reader.readAsText(file);
 };
+
+
+
+
+
+
 
   const handleTxtDrop = (e) => {
     e.preventDefault();
@@ -564,6 +651,7 @@ const handleTxtFileChange = (e) => {
   </>
 )}
    <ToastContainer />
+
     </div>
   );
 };

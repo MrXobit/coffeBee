@@ -58,14 +58,12 @@ const ModerationBeans = () => {
         }
     }
 
-    
- 
-
-
 
   return (
     <div className='ModerationBeans-con'>
          <h1 className='ModerationBeans-title'>Moderation Beans</h1>
+
+
 
         {loading ? (
             <div className='ModerationBeans-loader'>

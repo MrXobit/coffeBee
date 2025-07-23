@@ -8,57 +8,65 @@ import WorkingHours from './updateWorkingHours/WorkingHours';
 import Contact from './contact/Contact';
 import MapBlock from './mapBlock/MapBlock';
 import { useLocation } from 'react-router-dom';
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 const CafeInfo = () => {
   const [data, setData] = useState(null);
-  const [editedName, setEditedName] = useState('');
   const [editedDescription, setEditedDescription] = useState(''); 
-  const [loadingName, setLoadingName] = useState(false);
   const [loadingDesc ,setLoadingDesc] = useState(false)
-  const [loadingAdress, setLoadingAdress] = useState(false);
-  const [selectedPosition, setSelectedPosition] = useState(null);
- 
+
+
+  const [loadingUpdateCafeInfo, setLoadingUpdateCafeInfo] = useState(false)
+
+
+      const notifySuccess = (message) => toast.success(message);
+      const notifyError = (message) => toast.error(message);
+  
 
    const location = useLocation();
    const cafeData = location.state?.cafeData || null;
 
-  const loadData = async () => {
+   const loadData = async () => {
     try {
-
-      if(cafeData) {
-        setData(cafeData);
-        setEditedName(cafeData.adminData?.name || cafeData.name || '');
-        setEditedDescription(cafeData?.adminData?.description || '');
+      let cafeId = null;
+  
+      if (location.state?.cafeData?.id) {
+        cafeId = location.state.cafeData.id;
       } else {
         const selectedCafe = JSON.parse(localStorage.getItem('selectedCafe'));
-      
-        if (!selectedCafe || !selectedCafe.id) {
-          console.error("No selected cafe or ID found in localStorage");
-          return;
+        if (selectedCafe?.id) {
+          cafeId = selectedCafe.id;
         }
-  
-        const cafeRef = doc(db, 'cafe', selectedCafe.id);
-        const cafeSnap = await getDoc(cafeRef);
-  
-        if (!cafeSnap.exists()) {
-          console.log('Cafe not found in the database');
-          return;
-        }
-  
-        const updatedCafeData = { id: selectedCafe.id, ...cafeSnap.data() };
-        setData(updatedCafeData);
-        setEditedName(updatedCafeData.adminData?.name || updatedCafeData.name || '');
-        setEditedDescription(updatedCafeData?.adminData?.description || '');
       }
+  
+      if (!cafeId) {
+        console.error('No cafe ID found in state or localStorage');
+        return;
+      }
+  
+      const cafeRef = doc(db, 'cafe', cafeId);
+      const cafeSnap = await getDoc(cafeRef);
+  
+      if (!cafeSnap.exists()) {
+        console.error('Cafe not found');
+        return;
+      }
+  
+      const updatedCafeData = { id: cafeId, ...cafeSnap.data() };
+  
+      // оновлення станів
+      setData(updatedCafeData);
+      setEditedDescription(updatedCafeData?.adminData?.description || '');
+  
+      // збереження в localStorage
+      localStorage.setItem('selectedCafe', JSON.stringify(updatedCafeData));
     } catch (e) {
-      console.error('Error loading data:', e);
+      console.error('Error loading cafe data:', e);
     }
   };
-
-
-
+  
 
 
   useEffect(() => {
@@ -68,48 +76,8 @@ const CafeInfo = () => {
 
   }, []);
 
-  const handleUpdateName = async () => {
-    setLoadingName(true);
-    try {
-      const token = localStorage.getItem('token');
 
-      const response = await axios.post(
-        'https://us-central1-coffee-bee.cloudfunctions.net/updateName',
-        {
-          name: editedName,
-          cafeId: data.id
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
-
-      const cafeRef = doc(db, 'cafe', data.id); 
-      const cafeSnap = await getDoc(cafeRef);    
   
-      if (cafeSnap.exists()) {
-        const updatedCafeData = { id: data.id, ...cafeSnap.data() }; 
-  
-        
-        setData(updatedCafeData);
-
-        localStorage.setItem('selectedCafe', JSON.stringify(updatedCafeData));
-      }  
-    } catch (e) {
-      if (e.response) {
-        console.error('Error response:', e.response.data);
-      } else if (e.request) {
-        console.error('Error request:', e.request);
-      } else {
-        console.error('General error:', e.message);
-      }
-    } finally {
-      setLoadingName(false);
-    }
-  };
-
   const handleUpdateDescription = async () => {
     setLoadingDesc(true);
     try {
@@ -129,6 +97,9 @@ const CafeInfo = () => {
         }
       );
 
+      notifySuccess('Description updated successfully');
+
+
       const cafeRef = doc(db, 'cafe', data.id); 
       const cafeSnap = await getDoc(cafeRef);    
   
@@ -142,52 +113,62 @@ const CafeInfo = () => {
       }  
 
     } catch (e) {
-   console.log(e)
+      notifyError('Failed to update description');
     } finally {
       setLoadingDesc(false);
     }
   };
 
-//   const handleAdress = async() => {
-//     setLoadingAdress(true)
-//     try {
-//       const token = localStorage.getItem('token');
 
-//       const response = await axios.post(
-//         "https://us-central1-coffee-bee.cloudfunctions.net/updateAddress",
-//         {
-//           address: { lat: selectedPosition[0], lng: selectedPosition[1] },
-//           cafeId: data.id, 
-//         },
-//         {
-//           headers: {
-//             Authorization: `Bearer ${token}`, 
-//             "Content-Type": "application/json",
-//           },
-//         }
-//       );
-
-//       const cafeRef = doc(db, 'cafe', data.id); 
-//       const cafeSnap = await getDoc(cafeRef);    
+  const handleUpdateCafeInfoByGoogle = async () => {
+    setLoadingUpdateCafeInfo(true);
+    try {
+      const token = localStorage.getItem('token');
   
-//       if (cafeSnap.exists()) {
-//         const updatedCafeData = { id: data.id, ...cafeSnap.data() }; 
+      const response = await axios.post(
+        'https://us-central1-coffee-bee.cloudfunctions.net/updateCafeInfoByGoogle',
+        {
+          placeId: data.id,
+          adminData: data.adminData,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          }
+        }
+      );
+  
+      notifySuccess('Cafe info updated');
+
+
+      
+      const cafeRef = doc(db, 'cafe', data.id); 
+      const cafeSnap = await getDoc(cafeRef);    
+  
+      if (cafeSnap.exists()) {
+        const updatedCafeData = { id: data.id, ...cafeSnap.data() }; 
   
         
-//         setData(updatedCafeData);
-//         setSelectedPosition([updatedCafeData.adminData.address.lat, updatedCafeData.adminData.address.lng]);
-//         localStorage.setItem('selectedCafe', JSON.stringify(updatedCafeData));
-//       }  
-//     } catch(e) {
-// console.log(e)
-//     } finally{
-//       setLoadingAdress(false)
-//     }
-//   }
+        setData(updatedCafeData);
+  
+        localStorage.setItem('selectedCafe', JSON.stringify(updatedCafeData));
+      }  
 
 
 
+      console.log(response.data);
+    } catch (e) {
+      notifyError('Update failed');
+      console.log(e);
+    } finally {
+      setLoadingUpdateCafeInfo(false);
+    }
+  };
+  
 
+
+
+console.log(cafeData)
 
   if (!data) {
     return <SubLoader />;
@@ -198,66 +179,74 @@ const CafeInfo = () => {
       <h1 className="section-title">Cafe Settings</h1>
 
       <div className="info-section">
-        <h2>Basic Information</h2>
 
-        <div className="info-item center-content">
-          <strong className="cafe-name-title">Coffee Name</strong>
-          <div className="cofee-name-info-btn-con">
-            <input
-              type="text"
-              className="cafe-name-input"
-              value={editedName}
-              onChange={(e) => setEditedName(e.target.value)}
-            />
-            <button
-              className="update-btn"
-              onClick={handleUpdateName}
-              disabled={loadingName}
-            >
-              {loadingName ? 'Updating...' : 'Update Name'}
-            </button>
-          </div>
-        </div>
+<div className="info-item center-content">
+  <strong className="cafe-name-title">Description</strong>
+  <div className="cofee-name-info-btn-con">
+    <textarea
+      className="cafe-description-input"
+      value={editedDescription}
+      onChange={(e) => setEditedDescription(e.target.value)}
+      placeholder="Enter description here..."
+    />
+    <button
+      className="update-btn"
+      onClick={handleUpdateDescription}
+      disabled={loadingDesc}
+    >
+      {loadingDesc ? 'Updating...' : 'Update Description'}
+    </button>
+  </div>
+</div>
 
-        <div className="info-item center-content">
-          <strong className="cafe-name-title">Description</strong>
-          <div className="cofee-name-info-btn-con">
-            <textarea
-              className="cafe-description-input"
-              value={editedDescription}
-              onChange={(e) => setEditedDescription(e.target.value)}
-            />
-            <button
-              className="update-btn"
-              onClick={handleUpdateDescription}
-              disabled={loadingDesc}
-            >
-              {loadingDesc ? 'Updating...' : 'Update Description'}
-            </button>
-          </div>
-        </div>
-
-        <div className="info-item center-content">
-          {/* <strong className="cafe-name-title">Adress</strong> */}
-          {/* <div className="cofee-name-info-btn-con">
-              <MapBlock
-               onPositionChange={setSelectedPosition} 
-               />
-
-            <button
-              className="update-btn update-btn-adress"
-              disabled={loadingAdress}
-              onClick={handleAdress}
-            >
-              {loadingAdress ? 'Updating...' : 'Update Address'}
-            </button>
-          </div> */}
-          <WorkingHours cafeData={data}/>
-        </div>
+    
         <div className="info-item center-content">
           <Contact cafeData={data}/>
         </div>
+
+
+
+        <h2>Basic Information</h2>
+
+
+        <div className="google-map-data-block">
+  <h3 className="cafe-name">Назва кафе: {data?.name || '—'}</h3>
+
+  <h3 className="cafe-website">
+    Вебсайт:{" "}
+    {data?.website ? (
+      <a href={data.website} target="_blank" rel="noopener noreferrer">
+        {data.website}
+      </a>
+    ) : (
+      '—'
+    )}
+  </h3>
+
+  <h3 className="cafe-address">Адреса: {data?.formatted_address || '—'}</h3>
+
+  <div className="working-hours-block">
+    <h3 className="working-hours-title">Години роботи</h3>
+    <ul className="working-hours-list">
+      {data?.opening_hours?.weekday_text?.length > 0 ? (
+        data.opening_hours.weekday_text.map((day, index) => (
+          <li className="working-hours-item" key={index}>
+            {day}
+          </li>
+        ))
+      ) : (
+        <li className="working-hours-empty">Інформація про години роботи недоступна</li>
+      )}
+    </ul>
+  </div>
+
+  <button disabled={loadingUpdateCafeInfo} onClick={handleUpdateCafeInfoByGoogle} className="update-google-data-btn">
+  {loadingUpdateCafeInfo ? 'loading...' : 'Update data from Google Maps'}
+  </button>
+</div>
+
       </div>
+   
     </div>
   );
 };

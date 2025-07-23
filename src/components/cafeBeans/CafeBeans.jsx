@@ -18,7 +18,6 @@ const CafeBeans = ({deleteId}) => {
     setLoading(true)
     try {
       const selectedCafe = JSON.parse(localStorage.getItem('selectedCafe'));
-      console.log(selectedCafe)
       const beansData = []
       if (!selectedCafe?.cafeBeans) {
         return 
@@ -40,7 +39,6 @@ const CafeBeans = ({deleteId}) => {
       setLoading(false)
     }
   }
-  console.log(beans)
 
   const handleDelete = async(bean) => {
     setLoading(true)

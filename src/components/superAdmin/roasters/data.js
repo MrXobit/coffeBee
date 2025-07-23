@@ -223,18 +223,17 @@ export const CountryArray = [
   
 
 
-  export const socialMediaLinks = {
-    'facebook': 'https://facebook.com/',
-    'instagram': 'https://instagram.com/',
-    'linkedin': 'https://linkedin.com/',
-    'tiktok': 'https://tiktok.com/',
-    'reddit': 'https://reddit.com/',
-    'whatsapp': 'https://whatsapp.com/',
-    'youtube': 'https://youtube.com/',
-    'snapchat': 'https://snapchat.com/',
-    'discord': 'https://discord.com/',
-    'telegram': 'https://telegram.org/',
-    'wechat': 'https://wechat.com/'
-  };
-  
-  
+// data.js
+export const socialMediaLinks = {
+  facebook: ['https://facebook.com/', 'https://www.facebook.com/'],
+  instagram: ['https://instagram.com/', 'https://www.instagram.com/'],
+  linkedin: ['https://linkedin.com/', 'https://www.linkedin.com/'],
+  tiktok: ['https://tiktok.com/', 'https://www.tiktok.com/'],
+  reddit: ['https://reddit.com/', 'https://www.reddit.com/'],
+  whatsapp: ['https://whatsapp.com/', 'https://www.whatsapp.com/'],
+  youtube: ['https://youtube.com/', 'https://www.youtube.com/'],
+  snapchat: ['https://snapchat.com/', 'https://www.snapchat.com/'],
+  discord: ['https://discord.com/', 'https://www.discord.com/'],
+  telegram: ['https://telegram.org/', 'https://www.telegram.org/'],
+  wechat: ['https://wechat.com/', 'https://www.wechat.com/'],
+};

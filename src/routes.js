@@ -9,6 +9,7 @@ import ChooseAccount from "./components/сhooseAccount/ChooseAccount";
 import AddBeans from "./components/beans/AddBeans";
 import RoasteryDetails from "./components/roasters/roasteryDetails/RoasteryDetails";
 import AdminNetwork from "./components/CoffeeNetwork/AdminNetwork/AdminNetwork";
+import UpdatePassword from "./components/updatePasword/UpdatePasword";
 
 export const authRoutes = [
     {
@@ -46,24 +47,24 @@ export const authRoutes = [
 
 export const publicRoutes = [
     {
-        path: '/login',
-        element: <Login/>
-    },
-
-    {
-        path: '/sign-up',
-        element: <Signup/>
+      path: '/login',
+      element: <Login/>
     },
     {
-        path: '*',
-        element: <Login/>
+      path: '/sign-up',
+      element: <Signup/>
     },
     {
-        path: '/reset-password',
-        element: <ResetPasword/>
+      path: '/reset-password',
+      element: <ResetPasword/>
     },
     {
-        path: '/update-password',
-        element: <UpdatePasword/>
+      path: '/update-password/:uid',
+      element: <UpdatePassword />
+    },
+    {
+      path: '*',
+      element: <Login/>
     }
-];
+  ];
+  
