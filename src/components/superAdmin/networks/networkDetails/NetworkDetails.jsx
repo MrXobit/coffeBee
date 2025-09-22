@@ -237,14 +237,14 @@ const NetworkDetails = () => {
 
 
         <div className="NetworkDetails-con-togle">
-        <ToggleSwitch toggleValue={toggleValue} onToggle={handleToggle} words={['Network', 'Add']} />
+        <ToggleSwitch toggleValue={toggleValue} onToggle={handleToggle} words={['Chain', 'Add']} />
         </div>
 
         {toggleValue ? (
 
           <>
           <h2 className="AdminNetwork-members">
-   Network members
+   Chain members
 </h2>
 <div className="AdminNetwork-maincard-for-cards">
   {(localLoading.disabled && localLoading.mot === 2) ? (
@@ -301,7 +301,7 @@ const NetworkDetails = () => {
                     disabled={localLoading.disabled} 
                     onClick={handleRemoveNet} 
                     className='AdminNetwork-leave-net'>
-                    {(localLoading.disabled && localLoading.mot === 1) ? "loading..." : "Remove Network"} 
+                    {(localLoading.disabled && localLoading.mot === 1) ? "loading..." : "Remove Chain"} 
                   </button>
                 </div>
               )}

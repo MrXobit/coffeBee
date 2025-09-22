@@ -5,7 +5,11 @@ import Loader from '../../loader/Loader';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { db } from '../../../firebase';
+import close from '../../../assets/close.png'
 import { collection, doc, getCountFromServer, getDoc, getDocs, query, setDoc, where } from 'firebase/firestore';
+
+import { motion, AnimatePresence } from 'framer-motion';
+
 
 const AddCafePage = () => {
   const [imageFile, setImageFile] = useState(null);
@@ -32,13 +36,52 @@ const AddCafePage = () => {
 
   const [cafeNameLinks, setCafeNameLinks] = useState([]); 
 
-  // const firstElemToLoad = 6100;
-  // const lastElemToLoad = 25000
-
+// 6100
     const firstElemToLoad = 0;
   const lastElemToLoad = 100000
-  // 2158
+ 
 
+
+const [filter, setFilter] = useState({ countrys: [], active: false });
+
+const [inputCountry, setInputCountry] = useState('')
+
+const [counttyError, setCountryError] = useState('')
+
+const [lastFile, setLastFile] = useState(null);
+
+
+function FilterBlock({ filter, setFilter }) {
+  return (
+    <AnimatePresence>
+      {filter.active && (
+        <motion.div
+          className="addCafePage-inputToCountry-wrapper"
+          initial={{ opacity: 0, maxHeight: 0, overflow: 'hidden' }}
+          animate={{ opacity: 1, maxHeight: 300, overflow: 'visible' }}
+          exit={{ opacity: 0, maxHeight: 0, overflow: 'hidden' }}
+          transition={{ duration: 0.5, ease: 'easeInOut' }}
+          key="filter-block"
+        >
+          <div className="addCafePage-inputToCountry">
+            <h3>Filter by country</h3>
+            <div className="addCafePage-inputToCountry-conn">
+              <input
+                type="text"
+                placeholder="e.g. Italy, USA, Japan"
+                value={filter.country || ''}
+                onChange={e =>
+                  setFilter(prev => ({ ...prev, country: e.target.value }))
+                }
+              />
+              <button onClick={() => {/* логіка додавання */}}>Add</button>
+            </div>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
 
 
   const handleGetInfo = async (e) => {
@@ -113,39 +156,80 @@ const AddCafePage = () => {
     setExistsCafe([]);
     setFailUrls([]);
     setLoadingBtn(true);
-  
+    
+
+
+  if (filter.active && (!filter.countrys || filter.countrys.length === 0)) {
+    setCountryError('Please select at least one country for filtering');
+   setLoadingBtn(false);
+    return; // не обробляємо файл без вибраної країни
+  }else {
+    setCountryError('')
+  }
+
+
+
     const cafeArray = [];
     const failedUrlsArray = [];
     const failedCafes = [];
   
 
     try {
-      for (let i = 0; i < txtLines.length; i++) {
-        const url = txtLines[i];
-        const found = cafeNameLinks.find(item => item.link === url);
-        console.log('index' + i)
+ // Функція перевірки близькості координат
+const areCoordsClose = (lat1, lng1, lat2, lng2, epsilon = 0.0005) => {
+  return (
+    Math.abs(Number(lat1) - Number(lat2)) < epsilon &&
+    Math.abs(Number(lng1) - Number(lng2)) < epsilon
+  );
+};
 
-        if (found) {
-          const normalizedName = found.name
-          console.log(found.name)
-          // Запит до Firestore за ім'ям
-          const cafeByNameQuery = query(
-            collection(db, 'cafe'),
-            where('name', '==', normalizedName)
-          );
-          const nameSnapshot = await getDocs(cafeByNameQuery);
+// Функція перевірки, чи одна назва "дуже схожа" на іншу
+const areNamesSimilar = (name1, name2) => {
+  const n1 = name1.toLowerCase();
+  const n2 = name2.toLowerCase();
+  return n1.includes(n2) || n2.includes(n1);
+};
+for (let i = 0; i < txtLines.length; i++) {
+  const url = txtLines[i];
+  const found = cafeNameLinks.find(item => item.link === url);
+  console.log('index', i);
+
+  if (!found) continue;
+
+  const { name, lat, lng } = found;
+
+  // Запит до Firestore по імені (можна шукати приблизно, але поки що exact)
+  const cafeByNameQuery = query(
+    collection(db, 'cafe'),
+    where('name', '==', name)  // можна замінити, якщо хочеш більш гнучкий пошук
+  );
+  const snapshot = await getDocs(cafeByNameQuery);
+
+  let duplicateFound = false;
+
+  if (!snapshot.empty) {
+    snapshot.forEach(docSnap => {
+      const existingCafe = docSnap.data();
+      const geo = existingCafe.geometry?.location;
+
+      // Перевірка одночасно і на схожість імені, і близькість координат
+      if (geo && areCoordsClose(geo.lat, geo.lng, lat, lng) && areNamesSimilar(existingCafe.name, name)) {
+        setExistsCafe(prev => [...prev, existingCafe]);
+        notifyError(`This cafe already exists (similar name & close coords): ${existingCafe.name}`);
+        console.log('Duplicate found by similar name & close coords:', existingCafe.name);
+        duplicateFound = true;
+      }
+    });
+  }
+
+  if (duplicateFound) {
+    console.log(`Skipping API call for index ${i} because duplicate found.`);
+    continue;
+  }
+
+  
       
-          if (!nameSnapshot.empty) {
-            nameSnapshot.forEach(docSnap => {
-              const existingCafe = docSnap.data();
-              setExistsCafe(prev => [...prev, existingCafe]);
-              notifyError(`This cafe already exists (by name): ${existingCafe.name}`);
-              console.log('без запиту до гугл апі (дублікати по імені)');
-            });
-            continue; // Переходимо до наступного URL, не робимо запит до API
-          }
-        }
-
+        
 
 
       console.log('з запиту до гугл апі')
@@ -332,62 +416,107 @@ const handleCantFindNestTry = async (faildUrls) => {
 
 
 
-
-
 const allowedCountries = [
-  'Portugal',
-  'Spain',
-  'Netherlands',
-  'Belgium',
-  'Denmark',
-  'Luxembourg',
-  'Norway',
-  'Sweden',
-  'Finland',
+  'Netherlands', // Нидерланды
+  'Portugal',    // Португалия
+  'Poland',      // Польша
+  'Romania',     // Румыния
+  'Ukraine',     // Украина
+  'Denmark',     // Дания
 ];
 
-const handleTxtFileChange = (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
 
+function extractCoordinates(url) {
+  const matchD = url.match(/!3d([\d.-]+)!4d([\d.-]+)/);
+  if (matchD) return { lat: parseFloat(matchD[1]), lng: parseFloat(matchD[2]) };
+
+  const matchAt = url.match(/@([\d.-]+),([\d.-]+)/);
+  if (matchAt) return { lat: parseFloat(matchAt[1]), lng: parseFloat(matchAt[2]) };
+
+  return { lat: null, lng: null };
+}
+
+function extractNameFromUrl(url) {
+  const match = url.match(/maps\/place\/([^/]+)/);
+  if (match) {
+    let name = match[1];
+    try {
+      return decodeURIComponent(decodeURIComponent(name.replace(/\+/g, ' ')));
+    } catch (err) {
+      console.warn('Decode error in extractNameFromUrl:', err.message);
+      return name.replace(/\+/g, ' ');
+    }
+  }
+  return null;
+}
+function extractCountryFromAddress(address) {
+  if (!address) return null;
+  const lowerAddress = address.toLowerCase();
+
+  for (const country of filter.countrys) {
+    const lowerCountry = country.toLowerCase();
+    // Шукаємо країну як слово (з урахуванням пробілів/пунктуації з обох боків)
+    const regex = new RegExp(`\\b${lowerCountry}\\b`, 'i');
+    if (regex.test(lowerAddress)) {
+      return country; // повертаємо оригінальний напис з allowedCountries
+    }
+  }
+  return null;
+}
+
+function parseCSVLine(line) {
+  // Проста функція для парсингу CSV рядка з лапками
+  const regex = /("([^"]|"")*"|[^,]+)(,|$)/g;
+  const result = [];
+  let match;
+  while ((match = regex.exec(line)) !== null) {
+    let value = match[1];
+    value = value.trim();
+    if (value.startsWith('"') && value.endsWith('"')) {
+      value = value.slice(1, -1).replace(/""/g, '"');
+    }
+    result.push(value);
+  }
+  return result;
+}
+
+
+function processFile(file) {
   setFileName(file.name);
-  const fileExtension = file.name.toLowerCase().split('.').pop();
 
+
+    if (!filter.countrys || filter.countrys.length === 0) {
+    processFileAll(file);
+    return;
+  }
+  
+
+
+  const fileExtension = file.name.toLowerCase().split('.').pop();
   const reader = new FileReader();
 
   reader.onload = (event) => {
     const text = event.target.result;
     let links = [];
 
-    // Функція для вилучення країни з адреси
-    const extractCountryFromAddress = (address) => {
-      const parts = address.split(',').map(p => p.trim());
-      if (parts.length === 0) return null;
-      // беремо останню частину адреси
-      return parts[parts.length - 1].toLowerCase();
-    };
-
     if (fileExtension === 'csv') {
       const lines = text.split(/\r?\n/).filter(line => line.trim() !== '');
-      const startLine = lines[0].includes('"id"|||"name"') ? 1 : 0;
+      const startLine = lines[0].toLowerCase().includes('"id"') ? 1 : 0;
 
       for (let i = startLine; i < lines.length; i++) {
-        const parts = lines[i].split('|||');
-        if (parts.length > 3) {
-          const addressRaw = parts[2].trim().replace(/(^"|"$)/g, '');
-          const link = parts[3].trim().replace(/(^"|"$)/g, '');
-          const name = parts[1].trim().replace(/(^"|"$)/g, '');
+        const parts = parseCSVLine(lines[i]);
+        if (parts.length < 4) continue;
 
-          const countryInAddress = extractCountryFromAddress(addressRaw);
+        const addressRaw = parts[2];
+        const link = parts[3];
+        const rawName = parts[1];
 
-          // Шукаємо чи є країна у списку allowedCountries
-          const country = allowedCountries.find(
-            c => c.toLowerCase() === countryInAddress
-          );
+        const foundCountry = extractCountryFromAddress(addressRaw);
+        const { lat, lng } = extractCoordinates(link);
+        const name = extractNameFromUrl(link) || rawName;
 
-          if (country && link.trim().toLowerCase().startsWith('http')) {
-            links.push({ country, link, name });
-          }
+        if (foundCountry && link.toLowerCase().startsWith('http')) {
+          links.push({ country: foundCountry, link, name, lat, lng });
         }
       }
 
@@ -400,13 +529,21 @@ const handleTxtFileChange = (e) => {
       let currentLink = '';
       rawLines.forEach(line => {
         if (line.includes('https://')) {
-          if (currentLink) links.push({ country: 'unknown', link: currentLink.trim(), name: 'unknown' });
+          if (currentLink) {
+            const { lat, lng } = extractCoordinates(currentLink);
+            const name = extractNameFromUrl(currentLink) || 'unknown';
+            links.push({ country: 'unknown', link: currentLink.trim(), name, lat, lng });
+          }
           currentLink = line.trim();
         } else {
           currentLink += ' ' + line.trim();
         }
       });
-      if (currentLink) links.push({ country: 'unknown', link: currentLink.trim(), name: 'unknown' });
+      if (currentLink) {
+        const { lat, lng } = extractCoordinates(currentLink);
+        const name = extractNameFromUrl(currentLink) || 'unknown';
+        links.push({ country: 'unknown', link: currentLink.trim(), name, lat, lng });
+      }
 
     } else {
       setError('Extension not supported (only .txt or .csv allowed)');
@@ -414,97 +551,184 @@ const handleTxtFileChange = (e) => {
       return;
     }
 
-    // Перевірка на наявність "Combi Coffee Roasters"
     const foundCombi = links.some(item => item.name === 'Combi Coffee Roasters');
-    if (foundCombi) {
-      console.log('Знайдено кафе "Combi Coffee Roasters" у файлі');
-    } else {
-      console.log('Кафе "Combi Coffee Roasters" не знайдено у файлі');
-    }
+    console.log(foundCombi
+      ? 'Знайдено кафе "Combi Coffee Roasters" у файлі'
+      : 'Кафе "Combi Coffee Roasters" не знайдено у файлі'
+    );
 
-    // Обрізка діапазону
     const slicedLinks = links.slice(firstElemToLoad, lastElemToLoad);
-    console.log('Загальна кількість посилань:', links.length);
+    console.log('Загальна кількість посилань після фільтрації:', links.length);
 
-    // Записуємо у стан лише посилання (як раніше)
     setTxtLines(slicedLinks.map(item => item.link));
-
-    // Записуємо у стан об'єкти {name, link}
-    setCafeNameLinks(slicedLinks.map(({ name, link }) => ({ name, link })));
+    setCafeNameLinks(slicedLinks.map(({ name, link, lat, lng }) => ({ name, link, lat, lng })));
 
     setError(null);
   };
 
   reader.readAsText(file);
+}
+
+
+
+
+function processFileAll(file) {
+  setFileName(file.name);
+  const fileExtension = file.name.toLowerCase().split('.').pop();
+  const reader = new FileReader();
+
+  reader.onload = (event) => {
+    const text = event.target.result;
+    let links = [];
+
+    if (fileExtension === 'csv') {
+      const lines = text.split(/\r?\n/).filter(line => line.trim() !== '');
+      const startLine = lines[0].toLowerCase().includes('"id"') ? 1 : 0;
+
+      for (let i = startLine; i < lines.length; i++) {
+        const parts = parseCSVLine(lines[i]);
+        if (parts.length < 4) continue;
+
+        // прибираємо лапки й пробіли
+        const rawName = parts[1].replace(/^"+|"+$/g, '').trim();
+        const addressRaw = parts[2].replace(/^"+|"+$/g, '').trim();
+        const link = parts[3].replace(/^"+|"+$/g, '').trim();
+
+        if (!link.toLowerCase().startsWith('http')) continue;
+
+        const { lat, lng } = extractCoordinates(link);
+        const name = extractNameFromUrl(link) || rawName || 'unknown';
+
+        links.push({ country: 'unknown', link, name, lat, lng });
+      }
+
+    } else if (fileExtension === 'txt') {
+      const rawLines = text
+        .split(/\r?\n/)
+        .map(line => line.trim())
+        .filter(line => line !== '');
+
+      let currentLink = '';
+      rawLines.forEach(line => {
+        if (line.includes('https://')) {
+          if (currentLink) {
+            const { lat, lng } = extractCoordinates(currentLink);
+            const name = extractNameFromUrl(currentLink) || 'unknown';
+            links.push({ country: 'unknown', link: currentLink.trim(), name, lat, lng });
+          }
+          currentLink = line.trim();
+        } else {
+          currentLink += ' ' + line.trim();
+        }
+      });
+      if (currentLink) {
+        const { lat, lng } = extractCoordinates(currentLink);
+        const name = extractNameFromUrl(currentLink) || 'unknown';
+        links.push({ country: 'unknown', link: currentLink.trim(), name, lat, lng });
+      }
+
+    } else {
+      setError('Extension not supported (only .txt or .csv allowed)');
+      setTxtLines([]);
+      return;
+    }
+
+    const foundCombi = links.some(item => item.name === 'Combi Coffee Roasters');
+    console.log(foundCombi
+      ? 'Знайдено кафе "Combi Coffee Roasters" у файлі'
+      : 'Кафе "Combi Coffee Roasters" не знайдено у файлі'
+    );
+
+    const slicedLinks = links.slice(firstElemToLoad, lastElemToLoad);
+    console.log('Загальна кількість посилань:', links.length);
+
+    setTxtLines(slicedLinks.map(item => item.link));
+    setCafeNameLinks(slicedLinks.map(({ name, link, lat, lng }) => ({ name, link, lat, lng })));
+
+    setError(null);
+  };
+
+  reader.readAsText(file);
+}
+
+
+useEffect(() => {
+  if (lastFile && filter.active) {
+    processFile(lastFile);
+  }
+}, [filter.countrys]);
+
+
+
+
+const handleAddCountry = () => {
+  const trimmed = inputCountry.trim();
+  if (trimmed === '') return; // Якщо порожній рядок — нічого не робимо
+
+  if (filter.countrys.includes(trimmed)) {
+    alert(`Country "${trimmed}" already added`);
+    return;
+  }
+
+  setFilter(prev => ({
+    ...prev,
+    countrys: [...prev.countrys, trimmed],
+  }));
+
+  setInputCountry(''); // Очистити інпут після додавання
+  setCountryError(''); 
+
+
+
 };
 
 
 
 
+const handleTxtFileChange = (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  setLastFile(file);  
+  if (filter.active) {
+    processFile(file);      // З фільтром
+  } else {
+    processFileAll(file);   // Без фільтру
+  }
+};
+
+const handleTxtDrop = (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  const droppedFile = e.dataTransfer.files[0];
+  if (!droppedFile) return;
+
+  setLastFile(droppedFile); 
+  if (filter.active) {
+    processFile(droppedFile);     // З фільтром
+  } else {
+    processFileAll(droppedFile);  // Без фільтру
+  }
+};
 
 
+const handleRemoveCountry = (countryToRemove) => {
+  setFilter(prev => {
+    const updatedCountries = prev.countrys.filter(c => c !== countryToRemove);
 
-  const handleTxtDrop = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    const droppedFile = e.dataTransfer.files[0];
-    if (!droppedFile) return;
-
-    setFileName(droppedFile.name);
-    const fileExtension = droppedFile.name.toLowerCase().split('.').pop();
-
-    if (fileExtension === 'txt') {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const text = event.target.result;
-        const lines = text
-          .split(/\r?\n/)
-          .map(line => line.trim())
-          .filter(line => line !== '');
-
-        const links = [];
-        let currentLink = '';
-
-        lines.forEach(line => {
-          if (line.includes('https://')) {
-            if (currentLink) links.push(currentLink.trim());
-            currentLink = line.trim();
-          } else {
-            currentLink += ' ' + line.trim();
-          }
-        });
-
-        if (currentLink) links.push(currentLink.trim());
-        setTxtLines(links);
-        console.log('Links:', links);
-      };
-      reader.readAsText(droppedFile);
-      setError(null);
-    } else if (fileExtension === 'csv') {
-  const reader = new FileReader();
-  reader.onload = (event) => {
-    const text = event.target.result;
-    const lines = text.split('\n');
-    const links = [];
-
-    for (let i = firstElemToLoad; i < lastElemToLoad && i < lines.length; i++) {
-      const parts = lines[i].split('|||');
-      const link = parts[parts.length - 1].trim();
-      if (link.startsWith('http')) {
-        links.push(link);
-      }
+    // Після оновлення стану викликаємо обробку файлу
+    if (lastFile) {
+      processFile(lastFile); // або processFile(lastFile), залежно від твоєї логіки
     }
-    setTxtLines(links);
-    console.log('Links:', links);
-    setError(null);
-  };
-  reader.readAsText(droppedFile);
-}
- else {
-      setError('Extension not supported (only .txt or .csv allowed)');
-      setTxtLines([]);
-    }
-  };
+
+    return {
+      ...prev,
+      countrys: updatedCountries,
+    };
+  });
+};
+
+
 
   const handleDragOver = (e) => e.preventDefault();
   const handleDragEnter = (e) => { e.preventDefault(); e.stopPropagation(); };
@@ -568,6 +792,8 @@ const handleTxtFileChange = (e) => {
       )}
 
       <div className="connnnnnnnn">
+
+  
         <div
           className="beans-for-img-con"
           onDrop={handleTxtDrop}
@@ -575,6 +801,10 @@ const handleTxtFileChange = (e) => {
           onDragEnter={handleDragEnter}
           onDragLeave={handleDragLeave}
         >
+
+  <p className="addCafePage-lengthCafes">Number of cafes: {txtLines.length}</p>
+
+
           <label htmlFor="beans-txt-uploader">Upload TXT/CSV File</label>
           <input
             type="file"
@@ -585,7 +815,63 @@ const handleTxtFileChange = (e) => {
             onChange={handleTxtFileChange}
           />
 
+          
           {fileName && <p className="uploaded-file-name">Uploaded file: <strong>{fileName}</strong></p>}
+
+{fileName !== '' && 
+
+  <>
+<div
+  className="addCafePage-randomName"
+  onClick={() => {
+    setFilter(prev => ({
+      ...prev,
+      active: !prev.active,
+      countrys: prev.active ? [] : prev.countrys, // Якщо active був true, очистити масив країн
+    }));
+    setCountryError(''); // Очистити помилку при кліку
+  }}
+>
+  {filter.active
+    ? `Now adding only cafes from 'selected country' (press to change)`
+    : 'Now adding all cafes without filtering (press to change)'}
+</div>
+
+      <AnimatePresence>
+        {filter.active && (
+          <motion.div
+            key="filter-block"
+            className="addCafePage-inputToCountry-wrapper"
+            initial={{ opacity: 0, maxHeight: 0, overflow: 'hidden' }}
+            animate={{ opacity: 1, maxHeight: 300, overflow: 'visible' }}
+            exit={{ opacity: 0, maxHeight: 0, overflow: 'hidden' }}
+            transition={{ duration: 0.5, ease: 'easeInOut' }}
+            style={{ overflow: 'hidden' }}
+          >
+            <div className="addCafePage-inputToCountry">
+              <h3>Filter by country</h3>
+              <div className="addCafePage-inputToCountry-conn">
+                <input
+                  type="text"
+                  placeholder="e.g. Italy, USA, Japan"
+                value={inputCountry}
+                onChange={e => setInputCountry(e.target.value)}
+                />
+                <button onClick={handleAddCountry}>
+                  Add
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+
+  </>
+
+}
+
+
           {!txtLines.length && !error && <p className="beans-upload-prompt">Drag and drop a .txt, scv file or select it via the button</p>}
           {error && <p className="error-message">{error}</p>}
 
@@ -596,6 +882,28 @@ const handleTxtFileChange = (e) => {
           )}
         </div>
       </div>
+
+
+<h2 className='handle-addCafePage-countyrError'>{counttyError}</h2>
+
+
+{filter.countrys && filter.countrys.length > 0 && (
+  <div className="filterBlock__countriesList filterBlock__countriesList--flexWrap">
+    {filter.countrys.map((country, index) => (
+      <div key={index} className="filterBlock__countryChip filterBlock__countryChip--styled">
+        <span className="filterBlock__countryName filterBlock__countryName--bold">{country}</span>
+        <img
+  src={close}
+  alt="remove"
+  className="filterBlock__countryCloseBtn filterBlock__countryCloseBtn--interactive"
+   onClick={() => handleRemoveCountry(country)}
+/>
+      </div>
+    ))}
+  </div>
+)}
+
+
 
       {faildUrls.length > 0 && (
         <div className="AddCafePage-faildUrl">
@@ -651,6 +959,7 @@ const handleTxtFileChange = (e) => {
   </>
 )}
    <ToastContainer />
+
 
     </div>
   );

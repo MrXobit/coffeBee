@@ -1,0 +1,173 @@
+.margeModerationRoasters {
+  position: relative;
+  margin: 0 auto;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  font-family: 'Inter', sans-serif;
+}
+
+.margeModerationRoasters h1 {
+  font-size: 22px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.margeModerationRoasters-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  transition: transform 0.15s ease-in-out;
+}
+
+.margeModerationRoasters-close:hover {
+  transform: scale(1.1);
+}
+
+.margeModerationRoasters input {
+  width: 100%;
+  padding: 10px 14px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.margeModerationRoasters input:focus {
+  border-color: #4f46e5;
+}
+
+
+
+.ModerationRoasters-item {
+  border: 2px solid transparent;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 10px;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+  cursor: pointer;
+}
+
+
+.ModerationRoasters-item.selected {
+  border-color: purple;
+  background-color: rgba(128, 0, 128, 0.05);
+}
+
+
+
+.margeModerationRoasters-button {
+  display: block;
+  width: 250px; /* ширша кнопка */
+  margin: 30px auto;
+  padding: 16px 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(45deg, #4f46e5, #3b32a1, #1e1b4b);
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(31, 27, 79, 0.4);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.margeModerationRoasters-button::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: rgba(255, 255, 255, 0.08);
+  transform: rotate(45deg);
+  transition: all 0.5s ease;
+}
+
+.margeModerationRoasters-button:hover::before {
+  top: -20%;
+  left: -20%;
+}
+
+.margeModerationRoasters-button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 12px 28px rgba(31, 27, 79, 0.6);
+}
+
+.margeModerationRoasters-button:active {
+  transform: scale(0.97);
+  box-shadow: 0 6px 15px rgba(31, 27, 79, 0.4);
+}
+
+.sdfsdfdsfsdfsdsdfs {
+    margin: 20px;
+}
+
+
+
+.ModerationRoasters-modalHeader {
+  display: flex;
+  flex-wrap: wrap; /* дозволяє рядкам переноситися, якщо мало місця */
+  gap: 6px; /* невеликий проміжок між елементами */
+  padding: 4px 8px; /* зменшена внутрішня відступи */
+  background-color: #f5f3ff;
+  border-left: 3px solid #7c3aed;
+  border-radius: 4px; /* трохи менший радіус */
+  font-family: 'Inter', sans-serif;
+  color: #1f2937;
+  font-size: 12px; /* трохи менший шрифт */
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.ModerationRoasters-modalHeader span {
+  color: #4338ca;
+  font-weight: 600;
+}
+
+
+.sdafasefa {
+    margin: 5px;
+}
+
+
+
+
+
+
+
+
+.MargeModerationRoasters-saveBtn {
+  width: 100%;
+  display: block;               /* робимо кнопкою-блок для центрування */
+  margin: 20px auto;            /* центрування по горизонталі */
+  padding: 12px 24px;           /* внутрішні відступи */
+  font-size: 16px;              /* розмір шрифту */
+  font-weight: 600;             /* жирний текст */
+  color: #fff;                  /* білий текст */
+  background: linear-gradient(135deg, #4b0082, #6a0dad); /* темніші фіолетові відтінки */
+  border: none;                 /* без обводки */
+  border-radius: 8px;           /* закруглені кути */
+  cursor: pointer;              /* курсор при наведенні */
+  box-shadow: 0 4px 12px rgba(107, 13, 173, 0.4); /* легка тінь */
+  transition: all 0.3s ease;    /* плавна анімація при ховері */
+}
+
+.MargeModerationRoasters-saveBtn:hover {
+  background: linear-gradient(135deg, #6a0dad, #4b0082); /* інший градієнт при наведенні */
+  box-shadow: 0 6px 16px rgba(107, 13, 173, 0.5);
+  transform: translateY(-2px);  /* легке підняття */
+}
+
+.MargeModerationRoasters-saveBtn:active {
+  transform: translateY(0);     /* при натисканні опускається */
+  box-shadow: 0 3px 8px rgba(107, 13, 173, 0.3);
+}

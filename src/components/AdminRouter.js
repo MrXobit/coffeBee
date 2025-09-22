@@ -11,6 +11,7 @@ import AddBeans from './beans/AddBeans';
 import CafeInfo from './cafeInfo/CafeInfo';
 import NetworkDetails from './superAdmin/networks/networkDetails/NetworkDetails';
 import AddNet from './superAdmin/networks/addNet/AddNet';
+import RoasterDetailsModeraition from './superAdmin/moderationRoasters/RoasterDetailsModeraition/RoasterDetailsModeraition';
 
 
 const AdminRouter = () => {
@@ -35,6 +36,7 @@ const AdminRouter = () => {
                 <Route path="/edit-coffeeInfo" element={<CafeInfo/>} />
                 <Route path="/network-info/:id" element={<NetworkDetails/>} />
                 <Route path="/add-network" element={<AddNet/>} />
+                <Route path="/roaster-info/:id" element={<RoasterDetailsModeraition />} />
               </>
             )}
           </Routes>

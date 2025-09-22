@@ -190,3 +190,19 @@
   background: linear-gradient(135deg, #218838, #1e7e34);
   transform: translateY(-1px);
 }
+
+
+.backImg-toChangeLogo {
+  position: absolute;
+  top: 10px;       /* відступ зверху */
+  left: 10px;      /* відступ зліва */
+  width: 50px;     /* або через scale */
+  height: auto;
+  transform: scale(0.8); /* робимо меншу */
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.backImg-toChangeLogo:hover {
+  transform: scale(1); /* при наведенні збільшується */
+}

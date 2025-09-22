@@ -12,52 +12,91 @@ import { countrysArray } from './country';
 import noImage from '../../../assets/noImage.jpeg';
 
 const Cafes = () => {
-  const [roasters, setRoasters] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [count, setCount] = useState(10);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [searchActiva, setSearchActive] = useState(false);
-  const [activeFilter, setActiveFilter] = useState({ active: false, country: '' });
-  const [activeFilterCity, setActiveFilterCity] = useState({ active: false, city: '' });
-  
-  const [potentialInputValue, setPotentialInputValue] = useState([]);
-  const [inputState, setInputState] = useState('');
+function useSessionState(key, defaultValue) {
+    const [state, setState] = useState(() => {
+      const saved = sessionStorage.getItem(key);
+      if (saved !== null) {
+        try {
+          return JSON.parse(saved);
+        } catch {
+          return saved;
+        }
+      }
+      return defaultValue;
+    });
+
+    useEffect(() => {
+      sessionStorage.setItem(key, JSON.stringify(state));
+    }, [key, state]);
+
+    return [state, setState];
+  }
+
+  // 🔥 Тепер використовуємо його для твоїх state (назви не змінював)
+  const [roasters, setRoasters] = useSessionState("roasters", []);
+  const [loading, setLoading] = useSessionState("loading", false);
+  const [success, setSuccess] = useSessionState("success", false);
+  const [count, setCount] = useSessionState("count", 10);
+  const [currentPage, setCurrentPage] = useSessionState("currentPage", 1);
+  const [totalPages, setTotalPages] = useSessionState("totalPages", 1);
+  const [searchActiva, setSearchActive] = useSessionState("searchActiva", false);
+  const [activeFilter, setActiveFilter] = useSessionState("activeFilter", { active: false, country: '' });
+  const [activeFilterCity, setActiveFilterCity] = useSessionState("activeFilterCity", { active: false, city: '' });
+  const [potentialInputValue, setPotentialInputValue] = useSessionState("potentialInputValue", []);
+  const [inputState, setInputState] = useSessionState("inputState", '');
 
   const navigate = useNavigate();
   const controllerRef = useRef(null);
-
   const firstCafes = useRef([]);
+  
 
 
-  const loadData = async (num) => {
-    if (num !== 1) {
-      if (activeFilter.active && activeFilter.country.trim() !== '') {
-        return loadCafesByCountry(activeFilter.country);
-      }
+const loadData = async (num) => {
+  if (num !== 1) {
+    if (activeFilter.active && activeFilter.country.trim() !== '') {
+           
+      return loadCafesByCountry(activeFilter.country);
+
     }
+  }
 
-    setSearchActive(false);
-    try {
-      const token = localStorage.getItem('token');
-      if (!token) throw new Error('Token is not available');
-      const response = await axios.post(
-        `https://us-central1-coffee-bee.cloudfunctions.net/getAllCoffe?count=${count}&offset=${(currentPage - 1) * count}`,
-        {},
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      
-      
-      firstCafes.current = response.data.roasters;
-      setRoasters(response.data.roasters);
-      setTotalPages(Math.ceil(response.data.totalCount / count));
-    } catch (e) {
-      console.log(e);
-    } finally {
-      setLoading(false);
-    }
-  };
+  setSearchActive(false);
+
+  // ⚡ спочатку перевіряємо sessionStorage
+  const cachedRoasters = sessionStorage.getItem('roasters');
+  const cachedTotalPages = sessionStorage.getItem('totalPages');
+
+// if (cachedRoasters && cachedTotalPages && cachedRoasters !== "[]" && Number(cachedTotalPages) > 0) {
+//   setRoasters(JSON.parse(cachedRoasters));
+//   setTotalPages(Number(cachedTotalPages));
+//   setLoading(false);
+//   console.log('⚡ Завантажено з sessionStorage');
+//   return;
+// }
+
+
+  try {
+    const token = localStorage.getItem('token');
+    if (!token) throw new Error('Token is not available');
+    const response = await axios.post(
+      `https://us-central1-coffee-bee.cloudfunctions.net/getAllCoffe?count=${count}&offset=${(currentPage - 1) * count}`,
+      {},
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    firstCafes.current = response.data.roasters;
+    setRoasters(response.data.roasters);
+    setTotalPages(Math.ceil(response.data.totalCount / count));
+
+    // ⚡ кешуємо у sessionStorage
+    sessionStorage.setItem('roasters', JSON.stringify(response.data.roasters));
+    sessionStorage.setItem('totalPages', Math.ceil(response.data.totalCount / count));
+  } catch (e) {
+    console.log(e);
+  } finally {
+    setLoading(false);
+  }
+};
 
 
 
@@ -417,7 +456,7 @@ const Cafes = () => {
           <div className="activeRoasters-maincard-for-cards">
             {roasters.map((roaster) => (
               <Link to={`/cafe-info/${roaster.id}`} key={roaster?.placeid}>
-                <div className="activeRoasters-card-con">
+                <div className="activeRoasters-card-con" onClick={() => console.log(roaster.id)}>
                   <img
                     src={
                       roaster?.adminData?.photos && Object.values(roaster.adminData.photos).length > 0

@@ -5,6 +5,7 @@ import { db, storage } from '../../firebase';
 import { doc, getDoc, setDoc, collection, arrayUnion, updateDoc, arrayRemove, deleteDoc } from 'firebase/firestore';
 import { Link, useNavigate } from 'react-router-dom';
 import bluePlus from '../../assets/blue-plus.png';
+import noImg from '../../assets/noImage.jpeg';
 import { useSelector } from 'react-redux';
 import { deleteObject, ref } from 'firebase/storage';
 
@@ -116,11 +117,10 @@ const handleEdit = (bean) => {
   <div className="bean-main-con-for-cards">
     {beans.map((bean) => (
       <div key={bean.id} className="beanMain-main-card-block">
-        <img src={bean.imageUrl} alt={bean.name} className="beanMain-image-card" />
+        <img src={bean.imageUrl || noImg} alt={bean.name} className="beanMain-image-card" />
         <div className="beanmain-main-con-for-cards">
           <div className="beanMain-details-card">
             <h2 className="beanMain-name-card">{bean.name}</h2>
-            <p className="beanMain-roaster-card heavy-text">Roaster: {bean.roaster}</p>
             <p className="beanMain-country-card">Country: {bean.country}</p>
             <p className="beanMain-altitude-card">Altitude: {bean.altitude} meters</p>
             <p className="beanMain-sca-score-card">SCA Score: {bean.scaScore}</p>

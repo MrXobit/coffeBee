@@ -263,16 +263,15 @@ justify-content: center;
 }
 
 
-
-
 .AddProduct-btnWrapper {
+  width: 100%;
   opacity: 0;
   transform: scale(0.95);
   transition: opacity 0.3s ease, transform 0.3s ease;
-  pointer-events: none; /* щоб не клікався */
+  pointer-events: none;
   display: flex;
   justify-content: center;
-  margin-top: 20px;
+  margin: 30px auto 0 auto;
 }
 
 .AddProduct-btnWrapper.visible {
@@ -282,16 +281,90 @@ justify-content: center;
 }
 
 .AddProduct-btnSave {
-  background-color: #4CAF50;
-  color: white;
-  font-size: 16px;
-  padding: 12px 24px;
+  width: 100%;
+  max-width: 400px;
+  background: linear-gradient(135deg, #4CAF50, #388E3C);
+  color: #fff;
+  font-size: 18px;
+  padding: 16px 0;
   border: none;
-  border-radius: 8px;
+  border-radius: 12px;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
 }
 
 .AddProduct-btnSave:hover {
-  background-color: #45a049;
+  background: linear-gradient(135deg, #45a049, #2e7d32);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.2);
+  transform: translateY(-2px);
+}
+
+
+.AddProduct-btnWrapper {
+  width: 100%;
+  opacity: 0;
+  transform: translateY(20px) scale(0.98);
+  transition:
+    opacity 0.4s ease-out,
+    transform 0.4s ease-out;
+  pointer-events: none;
+  display: flex;
+  justify-content: center;
+  margin: 30px auto 0 auto;
+}
+
+.AddProduct-btnWrapper.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+
+
+.beans-upload-error {
+  text-align: center;
+  color: #d32f2f; /* насичений червоний для помилки */
+  background-color: #ffebee; /* світло-рожевий фон */
+  border: 1.5px solid #d32f2f;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-top: 8px;
+  user-select: none;
+  box-shadow: 0 2px 6px rgba(211, 47, 47, 0.25);
+  animation: shake 0.3s ease-in-out;
+}
+
+/* Анімація легкого трясіння для привернення уваги */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  50% { transform: translateX(4px); }
+  75% { transform: translateX(-4px); }
+}
+
+
+
+.form-error-message {
+
+  color: #dc2626; /* яскраво-червоний (Tailwind red-600) */
+  font-size: 0.875rem; /* трохи менший ніж звичайний текст */
+  padding-top: 20px;
+  padding-left: 4px;
+  font-weight: 500;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

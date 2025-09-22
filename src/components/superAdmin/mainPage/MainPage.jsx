@@ -11,6 +11,7 @@ import Cafes from '../cafes/Cafes';
 import Networks from '../networks/Networks';
 import ModerationCafe from '../moderationCafe/ModerationCafe';
 import ModerationBeans from '../moderationBeans/ModerationBeans';
+import ModerationRoasters from '../moderationRoasters/ModerationRoasters';
 
 
 const MainPage = () => {
@@ -56,9 +57,10 @@ const navigate = useNavigate();
       <div className={`navbar-main-admin ${activeTab === 'roaster' ? 'active' : ''}`} onClick={() => handleTabChange('roaster')}>Roasters</div>
       <div className={`navbar-main-admin ${activeTab === 'add-cafe' ? 'active' : ''}`} onClick={() => handleTabChange('add-cafe')}>Add cafe</div>
       <div className={`navbar-main-admin ${activeTab === 'CAFES' ? 'active' : ''}`} onClick={() => handleTabChange('CAFES')}>cafe</div>
-      <div className={`navbar-main-admin ${activeTab === 'Network' ? 'active' : ''}`} onClick={() => handleTabChange('Network')}>Networks</div>
+      <div className={`navbar-main-admin ${activeTab === 'Network' ? 'active' : ''}`} onClick={() => handleTabChange('Network')}>Сhains</div>
       <div className={`navbar-main-admin ${activeTab === 'ModerationCafe' ? 'active' : ''}`} onClick={() => handleTabChange('ModerationCafe')}>Moderation Cafe</div>
-       <div className={`navbar-main-admin ${activeTab === 'ModerationBeans' ? 'active' : ''}`} onClick={() => handleTabChange('ModerationBeans')}>Moderation Beans</div>
+      <div className={`navbar-main-admin ${activeTab === 'ModerationBeans' ? 'active' : ''}`} onClick={() => handleTabChange('ModerationBeans')}>Moderation Beans</div>
+      <div className={`navbar-main-admin ${activeTab === 'Moderation Roasters' ? 'active' : ''}`} onClick={() => handleTabChange('Moderation Roasters')}>Moderation Roasters</div>
       <div className="navbar-main-admin logout-main-admin-btn" onClick={() => dispatch(logoutUser())}>Logout</div>
     </div>
   </div>
@@ -94,6 +96,12 @@ const navigate = useNavigate();
 {activeTab === 'roaster' && (
       <Roaster />
     )}
+
+    {activeTab === 'Moderation Roasters' && (
+      <ModerationRoasters />
+    )}
+
+
   </div>
 </div>
 

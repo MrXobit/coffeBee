@@ -1,4 +1,5 @@
 .ModerationBeans-con {
+  position: relative;
     width: 100%;
     height: 100vh;
    background-color: #f4f7fa; 
@@ -206,6 +207,491 @@
 
 .moderationBeans-btn-con-actions {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center; 
+}
+
+
+
+
+
+
+
+.moderationBeansBtn-EditAdd {
+  width: 90%;
+  margin: 5px 15px 15px 15px; /* трішки менший відступ зверху */
+  padding: 12px 16px;
+  background: linear-gradient(135deg, #42a5f5, #1e88e5); /* приємний синій градієнт */
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.moderationBeansBtn-EditAdd:hover {
+  background: linear-gradient(135deg, #64b5f6, #1976d2);
+  transform: scale(1.02);
+}
+
+.moderationBeansBtn-EditAdd:active {
+  transform: scale(0.98);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+
+
+
+.ModerationBeans-modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.ModerationBeans-modal {
+  background: #fff;
+  border-radius: 12px;
+  padding: 16px;
+  max-width: 500px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+.ModerationBeans-modalClose {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.ModerationBeans-modalTitle {
+  font-size: 18px;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.ModerationBeans-modalTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.ModerationBeans-modalTable tr {
+  border-bottom: 1px solid #eee;
+}
+
+.ModerationBeans-modalKey {
+  font-weight: 600;
+  padding: 6px 8px;
+  text-transform: capitalize;
+  width: 40%;
+}
+
+.ModerationBeans-modalValue {
+  padding: 6px 8px;
+  color: #333;
+  word-break: break-word;
+}
+
+
+
+
+
+
+/* Заголовок сторінки */
+.ModerationBeans-editTitle {
+  margin-top: 30px;
+  font-size: 28px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 30px;
+  color: #222;
+}
+
+/* Контейнер форми */
+.ModerationBeans-editContent {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  background: #f9f9f9;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* Один блок поля */
+.ModerationBeans-editField {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Назва поля */
+.ModerationBeans-editLabel {
+  font-size: 15px;
+  font-weight: 600;
+  color: #555;
+}
+
+/* Поле вводу */
+.ModerationBeans-editInput {
+  padding: 10px 12px;
+  font-size: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  outline: none;
+  transition: all 0.2s ease-in-out;
+  background-color: #fff;
+}
+
+.ModerationBeans-editInput:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 6px rgba(0, 123, 255, 0.3);
+}
+
+/* Контейнер кнопок */
+.ModerationBeans-editActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 25px;
+}
+
+/* Кнопка Save */
+.ModerationBeans-saveBtn {
+  padding: 10px 22px;
+  background: linear-gradient(90deg, #4facfe, #00f2fe);
+  color: #fff;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ModerationBeans-saveBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 175, 254, 0.3);
+}
+
+/* Кнопка Cancel */
+.ModerationBeans-cancelBtn {
+  padding: 10px 22px;
+  background: #f0f0f0;
+  color: #555;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ModerationBeans-cancelBtn:hover {
+  background: #e0e0e0;
+  transform: translateY(-2px);
+}
+
+/* Адаптивність */
+@media (max-width: 650px) {
+  .ModerationBeans-editContent {
+    padding: 15px;
+  }
+
+  .ModerationBeans-editActions {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .ModerationBeans-saveBtn,
+  .ModerationBeans-cancelBtn {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+
+/* Контейнер для чекбоксів */
+.ModerationBeans-editField input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: #007bff; /* колір галочки */
+  border-radius: 5px;
+  transition: all 0.2s ease;
+}
+
+/* Hover ефект */
+.ModerationBeans-editField input[type="checkbox"]:hover {
+  transform: scale(1.1);
+}
+
+/* Active натискання */
+.ModerationBeans-editField input[type="checkbox"]:active {
+  transform: scale(0.95);
+}
+
+/* Лейбл поруч з чекбоксом */
+.ModerationBeans-editField label {
+  font-size: 15px;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 5px;
+  display: block;
+}
+
+/* Щоб чекбокс та текст були на одній лінії */
+.ModerationBeans-editField-checkboxWrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+
+
+
+
+.ModerationBeans-roasterData {
+  margin-top: 20px;
+  padding: 20px;
+  border-radius: 12px;
+  background: #f8f9fa;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.ModerationBeans-roasterLoading,
+.ModerationBeans-roasterNotFound {
+  text-align: center;
+  font-size: 15px;
+  color: #666;
+}
+
+.ModerationBeans-roasterInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.ModerationBeans-roasterHeader {
+  text-align: center;
+}
+
+.ModerationBeans-roasterLogo {
+  max-width: 120px;
+  border-radius: 50%;
+  margin-bottom: 10px;
+}
+
+.ModerationBeans-roasterName {
+  font-size: 22px;
+  font-weight: bold;
+  margin: 5px 0;
+}
+
+.ModerationBeans-roasterDesc {
+  font-size: 14px;
+  color: #444;
+}
+
+.ModerationBeans-roasterSection {
+  border-top: 1px solid #ddd;
+  padding-top: 10px;
+}
+
+.ModerationBeans-roasterSection h3 {
+  margin-bottom: 8px;
+  font-size: 16px;
+  color: #333;
+}
+
+
+
+
+.ModerationBeans-modal {
+  padding: 20px;
+  max-width: 800px;
+  width: 100%;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+  font-family: 'Inter', sans-serif;
+  color: #333;
+}
+
+.ModerationBeans-header {
+  margin-bottom: 16px;
+}
+
+.ModerationBeans-header h2 {
+  font-size: 20px;
+  margin: 0;
+  font-weight: 600;
+  color: #222;
+}
+
+.ModerationBeans-section {
+  margin-bottom: 16px;
+}
+
+.ModerationBeans-section h3 {
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 6px;
+  color: #444;
+}
+
+.ModerationBeans-section p,
+.ModerationBeans-section li {
+  font-size: 14px;
+  line-height: 1.4;
+  margin: 2px 0;
+}
+
+.ModerationBeans-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.ModerationBeans-list li {
+  background: #f5f5f5;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #555;
+}
+
+.ModerationBeans-currentBeans {
+  max-height: 150px;
+  overflow-y: auto;
+  border: 1px solid #eee;
+  padding: 8px;
+  border-radius: 8px;
+  background: #fafafa;
+}
+
+.ModerationBeans-currentBeans-item {
+  font-size: 14px;
+  padding: 4px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.ModerationBeans-currentBeans-item:last-child {
+  border-bottom: none;
+}
+
+.ModerationBeans-loader {
+  text-align: center;
+  padding: 20px;
+  font-size: 14px;
+  color: #666;
+}
+
+.ModerationBeans-noBeans {
+  font-size: 14px;
+  color: #777;
+  font-style: italic;
+  margin: 6px 0 0 0;
+}
+
+
+
+.ModerationBeans-modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.ModerationBeans-modalContent {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  max-width: 700px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  position: relative;
+}
+
+.ModerationBeans-closeBtn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.ModerationBeans-closeBtn:hover {
+  transform: scale(1.2);
+}
+
+
+/* Контейнер модалки */
+.ModerationBeans-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.5); /* напівпрозорий фон */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow-y: auto; /* якщо контент більший за вікно */
+  z-index: 1000; /* щоб модалка була зверху */
+}
+
+/* Модалка всередині контейнера */
+.ModerationBeans-modalContent {
+  position: relative; /* для абсолютного позиціонування кнопки закриття */
+  background: #fff;
+  border-radius: 8px;
+  padding: 24px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+/* Кнопка закриття */
+.ModerationBeans-closeBtn {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  opacity: 0.8;
+  z-index: 1001; /* щоб була зверху контенту */
+}
+
+.ModerationBeans-closeBtn:hover {
+  transform: scale(1.1);
+  opacity: 1;
 }

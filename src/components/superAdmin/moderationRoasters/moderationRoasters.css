@@ -1,0 +1,625 @@
+.ModerationRoasters {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  background-color: #f7f8fa;
+  min-height: 100vh;
+}
+
+.ModerationRoasters-title {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #1f2937;
+  text-align: center;
+}
+
+.ModerationRoasters-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.ModerationRoasters-item {
+  background: white;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ModerationRoasters-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.ModerationRoasters-recordsCount {
+  font-size: 14px;
+  font-weight: 500;
+  color: #4b5563;
+}
+
+.ModerationRoasters-recordsList {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ModerationRoasters-recordItem {
+  background-color: #f3f4f6;
+  padding: 8px;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #374151;
+}
+
+.ModerationRoasters-empty {
+  font-size: 16px;
+  color: #6b7280;
+}
+
+
+.ModerationRoasters-loaderCon {
+  text-align: center;
+}
+
+
+
+
+
+.ModerationRoasters-btnContainer {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.ModerationRoasters-btnAccept,
+.ModerationRoasters-btnReject {
+  flex: 1;
+  text-align: center;
+  padding: 8px 0;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ModerationRoasters-btnAccept {
+  background-color: #10b981; /* зелений */
+  color: white;
+}
+
+.ModerationRoasters-btnAccept:hover {
+  background-color: #059669;
+}
+
+.ModerationRoasters-btnReject {
+  background-color: #ef4444; /* червоний */
+  color: white;
+}
+
+.ModerationRoasters-btnReject:hover {
+  background-color: #dc2626;
+}
+
+
+
+
+
+
+
+
+
+.ModerationRoasters-modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5); /* затемнення */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.ModerationRoasters-modal {
+  position: relative;
+  background: white;
+  border-radius: 12px;
+  padding: 20px 24px;
+  width: 320px;
+  max-width: 90%;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.ModerationRoasters-modalClose {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.ModerationRoasters-modalContent {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ModerationRoasters-modalTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.ModerationRoasters-modalSelect {
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  font-size: 14px;
+}
+.ModerationRoasters-modalSelect {
+  max-height: 200px; /* обмежуємо висоту */
+  overflow-y: auto; /* додаємо вертикальний скрол */
+}
+
+
+
+
+
+
+
+
+
+/* Задній фон */
+.ModerationRoasters-modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0,0,0,0.5); /* затемнення */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+/* Модалка */
+.ModerationRoasters-modal {
+  position: relative;
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 24px 20px;
+  width: 360px;
+  max-width: 90%;
+  max-height: 80vh; /* обмежуємо висоту модалки */
+  overflow-y: auto; /* додаємо вертикальний скрол, якщо вміст великий */
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+/* Хрестик закриття */
+.ModerationRoasters-modalClose {
+  position: absolute;
+  top: 6px;
+  right: 12px;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+/* Контент модалки */
+.ModerationRoasters-modalContent {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Заголовок */
+.ModerationRoasters-modalTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* Селект */
+.ModerationRoasters-modalSelect {
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 14px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  background-color: #ffffff;
+  max-height: 200px; /* обмежуємо висоту списку */
+  overflow-y: auto; /* вертикальний скрол у випадку довгого списку */
+  cursor: pointer;
+}
+
+
+.ModerationRoasters-modalSelectWrapper {
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  max-height: 200px; /* обмеження висоти */
+  overflow-y: auto; /* прокрутка */
+  cursor: pointer;
+}
+
+.ModerationRoasters-modalSelectOption {
+  padding: 8px;
+}
+
+.ModerationRoasters-modalSelectOption:hover {
+  background-color: #f3f4f6;
+}
+
+
+.ModerationRoasters-selectedCountry {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+  margin-top: 12px;
+  text-align: center; /* по центру, можна змінити під модалку */
+}
+
+
+
+
+
+
+
+.ModerationRoasters-roasterHeader {
+  display: flex;
+  justify-content: space-between; /* Назва ліворуч, іконка праворуч */
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #e5e7eb; /* легка лінія під блоком */
+}
+
+.ModerationRoasters-roasterName {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+  margin: 0;
+}
+
+.ModerationRoasters-roasterEdit {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.ModerationRoasters-roasterEdit:hover {
+  transform: scale(1.1); /* легке збільшення при наведенні */
+}
+
+
+
+
+.ModerationRoasters-roasterHeader {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.ModerationRoasters-roasterName {
+  font-size: 16px;
+  font-weight: 500;
+  color: #374151;
+  margin: 0;
+}
+
+.ModerationRoasters-roasterName span {
+  font-weight: 600;
+  color: #111827; /* темніший колір для виділення */
+}
+
+.ModerationRoasters-roasterEdit {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  margin: 10px;
+  transition: transform 0.2s ease;
+}
+
+.ModerationRoasters-roasterEdit:hover {
+  transform: scale(1.1);
+}
+
+
+
+
+.ModerationRoasters-inputWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 6px; /* відстань між текстом і інпутом */
+  margin: 10px 0;
+}
+
+.ModerationRoasters-inputLabel {
+  font-size: 14px;
+  font-weight: 500;
+  color: #4b5563; /* сірий, щоб було м’яко */
+}
+
+.ModerationRoasters-inputField {
+  padding: 8px 12px;
+  font-size: 14px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ModerationRoasters-inputField:focus {
+  border-color: #4f46e5; /* фокусний колір */
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+}
+
+
+
+.ModerationRoasters-saveBtn {
+  padding: 8px 16px;
+  background-color: #4f46e5; /* фіолетовий основний колір */
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.ModerationRoasters-saveBtn:hover {
+  background-color: #4338ca; /* темніший фіолетовий при наведенні */
+  transform: scale(1.001);
+}
+
+.ModerationRoasters-saveBtn:active {
+  transform: scale(0.97);
+}
+
+
+.ModerationRoasters-roasterCountry {
+  font-size: 14px;
+  color: #4b5563;
+  margin-top: 4px;
+}
+
+
+
+.ModerationRoasters-mergeBtn {
+  background-color: #4f46e5; /* фіолетовий */
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.ModerationRoasters-mergeBtn:hover {
+  background-color: #4338ca; /* темніший фіолетовий */
+}
+
+.ModerationRoasters-mergeBtn:active {
+  transform: scale(0.97);
+}
+
+.ModerationRoasters-mergeBtn:disabled {
+  background-color: #9ca3af; /* сірий */
+  cursor: not-allowed;
+}
+
+
+
+.ModerationRoasters-add-btn {
+  margin-bottom: 20px;
+  display: inline-block;
+  padding: 14px 28px;
+  font-size: 16px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #fff;
+  background: linear-gradient(45deg, #6a11cb, #2575fc);
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(37, 117, 252, 0.4);
+}
+
+.ModerationRoasters-add-btn:hover {
+  transform: scale(1.07);
+  box-shadow: 0 6px 25px rgba(106, 17, 203, 0.6);
+}
+
+.ModerationRoasters-add-btn:active {
+  transform: scale(0.97);
+}
+
+/* Анімований ефект хвилі при ховері */
+.ModerationRoasters-add-btn::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -75%;
+  width: 50%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.2);
+  transform: skewX(-20deg);
+  transition: all 0.5s ease;
+}
+
+.ModerationRoasters-add-btn:hover::after {
+  left: 130%;
+}
+
+/* Центрування кнопки */
+.ModerationRoasters-btn-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+
+.ModerationRoasters-list {
+  justify-content: center;
+  align-items: center;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.ModerationRoasters-fileInputWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.ModerationRoasters-fileInputLabel {
+  display: inline-block;
+  padding: 12px 20px;
+  background-color: #4f46e5; /* фіолетова кнопка */
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.ModerationRoasters-fileInputLabel:hover {
+  background-color: #4338ca;
+  transform: scale(1.03);
+}
+
+.ModerationRoasters-fileInput {
+  display: none; /* приховуємо стандартний інпут */
+}
+
+/* прев’ю картинки */
+.ModerationRoasters-imagePreview {
+  max-width: 100%;
+  max-height: 200px;
+  border-radius: 12px;
+  object-fit: cover;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+
+
+
+
+
+.ModerationRoasters-fileInputWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  margin: 24px 0;
+}
+
+.ModerationRoasters-fileInputLabel {
+  background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+  padding: 12px 28px;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 8px 15px rgba(37, 117, 252, 0.3);
+  transition: all 0.3s ease;
+  user-select: none;
+  text-align: center;
+}
+
+.ModerationRoasters-fileInputLabel:hover {
+  box-shadow: 0 12px 20px rgba(37, 117, 252, 0.5);
+  transform: translateY(-2px);
+}
+
+.ModerationRoasters-fileInputLabel:active {
+  box-shadow: 0 4px 10px rgba(37, 117, 252, 0.4);
+  transform: translateY(0);
+}
+
+.ModerationRoasters-fileInput {
+  display: none; /* приховуємо дефолтний інпут */
+}
+
+/* прев’ю картинки */
+.ModerationRoasters-imagePreview {
+  max-width: 100%;
+  max-height: 240px;
+  border-radius: 14px;
+  object-fit: cover;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+  animation: fadeIn 0.4s ease;
+}
+
+/* плавне появлення */
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+
+
+.ModerationRoasters-imagePreviewWrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.ModerationRoasters-imagePreview {
+  max-width: 100%;
+  max-height: 240px;
+  border-radius: 14px;
+  object-fit: cover;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+}
+
+/* Хрестик */
+.ModerationRoasters-imageRemove {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 22px;
+  height: 22px;
+  cursor: pointer;
+  background: rgba(255,255,255,0.7);
+  border-radius: 50%;
+  padding: 3px;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.ModerationRoasters-imageRemove:hover {
+  transform: scale(1.1);
+  background: rgba(255,255,255,0.9);
+}

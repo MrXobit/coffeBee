@@ -89,7 +89,7 @@ export const checkAuthStatus = createAsyncThunk(
 
       const userRef = doc(db, 'users', user.uid);
       const snapshot = await getDoc(userRef);
-
+      console.log(user.uid)
       if (!snapshot.exists()) {
         throw new Error('User data not found in Firestore');
       }

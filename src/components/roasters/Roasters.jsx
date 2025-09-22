@@ -7,6 +7,8 @@ import debounce from 'lodash.debounce';
 import { useNavigate } from 'react-router-dom';
 import ToggleSwitch from '../toggleSwitch/ToggleSwitch';
 import ActiveRoasteries from './activeRoasteries/ActiveRoasteries';
+import defoultImg from '../../assets/noImage.jpeg'
+
 
 
 const Roasters = () => {
@@ -197,6 +199,7 @@ const handlePageChange = (page) => {
 
   return (
     <div className='roster-main-con-class-supermain'>
+
              <div className='beans-main-togl-btn'>
     <ToggleSwitch toggleValue={toggleValue} onToggle={handleToggle} words={['Roasteries', 'Active']} />
 </div>
@@ -224,7 +227,7 @@ const handlePageChange = (page) => {
 <div className="activeRoasters-maincard-for-cards">
   {roasters.map((roaster) => 
     <div key={roaster.id} className="activeRoasters-card-con" onClick={() => handleDetails(roaster)}>
-      <img src={roaster.logo} alt="Roaster Logo" className="activeRoasters-card-img" />
+      <img src={roaster.logo || defoultImg} alt="Roaster Logo" className="activeRoasters-card-img" />
       <div className="activeRoasters-card-name">{roaster.name}</div>
       <div className="activeRoasters-card-description">
         {roaster.description}

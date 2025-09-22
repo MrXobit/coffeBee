@@ -6,6 +6,8 @@ import Loader from '../../loader/Loader';
 import axios from 'axios';
 import debounce from 'lodash.debounce';
 import NetworkAutoAssign from './networkAutoAssign/NetworkAutoAssign';
+import { collection, deleteDoc, doc, getDoc, getDocs, updateDoc } from 'firebase/firestore';
+import { db } from '../../../firebase';
 
 const Networks = () => {
   const [networks, setNetworks] = useState([]);
@@ -139,6 +141,8 @@ const Networks = () => {
       </div>
     );
   };
+ 
+
 
   useEffect(() => {
     setLoading(true);
@@ -153,21 +157,21 @@ const Networks = () => {
 
   return (
     <div className="Networks-con">
-      <h1 className="networks-mainTitle">Networks</h1>
-
+      <h1 className="networks-mainTitle">Сhains</h1>
       <NetworkAutoAssign loadData={loadData}/>
 
+    
       <Link to="/add-network" className="Networks-add-new-cafe-pass-con">
         <div className="Networks-block-for-cafe-pass-img-plus">
           <img src={bluePlus} alt="plus-icon" />
         </div>
-        <p className="Networks-cafe-pass-p-just-text">Add New Network</p>
+        <p className="Networks-cafe-pass-p-just-text">Add New Сhain</p>
       </Link>
 
       <input
         className="Networks-iputSerach"
         onChange={handleSearchMain}
-        placeholder="Find network"
+        placeholder="Find chain"
       />
 
       {loading ? (
@@ -184,7 +188,7 @@ const Networks = () => {
             <Link className='Networks-net-link' key={network.name} to={`/network-info/${network.name}`}>
               <div className="JoinCoffeNetwork-network-con">
                 <h1>
-                  Network name: <strong>{network.name}</strong>
+                  Chain name: <strong>{network.name}</strong>
                 </h1>
                 <p>
                 members: {Math.max(0, Array.isArray(network.cafeIds) ? network.cafeIds.length - 1 : 0)}

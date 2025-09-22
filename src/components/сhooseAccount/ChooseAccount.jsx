@@ -67,6 +67,7 @@ const ChooseAccount = () => {
     if (localStorage.getItem('activeTab')) {
       localStorage.removeItem('activeTab');
     }
+    console.log(cafe)
     dispatch(setPrivileges('ro')); 
     localStorage.setItem('interfaceType', 'cafe');
     navigate('/admin');

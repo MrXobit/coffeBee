@@ -2,20 +2,30 @@ import React, { useEffect, useState } from 'react';
 import './CafeInfo.css';
 import SubLoader from '../loader/SubLoader';
 import axios from 'axios';
-import { db } from '../../firebase'; 
-import { doc, getDoc } from 'firebase/firestore';
+import { db, storage } from '../../firebase'; 
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import WorkingHours from './updateWorkingHours/WorkingHours';
 import Contact from './contact/Contact';
 import MapBlock from './mapBlock/MapBlock';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { AnimatePresence, motion } from "framer-motion";
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import backImg from '../../assets/back.png'
 
 
 const CafeInfo = () => {
   const [data, setData] = useState(null);
   const [editedDescription, setEditedDescription] = useState(''); 
   const [loadingDesc ,setLoadingDesc] = useState(false)
+const navigate = useNavigate()
+
+const [btnLogo, setBtnLogo] = useState(false)
+    const [imageFile, setImageFile] = useState(null);
+    const [imageFileObject, setImageFileObject] = useState(null);
+    const [error, setError] = useState(null);
+    const supportedExtensions = ['jpg', 'jpeg', 'png'];
 
 
   const [loadingUpdateCafeInfo, setLoadingUpdateCafeInfo] = useState(false)
@@ -59,7 +69,7 @@ const CafeInfo = () => {
       // оновлення станів
       setData(updatedCafeData);
       setEditedDescription(updatedCafeData?.adminData?.description || '');
-  
+  setImageFile(Object.values(updatedCafeData.adminData.photos)[0])
       // збереження в localStorage
       localStorage.setItem('selectedCafe', JSON.stringify(updatedCafeData));
     } catch (e) {
@@ -74,7 +84,69 @@ const CafeInfo = () => {
   loadData()
 
 
+
+      const preventFileOpen = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+    };
+
+    window.addEventListener('dragover', preventFileOpen);
+    window.addEventListener('drop', preventFileOpen);
+
+    return () => {
+      window.removeEventListener('dragover', preventFileOpen);
+      window.removeEventListener('drop', preventFileOpen);
+    };
+
+
+
   }, []);
+
+
+
+
+  
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const droppedFile = e.dataTransfer.files[0];
+    if (droppedFile) {
+      const fileExtension = droppedFile.name.toLowerCase().split('.').pop();
+      if (supportedExtensions.includes(fileExtension)) {
+        setImageFile(URL.createObjectURL(droppedFile));
+        setImageFileObject(droppedFile);
+        setError(null);
+      } else {
+        setError('Extension not supported');
+        setImageFile(null);
+        setImageFileObject(null);
+      }
+    }
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const fileExtension = file.name.toLowerCase().split('.').pop();
+      if (supportedExtensions.includes(fileExtension)) {
+        setImageFile(URL.createObjectURL(file));
+        setImageFileObject(file);
+        setError(null);
+      } else {
+        setError('Extension not supported');
+        setImageFile(null);
+        setImageFileObject(null);
+      }
+    }
+  };
+
+
+
+  const handleDragOver = (e) => { e.preventDefault(); };
+  const handleDragEnter = (e) => { e.preventDefault(); e.stopPropagation(); };
+  const handleDragLeave = (e) => { e.preventDefault(); e.stopPropagation(); };
+
+
 
 
   
@@ -120,13 +192,14 @@ const CafeInfo = () => {
   };
 
 
+
   const handleUpdateCafeInfoByGoogle = async () => {
     setLoadingUpdateCafeInfo(true);
     try {
       const token = localStorage.getItem('token');
   
       const response = await axios.post(
-        'https://us-central1-coffee-bee.cloudfunctions.net/updateCafeInfoByGoogle',
+        `https://us-central1-coffee-bee.cloudfunctions.net/updateCafeInfoByGoogle`,
         {
           placeId: data.id,
           adminData: data.adminData,
@@ -152,9 +225,11 @@ const CafeInfo = () => {
         setData(updatedCafeData);
   
         localStorage.setItem('selectedCafe', JSON.stringify(updatedCafeData));
+        setImageFile(Object.values(updatedCafeData.adminData.photos)[0])
+        setImageFileObject(null)
       }  
 
-
+      
 
       console.log(response.data);
     } catch (e) {
@@ -167,6 +242,55 @@ const CafeInfo = () => {
   
 
 
+  const handleChangeLogo = async() => {
+    setBtnLogo(true)
+    try {
+      if(imageFileObject === null) {
+        return 
+      }
+
+
+
+         const storageRef = ref(storage, `cafe/${data.id}/photos/cafe`);
+
+    // 2. Завантажуємо файл у Storage
+    await uploadBytes(storageRef, imageFileObject);
+
+    // 3. Отримуємо downloadURL
+    const downloadURL = await getDownloadURL(storageRef);
+
+    // 4. Оновлюємо Firestore (adminData.photos.cafePhoto)
+    const cafeRef = doc(db, "cafe", data.id);
+    await updateDoc(cafeRef, {
+      "adminData.photos.cafePhoto": downloadURL
+    });
+
+    console.log("✅ Лого успішно оновлено:", downloadURL);
+
+    setData((prev) => ({
+      ...prev,
+      adminData: {
+        ...prev.adminData,
+        photos: {
+          ...prev.adminData.photos,
+          cafePhoto: downloadURL,
+        },
+      },
+    }));
+
+    notifySuccess("Cafe logo has been successfully updated ✅");
+
+    }catch(e) {
+      console.log(e)
+    }finally {
+setBtnLogo(false)
+    }
+  }
+
+const handleChangePage = () => {
+  navigate("/"); 
+};
+
 
 console.log(cafeData)
 
@@ -176,6 +300,7 @@ console.log(cafeData)
 
   return (
     <div className="cafe-info-container">
+      <img src={backImg} className='backImg-toChangeLogo' onClick={handleChangePage}/>
       <h1 className="section-title">Cafe Settings</h1>
 
       <div className="info-section">
@@ -247,6 +372,51 @@ console.log(cafeData)
 
       </div>
    
+
+
+
+
+             <div className="beans-for-img-con"
+            onDrop={handleDrop}
+            onDragOver={handleDragOver}
+            onDragEnter={handleDragEnter}
+            onDragLeave={handleDragLeave}
+          >
+            <label htmlFor="beans-img-uploader">Image Upload</label>
+            <input
+              type="file"
+              name="imageUrl"
+              id="beans-img-uploader"
+              className="input-file-upload-ultimate"
+              accept="image/*"
+              onChange={handleImageChange}
+            />
+            {imageFile && <img src={imageFile} alt="Uploaded Preview" className="beans-preview-image-ultimate" />}
+            {!imageFile && !error && (
+              <p className="beans-upload-prompt">Drag and drop a file or select it via the button</p>
+            )}
+
+          <AnimatePresence>
+  {(imageFile != Object.values(data.adminData.photos)[0]) && (
+    <motion.div
+      key="change-logo-btn"
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.9 }}
+      transition={{ duration: 0.4, ease: "easeInOut" }}
+      className="changeLogoWrapper"
+    >
+      <button className="changeLogoBtn" onClick={handleChangeLogo} disabled={btnLogo}>
+        {btnLogo ? 'Loading' : 'Change cafe logo'}
+      </button>
+    </motion.div>
+  )}
+</AnimatePresence>
+          </div>
+
+
+
+
     </div>
   );
 };

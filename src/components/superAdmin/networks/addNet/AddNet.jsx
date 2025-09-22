@@ -79,7 +79,7 @@ const AddNet = () => {
        </Link>
 
        <h1 className="createCoffeNetwork-title">
-    Create Coffee Network
+    Create Coffee Сhain
   </h1>
 
   <input
@@ -87,7 +87,7 @@ const AddNet = () => {
     onChange={e => setName(e.target.value)}
     className='createCoffeNetwork-input'
     type="text"
-    placeholder='Please enter the name of the network'
+    placeholder='Please enter the name of the chain'
   />
 
   <button onClick={handleCreateNetwork} disabled={loading} className='createCoffeNetwork-btn'>{loading ? "loading..." : "Create"}</button>
