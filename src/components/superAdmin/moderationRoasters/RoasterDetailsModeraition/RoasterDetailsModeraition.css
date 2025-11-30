@@ -1,149 +1,759 @@
 .RoasterDetailsModeraition-container {
-  padding: 40px 20px;
   max-width: 1200px;
   margin: 0 auto;
-  font-family: "Inter", sans-serif;
-  color: #222;
+  padding: 20px;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  min-height: 100vh;
 }
 
-/* --- Roaster card --- */
+.RoasterDetailsModeraition-back {
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  margin-bottom: 20px;
+  transition: transform 0.2s ease;
+  filter: brightness(0.8);
+}
+
+.RoasterDetailsModeraition-back:hover {
+  transform: translateX(-5px);
+}
+
 .RoasterDetailsModeraition-roaster-card {
-  display: flex;
-  align-items: center;
-  background: linear-gradient(135deg, #ffffff, #fafafa);
+  background: white;
   border-radius: 20px;
   padding: 30px;
-  box-shadow: 0 8px 30px rgba(0,0,0,0.08);
-  margin-bottom: 50px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.RoasterDetailsModeraition-roaster-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+  margin-bottom: 40px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(10px);
 }
 
 .RoasterDetailsModeraition-roaster-logo {
-  width: 140px;
-  height: 140px;
+  width: 120px;
+  height: 120px;
+  border-radius: 20px;
   object-fit: cover;
-  border-radius: 16px;
-  margin-right: 25px;
-  border: 3px solid #eee;
+  border: 3px solid #e8eaf6;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
 }
 
 .RoasterDetailsModeraition-roaster-info h1 {
-  font-size: 32px;
-  margin-bottom: 12px;
+  margin: 0 0 15px 0;
+  font-size: 2.5em;
+  color: #2c3e50;
   font-weight: 700;
 }
 
-.RoasterDetailsModeraition-roaster-info p {
-  font-size: 16px;
-  color: #555;
-  margin-bottom: 6px;
-  line-height: 1.5;
+.RoasterDetailsModeraition-description {
+  font-size: 1.1em;
+  line-height: 1.6;
+  color: #5d6d7e;
+  margin-bottom: 15px;
+  max-width: 600px;
 }
 
-/* --- Beans --- */
-.RoasterDetailsModeraition-beans-title {
-  font-size: 26px;
+.RoasterDetailsModeraition-location {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.1em;
+  color: #3498db;
+  margin-bottom: 10px;
   font-weight: 600;
-  margin-bottom: 25px;
+}
+
+.RoasterDetailsModeraition-website {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #e74c3c;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1.1em;
+  padding: 8px 16px;
+  border: 2px solid #e74c3c;
+  border-radius: 25px;
+  transition: all 0.3s ease;
+}
+
+.RoasterDetailsModeraition-website:hover {
+  background: #e74c3c;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+}
+
+.RoasterDetailsModeraition-beans-title {
+  font-size: 2em;
+  color: #2c3e50;
+  margin-bottom: 30px;
   text-align: center;
+  font-weight: 700;
 }
 
 .RoasterDetailsModeraition-beans-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
   gap: 25px;
+  padding: 20px 0;
+ 
 }
 
 .RoasterDetailsModeraition-bean-card {
-  background: #fff;
-  border-radius: 18px;
-  padding: 20px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.07);
-  text-align: center;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-  cursor: pointer;
+  background: white;
+  border-radius: 16px;
+  padding: 25px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(10px);
 }
 
 .RoasterDetailsModeraition-bean-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 10px 28px rgba(0,0,0,0.12);
+  transform: translateY(-5px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
 }
 
-.RoasterDetailsModeraition-bean-img {
-  width: 100%;
-  height: 180px;
-  object-fit: cover;
-  border-radius: 14px;
+.bean-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
   margin-bottom: 15px;
+  gap: 15px;
 }
 
-.RoasterDetailsModeraition-bean-card h3 {
-  font-size: 18px;
-  margin-bottom: 6px;
+.bean-name {
+  margin: 0;
+  font-size: 1.4em;
+  color: #2c3e50;
+  font-weight: 700;
+  line-height: 1.3;
+  flex: 1;
+}
+
+.bean-price {
+  background: linear-gradient(135deg, #27ae60, #2ecc71);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 1.1em;
+  white-space: nowrap;
+}
+
+.bean-details {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.bean-detail {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #ecf0f1;
+}
+
+.detail-label {
+  font-weight: 600;
+  color: #7f8c8d;
+  font-size: 0.9em;
+}
+
+.detail-value {
+  font-weight: 600;
+  color: #2c3e50;
+  text-align: right;
+  flex: 1;
+  margin-left: 10px;
+}
+
+.bean-description {
+  font-style: italic;
+  color: #5d6d7e;
+  line-height: 1.5;
+  margin: 10px 0;
+  padding: 12px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #3498db;
+}
+
+.bean-flavours {
+  margin-top: 15px;
+}
+
+.flavours-label {
+  display: block;
+  font-weight: 600;
+  color: #7f8c8d;
+  margin-bottom: 8px;
+  font-size: 0.9em;
+}
+
+.flavours-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.flavour-tag {
+  background: linear-gradient(135deg, #e74c3c, #e67e22);
+  color: white;
+  padding: 4px 10px;
+  border-radius: 15px;
+  font-size: 0.85em;
   font-weight: 600;
 }
 
-.RoasterDetailsModeraition-bean-card p {
-  font-size: 14px;
-  color: #666;
-  margin-bottom: 4px;
-}
-
-/* --- States --- */
 .RoasterDetailsModeraition-no-beans {
   text-align: center;
-  color: #888;
-  font-style: italic;
+  padding: 60px 20px;
   grid-column: 1 / -1;
+}
+
+.RoasterDetailsModeraition-no-beans p {
+  font-size: 1.2em;
+  color: #7f8c8d;
+  margin: 0;
 }
 
 .RoasterDetailsModeraition-loader,
 .RoasterDetailsModeraition-not-found {
   text-align: center;
-  font-size: 22px;
-  padding: 60px;
-  color: #444;
-  font-weight: 500;
+  padding: 60px 20px;
+  font-size: 1.3em;
+  color: #5d6d7e;
+}
+
+/* Анімації */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.RoasterDetailsModeraition-bean-card {
+  animation: fadeIn 0.5s ease forwards;
+}
+
+/* Адаптивність */
+@media (max-width: 768px) {
+  .RoasterDetailsModeraition-container {
+    padding: 15px;
+  }
+  
+  .RoasterDetailsModeraition-roaster-card {
+    flex-direction: column;
+    text-align: center;
+    padding: 20px;
+  }
+  
+  .RoasterDetailsModeraition-roaster-logo {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .RoasterDetailsModeraition-beans-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .bean-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  
+  .bean-price {
+    align-self: flex-start;
+  }
 }
 
 
 
 
 
-.RoasterDetailsModeraition-back {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Контейнер для заголовка та кнопок */
+.RoasterDetailsModeraition-header-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  gap: 20px;
+}
+
+/* Кнопка видалення всіх зерен */
+.RoasterDetailsModeraition-delete-all-btn {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 25px;
+  font-weight: 600;
+  font-size: 1em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+  white-space: nowrap;
+}
+
+.RoasterDetailsModeraition-delete-all-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
+  background: linear-gradient(135deg, #c0392b, #a93226);
+}
+
+/* Кнопка видалення окремого зерна */
+.bean-delete-btn {
+
   position: absolute;
-  top: 20px;
-  left: 20px;
+  top: 12px;
+  right: 12px;
   width: 32px;
   height: 32px;
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  font-size: 1.5em;
+  font-weight: bold;
   cursor: pointer;
-  transition: transform 0.2s ease, opacity 0.2s ease;
-  opacity: 0.85;
-  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
+  z-index: 10;
 }
 
-.RoasterDetailsModeraition-back:hover {
+.bean-delete-btn:hover {
   transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(231, 76, 60, 0.4);
+  background: linear-gradient(135deg, #c0392b, #a93226);
+}
+
+/* Контейнер для картки зерна з позиціонуванням */
+.RoasterDetailsModeraition-bean-card {
+  position: relative;
+  background: white;
+  border-radius: 16px;
+  padding: 25px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(10px);
+}
+
+/* Контейнер для сайту з URL */
+.RoasterDetailsModeraition-website-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.website-url {
+  font-size: 0.9em;
+  color: #7f8c8d;
+  background: #f8f9fa;
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid #e9ecef;
+  word-break: break-all;
+  max-width: 300px;
+}
+
+/* Адаптивність для мобільних */
+@media (max-width: 768px) {
+  .RoasterDetailsModeraition-header-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 15px;
+  }
+  
+  .RoasterDetailsModeraition-delete-all-btn {
+    align-self: center;
+    max-width: 200px;
+  }
+  
+  .RoasterDetailsModeraition-website-container {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .website-url {
+    max-width: 100%;
+    font-size: 0.8em;
+  }
+  
+  .bean-delete-btn {
+    top: 8px;
+    right: 8px;
+    width: 28px;
+    height: 28px;
+    font-size: 1.3em;
+  }
+}
+
+/* Додаткові стилі для кращого вигляду */
+.RoasterDetailsModeraition-bean-card:hover .bean-delete-btn {
   opacity: 1;
 }
-.RoasterDetailsModeraition-back {
-  position: absolute;
+
+.bean-delete-btn {
+  opacity: 0.9;
+}
+
+.bean-delete-btn:focus {
+  outline: 2px solid #e74c3c;
+  outline-offset: 2px;
+}
+
+.RoasterDetailsModeraition-delete-all-btn:focus {
+  outline: 2px solid #e74c3c;
+  outline-offset: 2px;
+}
+
+
+
+
+
+
+
+
+/* Стилі для disabled кнопок */
+.RoasterDetailsModeraition-delete-all-btn:disabled,
+.bean-delete-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.RoasterDetailsModeraition-delete-all-btn:disabled:hover {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+}
+
+.bean-delete-btn:disabled:hover {
+  transform: none;
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Повідомлення про результат */
+.delete-result {
+  position: fixed;
   top: 20px;
-  left: 20px;
+  right: 20px;
+  padding: 16px 20px;
+  border-radius: 12px;
+  font-weight: 600;
+  z-index: 1000;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  animation: slideIn 0.3s ease;
+}
+
+.delete-result.success {
+  background: linear-gradient(135deg, #27ae60, #2ecc71);
+  color: white;
+  border-left: 4px solid #219653;
+}
+
+.delete-result.error {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  color: white;
+  border-left: 4px solid #c0392b;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Модальне вікно */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+
+.modal-content {
+  background: white;
+  padding: 30px;
+  border-radius: 20px;
+  max-width: 450px;
+  width: 90%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: modalAppear 0.3s ease;
+}
+
+.modal-content h3 {
+  margin: 0 0 15px 0;
+  color: #2c3e50;
+  font-size: 1.5em;
+  font-weight: 700;
+}
+
+.modal-content p {
+  margin: 10px 0;
+  line-height: 1.5;
+  color: #5d6d7e;
+}
+
+.warning-text {
+  color: #e74c3c !important;
+  font-weight: 600;
+  font-size: 0.95em;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 15px;
+  margin-top: 25px;
+  justify-content: flex-end;
+}
+
+.modal-btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1em;
+}
+
+.cancel-btn {
+  background: #ecf0f1;
+  color: #7f8c8d;
+}
+
+.cancel-btn:hover:not(:disabled) {
+  background: #d5dbdb;
+  transform: translateY(-1px);
+}
+
+.delete-btn {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  color: white;
+}
+
+.delete-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #c0392b, #a93226);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(231, 76, 60, 0.4);
+}
+
+.modal-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+@keyframes modalAppear {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Адаптивність для модальних вікон */
+@media (max-width: 768px) {
+  .modal-content {
+    padding: 20px;
+    margin: 20px;
+  }
+  
+  .modal-actions {
+    flex-direction: column;
+  }
+  
+  .delete-result {
+    left: 20px;
+    right: 20px;
+    top: 20px;
+  }
+}
+
+
+
+
+/* Заборонити іншим елементам займати простір зверху справа */
+.RoasterDetailsModeraition-bean-card {
+  position: relative;
+}
+
+/* Створити "захисну зону" для кнопки */
+.RoasterDetailsModeraition-bean-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 10px;
+  height: 10px;
+  z-index: 5;
+  pointer-events: none;
+}
+
+/* Кнопка видалення */
+.bean-delete-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
   width: 32px;
   height: 32px;
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  font-size: 1.5em;
+  font-weight: bold;
   cursor: pointer;
-  transition: transform 0.2s ease, opacity 0.2s ease;
-  opacity: 0.85;
-  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
+  z-index: 10;
 }
 
-.RoasterDetailsModeraition-back:hover {
-  transform: scale(1.1);
-  opacity: 1;
+/* Всі елементи в картці один під одним */
+.bean-card-header {
+  display: block; /* Змінюємо flex на block */
+  margin-bottom: 15px;
+  padding-right: 25px;
+  min-height: 40px;
+}
+
+.bean-name {
+  margin: 0 0 8px 0; /* Додаємо відступ знизу */
+  font-size: 1.4em;
+  color: #2c3e50;
+  font-weight: 700;
+  line-height: 1.3;
+  width: 100%; /* Займає всю ширину */
+}
+
+.bean-price {
+  background: linear-gradient(135deg, #27ae60, #2ecc71);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 1.1em;
+  display: inline-block; /* Робимо блоковим */
+  margin-bottom: 10px;
+}
+
+.bean-details {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%; /* Займає всю ширину */
+}
+
+/* Заборонити іншим елементам заходити в зону кнопки */
+.bean-card-header,
+.bean-name,
+.bean-price {
+  padding-right: 25px;
+  box-sizing: border-box;
+}
+
+
+/* Контейнер для URL зерна */
+.bean-url-container {
+  margin: 10px 0;
+  padding-right: 25px;
+}
+
+.bean-url-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #3498db;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95em;
+  padding: 8px 16px;
+  border: 2px solid #3498db;
+  border-radius: 20px;
+  transition: all 0.3s ease;
+  background: rgba(52, 152, 219, 0.1);
+}
+
+.bean-url-link:hover {
+  background: #3498db;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
 }

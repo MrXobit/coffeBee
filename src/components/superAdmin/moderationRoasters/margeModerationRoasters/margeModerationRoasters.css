@@ -171,3 +171,286 @@
   transform: translateY(0);     /* при натисканні опускається */
   box-shadow: 0 3px 8px rgba(107, 13, 173, 0.3);
 }
+
+
+.ModerationRoasters-recordsDetails button {
+  margin: 5px;
+  margin-left: 0;
+  background-color: #f5f5f5; /* світло-сірий фон */
+  color: #333;              /* темно-сірий текст */
+  border: 1px solid #ccc;   /* тонка сіра рамка */
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ModerationRoasters-recordsDetails button:hover {
+  background-color: #e6e6e6; /* трохи темніший сірий при наведенні */
+  border-color: #bbb;
+}
+
+.ModerationRoasters-recordsDetails button:active {
+  background-color: #ddd;    /* ще темніший при кліку */
+  transform: scale(0.97);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.MargeRoasterDetails-con {
+  position: relative;
+  padding: 20px;
+  background: #f9fafb;
+  border-radius: 16px;
+}
+
+.MargeRoasterDetails-backImg {
+  position: absolute;
+  top: -5px;
+  left: 15px;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out;
+}
+
+.MargeRoasterDetails-backImg:hover {
+  transform: scale(1.15);
+}
+
+.MargeRoasterDetails-title {
+  text-align: center;
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: #1e293b;
+}
+
+.MargeRoasterDetails-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  justify-content: center;
+}
+
+.MargeRoasterDetails-recordBlock {
+  background: #fff;
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.MargeRoasterDetails-recordBlock:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.1);
+}
+
+.MargeRoasterDetails-recordHeader {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: #475569;
+  margin-bottom: 12px;
+}
+
+.MargeRoasterDetails-recordText {
+  margin: 0;
+  padding: 5px;
+}
+
+.MargeRoasterDetails-logoBlock {
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.MargeRoasterDetails-logo {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.MargeRoasterDetails-noLogo {
+  color: #94a3b8;
+  font-size: 14px;
+}
+
+.MargeRoasterDetails-cafeBlock {
+  margin-top: 10px;
+}
+
+.MargeRoasterDetails-cafeTitle {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 4px;
+  color: #0f172a;
+}
+
+.MargeRoasterDetails-cafeStatus {
+  font-size: 14px;
+  color: #64748b;
+  margin-bottom: 10px;
+}
+
+.MargeRoasterDetails-cafeInfo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.MargeRoasterDetails-cafeImg {
+  width: 50px;
+  height: 50px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.MargeRoasterDetails-cafeText {
+  flex: 1;
+}
+
+.MargeRoasterDetails-cafeName {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 0 0 4px;
+  color: #111827;
+}
+
+.MargeRoasterDetails-cafeDescription {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.MargeRoasterDetails-cafeNoData {
+  font-size: 14px;
+  color: #9ca3af;
+  font-style: italic;
+}
+
+
+.MargeRoasterDetails-loaderCenter {
+  display: flex;
+  margin: 20px;
+  padding: 20px;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.MargeRoasterDetails-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+  color: #4b5563; /* нейтрально-сірий */
+}
+
+.MargeRoasterDetails-emptyCircle {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: #f3f4f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 42px;
+  margin-bottom: 20px;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.08);
+}
+
+.MargeRoasterDetails-emptyTitle {
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.MargeRoasterDetails-emptySubtitle {
+  font-size: 15px;
+  color: #6b7280;
+  line-height: 1.6;
+}
+
+
+
+
+
+
+.MargeRoasterDetails-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fafafa;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+}
+
+.MargeRoasterDetails-logo {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 15px;
+}
+
+.MargeRoasterDetails-name {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.MargeRoasterDetails-country {
+  font-size: 14px;
+  color: #666;
+}
+
+.ModerationRoasters-recordsCount {
+  font-size: 14px;
+  font-weight: bold;
+  background: #eee;
+  padding: 6px 12px;
+  border-radius: 8px;
+}
+
+.ModerationRoasters-approveBtn {
+  margin-top: 20px;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  background: #4caf50;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.ModerationRoasters-approveBtn:hover {
+  background: #45a049;
+}

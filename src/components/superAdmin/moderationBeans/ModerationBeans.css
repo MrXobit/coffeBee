@@ -373,6 +373,7 @@
 
 /* Кнопка Save */
 .ModerationBeans-saveBtn {
+  margin: 5px;
   padding: 10px 22px;
   background: linear-gradient(90deg, #4facfe, #00f2fe);
   color: #fff;
@@ -384,12 +385,13 @@
 }
 
 .ModerationBeans-saveBtn:hover {
-  transform: translateY(-2px);
+  scale: 1.1;
   box-shadow: 0 6px 12px rgba(0, 175, 254, 0.3);
 }
 
 /* Кнопка Cancel */
 .ModerationBeans-cancelBtn {
+  margin: 5px;
   padding: 10px 22px;
   background: #f0f0f0;
   color: #555;
@@ -402,7 +404,7 @@
 
 .ModerationBeans-cancelBtn:hover {
   background: #e0e0e0;
-  transform: translateY(-2px);
+  scale: 1.1;
 }
 
 /* Адаптивність */
@@ -694,4 +696,395 @@
 .ModerationBeans-closeBtn:hover {
   transform: scale(1.1);
   opacity: 1;
+}
+
+
+
+
+
+
+
+.ModerationRoasters-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 32px;
+}
+
+.ModerationRoasters-approveBtn {
+  margin: 10px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #1f2937; /* темно-сірий фон */
+  color: white; /* текст і галочка будуть білі */
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.whiteCheck {
+  color: white;
+  margin-right: 8px;
+  font-size: 18px;
+}
+
+.ModerationRoasters-approveBtn:hover {
+  background: #334155; /* трохи світліший відтінок */
+  scale: 1.1;
+}
+
+
+
+.MargeRoasterDetails-con-roasterH1 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 1.2rem;
+  background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1.3;
+}
+
+/* планшети */
+@media (max-width: 768px) {
+  .MargeRoasterDetails-con-roasterH1 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+}
+
+/* телефони */
+@media (max-width: 480px) {
+  .MargeRoasterDetails-con-roasterH1 {
+    font-size: 1.2rem;
+    margin-bottom: 0.8rem;
+  }
+}
+
+
+
+
+
+
+.ModerationBeans-roasterCountry {
+  font-size: 1rem;
+  text-align: center;
+  margin-top: 0.3rem;
+}
+
+.country-set {
+  color: #2e7d32; /* зелений, коли задано */
+  font-weight: 500;
+}
+
+.country-empty {
+  color: #b0b0b0; /* сірий, коли нема країни */
+  font-style: italic;
+}
+
+
+
+
+
+.ModerationBeans-cannotAddP {
+  color: #999;         /* сірий текст */
+  font-size: 14px;
+  margin: 0;
+  padding: 8px 0;
+  font-style: italic;  /* щоб відрізнялося від звичайного тексту */
+}
+
+
+
+/* Коли можна додати */
+/* Коли можна додати */
+.moderationBeansBtn-Active {
+  margin: 10px;
+  display: block;
+  width: 90%; /* тягнеться на всю ширину */
+  padding: 14px 20px;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.25s ease-in-out;
+  background: linear-gradient(135deg, #28a745, #20c997);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
+}
+
+.moderationBeansBtn-Active:hover {
+  background: linear-gradient(135deg, #218838, #17a589);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(40, 167, 69, 0.6);
+}
+
+.moderationBeansBtn-Active:active {
+  transform: translateY(0);
+  box-shadow: 0 3px 8px rgba(40, 167, 69, 0.5);
+}
+
+/* Коли не можна додати */
+.moderationBeansBtn-Disabled {
+   margin: 10px;
+   padding: 10px;
+  display: block;
+  width: 90%; /* тягнеться на всю ширину */
+  padding: 14px 20px;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: not-allowed;
+  transition: all 0.25s ease-in-out;
+  background: linear-gradient(135deg, #6c757d, #495057);
+  color: #e2e2e2;
+  opacity: 0.8;
+}
+
+
+.moderationBeans-beanWarning {
+  margin-top: 8px;
+  padding: 12px 16px;
+  background-color: #f0f4ff; /* soft blue background */
+  color: #1a73e8; /* calm blue text */
+  border-left: 4px solid #1a73e8; /* accent line */
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.5;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  animation: moderationBeans-fadeIn 0.3s ease-in-out;
+}
+
+/* Fade-in animation */
+@keyframes moderationBeans-fadeIn {
+  from { opacity: 0; transform: translateY(-3px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+.moderationBeansBtn-container {
+  padding: 10px;
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+    display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.moderationBeansBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0.45rem 0.9rem;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  font-size: 0.9rem;
+  font-weight: 500;
+  background: #f3f4f6;
+  color: #3f3f46;
+  cursor: pointer;
+  transition: all 0.25s ease-in-out;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 3px 6px rgba(79, 70, 229, 0.3);
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+  }
+}
+
+.moderationBeansBtn-icon {
+  width: 16px;
+  height: 16px;
+}
+
+/* 3 дні — насичений фіолетово-синій */
+.moderationBeansBtn--3days {
+  background: linear-gradient(135deg, #7c83f5, #5a63e0);
+  color: white;
+
+  &:hover {
+    background: linear-gradient(135deg, #6366f1, #4f46e5);
+  }
+}
+
+/* 1 тиждень — більш глибокий синій */
+.moderationBeansBtn--1week {
+  background: linear-gradient(135deg, #4f91f1, #2563eb);
+  color: white;
+
+  &:hover {
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  }
+}
+
+/* 1 місяць — глибший зелений */
+.moderationBeansBtn--1month {
+  background: linear-gradient(135deg, #34d399, #059669);
+  color: white;
+
+  &:hover {
+    background: linear-gradient(135deg, #10b981, #047857);
+  }
+}
+
+/* Статус “Відкладено до …” */
+.moderationBeansBtn-status {
+  margin-top: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #e0e7ff;
+  border: 1px solid #a5b4fc;
+  color: #3730a3;
+  border-radius: 8px;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  box-shadow: inset 0 0 3px rgba(55, 48, 163, 0.25);
+}
+
+
+
+
+.moderationBeansBtn-label {
+  text-align: center;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #2e2e3a;
+  padding: 0px;
+  margin: 0px;
+  letter-spacing: 0.2px;
+  user-select: none;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.05);
+  transition: color 0.3s ease;
+
+  &:hover {
+    color: #4338ca; /* легкий фіолетовий акцент при наведенні */
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* --- АДАПТАЦІЯ --- */
+@media (max-width: 768px) {
+  .moderationBeansBtn-container {
+    justify-content: center;
+    gap: 0.6rem;
+  }
+
+  .moderationBeansBtn {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+    flex: 1 1 45%;
+    text-align: center;
+  }
+
+  .moderationBeansBtn-icon {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .moderationBeansBtn-container {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.4rem;
+  }
+
+  .moderationBeansBtn {
+    width: 100%;
+    padding: 0.5rem;
+    font-size: 0.8rem;
+    border-radius: 8px;
+  }
+
+  .moderationBeansBtn-status {
+    width: 100%;
+    justify-content: center;
+    font-size: 0.8rem;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+.moderationBeansBtn-loading {
+
+  margin: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #6366f1, #4338ca);
+  color: white;
+  padding: 0.6rem 1rem;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+  animation: pulse 1.5s infinite;
+}
+
+.moderationBeansBtn-loadingIcon {
+  width: 18px;
+  height: 18px;
+  animation: spin 1s linear infinite;
+}
+
+/* Анімації */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.9;
+  }
+  50% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 0.9;
+  }
 }

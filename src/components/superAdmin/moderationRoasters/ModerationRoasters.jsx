@@ -1,4 +1,4 @@
-import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
+import { deleteField, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 import { db, storage } from '../../../firebase';
 import './moderationRoasters.css';
@@ -10,6 +10,8 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import MargeModerationRoasters from './margeModerationRoasters/MargeModerationRoasters';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import MargeRoasterDetails from './margeModerationRoasters/MargeRoasterDetails';
+import { FiClock as Clock, FiCheck as Check } from 'react-icons/fi';
 
 
 import closeIcon from '../../../assets/closeIcon.png';
@@ -46,22 +48,47 @@ const handleImageChange = (e) => {
 
 
 
-  const getData = async () => {
-    setLoading(true);
-    try {
-      const docRef = doc(db, 'moderation', 'roasters');
-      const docSnap = await getDoc(docRef);
-      const data = docSnap.data();
-      const filteredRoasters = (data.roasters || []).filter(
-        (r) => r.accepted === undefined
-      );
-      setRoasters(filteredRoasters);
-    } catch (e) {
-      console.log(e);
-    } finally {
-      setLoading(false);
+const getData = async () => {
+  setLoading(true);
+  try {
+    const docRef = doc(db, "moderation", "roasters");
+    const docSnap = await getDoc(docRef);
+    const data = docSnap.data();
+    const now = Date.now();
+
+    const processedRoasters = [];
+
+    for (let i = 0; i < (data.roasters || []).length; i++) {
+      const r = data.roasters[i];
+
+      if (r.snoozedUntil) {
+        const until = new Date(r.snoozedUntil).getTime();
+
+        // Якщо snoozedUntil ще не пройшов — пропускаємо запис
+        if (until > now) continue;
+
+        // Якщо час пройшов — видаляємо поля
+        const roastersCopy = [...data.roasters];
+   roastersCopy[i] = {
+  ...r,
+  snoozedUntil: null,
+  snoozedReason: null,
+};
+await updateDoc(docRef, { roasters: roastersCopy });
+
+      }
+
+      // Додаємо у стан (тільки ті, що не в активному snooze)
+      if (r.accepted === undefined) processedRoasters.push(r);
     }
-  };
+
+    setRoasters(processedRoasters);
+  } catch (e) {
+    console.log(e);
+  } finally {
+    setLoading(false);
+  }
+};
 
   useEffect(() => {
     getData();
@@ -197,9 +224,109 @@ const handleAcept = async () => {
   setImageUrl(null);    // очищаємо прев’ю
   };
 
+
+
+  const [detailOpen, setDetailOpen] = useState(false)
+  const [detailInfo, setDetailInfo] = useState({})
+  const handleOpenDetail = (e, roaster) => {
+    e.stopPropagation(); // щоб не спрацьовував клік на батьківському div
+    setDetailOpen(true)
+    setDetailInfo(roaster)
+    console.log("Detail clicked:", roaster);
+  
+    // тут твоя логіка відкриття модалки або деталей
+  };
+  
+  const handleCloseItem = () => {
+      setDetailOpen(false);
+    setDetailInfo({});
+  }
+  
+
+
+
+
+
+
+
+function addDays(days) {
+  const d = new Date();
+  d.setUTCDate(d.getUTCDate() + days);
+  return d.toISOString();
+}
+
+const [snoozeLoadingId, setSnoozeLoadingId] = useState(null);
+const [SnoozeLoading, setSnoozeLoading] = useState(true);
+
+
+async function handleSnoozeRoaster(roasterId, days) {
+  setSnoozeLoading(true)
+  setSnoozeLoadingId(roasterId);
+
+  try {
+    const until = addDays(days);
+    const docRef = doc(db, "moderation", "roasters");
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      const updatedRoasters = (data.roasters || []).map((r) => {
+        if (r.id === roasterId) {
+          return {
+            ...r,
+            isSnoozed: true,
+            snoozedUntil: until,
+          };
+        }
+        return r;
+      });
+
+      await updateDoc(docRef, { roasters: updatedRoasters });
+
+      console.log(`✅ Roaster ${roasterId} snoozed until ${until}`);
+      setRoasters((prev) => prev.filter((r) => r.id !== roasterId));
+
+      const message =
+        days === 3
+          ? "Successfully snoozed for 3 days"
+          : days === 7
+          ? "Successfully snoozed for 1 week"
+          : days === 30
+          ? "Successfully snoozed for 1 month"
+          : `Successfully snoozed for ${days} days`;
+
+      notifySuccess(message);
+
+
+    } else {
+      console.warn("⚠️ moderation/roasters doc not found");
+    }
+  } catch (err) {
+    console.error("❌ Error snoozing roaster:", err);
+  } finally {
+    setSnoozeLoadingId(null);
+    setSnoozeLoading(false)
+  }
+}
+
+
+
+
+
+
+
+
   return (
     <div className="ModerationRoasters">
-      {page === 1 && <h1 className="ModerationRoasters-title">Moderation Roasters</h1>}
+
+{detailOpen ? 
+<div className='ModerationRoasters-detail-con'>
+<MargeRoasterDetails roasters={detailInfo} handleCloseItem={handleCloseItem}/>
+</div>
+
+:
+<>
+  {page === 1 && <h1 className="ModerationRoasters-title">Moderation Roasters</h1>}
       {loading ? (
         <div className="ModerationRoasters-loaderCon">
           <Loader />
@@ -230,6 +357,9 @@ const handleAcept = async () => {
                   records {roaster?.records?.length || 0}
                 </div>
 
+               <div className="ModerationRoasters-recordsDetails">
+  <button onClick={(e) => handleOpenDetail(e, roaster)}>Detail</button>
+</div>
 
 
                 <div className="ModerationRoasters-btnContainer">
@@ -251,6 +381,41 @@ const handleAcept = async () => {
                       : 'Reject'}
                   </div>
                 </div>
+
+                {(SnoozeLoading && snoozeLoadingId === roaster.id) ? (
+  <div className="moderationBeansBtn-loading">
+    <Clock className="moderationBeansBtn-loadingIcon" />
+    <span>Loading...</span>
+  </div>
+) : (
+  <>
+    <p className="moderationBeansBtn-label">
+      Snooze moderation for a specific period:
+    </p>
+
+    <div className="moderationBeansBtn-container">
+      <button
+        onClick={() => handleSnoozeRoaster(roaster.id, 3)}
+        className="moderationBeansBtn moderationBeansBtn--3days"
+      >
+        <Clock className="moderationBeansBtn-icon" /> 3 days
+      </button>
+      <button
+        onClick={() => handleSnoozeRoaster(roaster.id, 7)}
+        className="moderationBeansBtn moderationBeansBtn--1week"
+      >
+        <Clock className="moderationBeansBtn-icon" /> 1 week
+      </button>
+      <button
+        onClick={() => handleSnoozeRoaster(roaster.id, 30)}
+        className="moderationBeansBtn moderationBeansBtn--1month"
+      >
+        <Clock className="moderationBeansBtn-icon" /> 1 month
+      </button>
+    </div>
+  </>
+)}
+
               </div>
             ))
           ) : (
@@ -400,6 +565,10 @@ const handleAcept = async () => {
         </>
       )}
 
+ </>
+}
+
+     
 
       <ToastContainer />
     </div>

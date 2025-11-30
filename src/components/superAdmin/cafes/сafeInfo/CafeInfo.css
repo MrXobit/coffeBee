@@ -1,10 +1,26 @@
 .cafeInfoAdmin-con {
+  position: relative;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;   /* Вирівнювання по вертикалі до верху */
     align-items: center;           /* Центрування по горизонталі */
     min-width: 100%;                 /* Встановлює висоту на всю видиму частину */
   }
+
+  .cafeInfoAdmin-conBack-png {
+  position: absolute; /* абсолютне позиціювання */
+  top: 16px;          /* відступ від верху */
+  left: 16px;        /* відступ від правого краю */
+  width: 32px;        /* ширина картинки */
+  height: 32px;       /* висота картинки */
+  cursor: pointer;    /* курсор при наведенні */
+  transition: transform 0.2s ease; /* плавний ефект при scale */
+}
+
+.cafeInfoAdmin-conBack-png:hover {
+  transform: scale(1.2); /* збільшуємо на 20% при наведенні */
+}
+
   
   
   /* Title and Image Styling */

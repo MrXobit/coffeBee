@@ -122,8 +122,9 @@ function FilterBlock({ filter, setFilter }) {
 
       const token = localStorage.getItem('token');
 
+    // 'https://us-central1-coffee-bee.cloudfunctions.net/uploadImage',
       await axios.post(
-        'https://us-central1-coffee-bee.cloudfunctions.net/uploadImage',
+        'http://127.0.0.1:5001/coffee-bee/us-central1/uploadImage',
         { cafeData },
         {
           headers: {

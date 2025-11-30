@@ -13,6 +13,8 @@ import img from '../../../../assets/Untitled.jpeg';
 import closeIcon from '../../../../assets/closeIcon.png';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import stringSimilarity from "string-similarity";
+import MargeRoasterDetails from './MargeRoasterDetails';
+import { FiClock as Clock, FiCheck as Check } from 'react-icons/fi';
 
 const MargeModerationRoasters = ({ roasters, setPage, formatDate,setRoasters }) => {
   const [findRoasters, setFindRoasters] = useState([]);
@@ -177,10 +179,110 @@ const MargeModerationRoasters = ({ roasters, setPage, formatDate,setRoasters }) 
     }
   };
 
+const [detailOpen, setDetailOpen] = useState(false)
+const [detailInfo, setDetailInfo] = useState({})
+const handleOpenDetail = (e, roaster) => {
+  e.stopPropagation(); // щоб не спрацьовував клік на батьківському div
+  setDetailOpen(true)
+  setDetailInfo(roaster)
+  console.log("Detail clicked:", roaster);
+
+  // тут твоя логіка відкриття модалки або деталей
+};
+
+const handleCloseItem = () => {
+    setDetailOpen(false);
+  setDetailInfo({});
+}
+
+
+
+
+
+
+
+
+
+
+
+function addDays(days) {
+  const d = new Date();
+  d.setUTCDate(d.getUTCDate() + days);
+  return d.toISOString();
+}
+
+const [snoozeLoadingId, setSnoozeLoadingId] = useState(null);
+const [SnoozeLoading, setSnoozeLoading] = useState(true);
+
+
+async function handleSnoozeRoaster(roasterId, days) {
+  setSnoozeLoading(true)
+  setSnoozeLoadingId(roasterId);
+
+  try {
+    const until = addDays(days);
+    const docRef = doc(db, "moderation", "roasters");
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      const updatedRoasters = (data.roasters || []).map((r) => {
+        if (r.id === roasterId) {
+          return {
+            ...r,
+            isSnoozed: true,
+            snoozedUntil: until,
+          };
+        }
+        return r;
+      });
+
+      await updateDoc(docRef, { roasters: updatedRoasters });
+
+      console.log(`✅ Roaster ${roasterId} snoozed until ${until}`);
+      setRoasters((prev) => prev.filter((r) => r.id !== roasterId));
+     setFindRoasters((prev) => prev.filter((r) => r.id !== roasterId));
+      setSimilarRoasters((prev) => prev.filter((r) => r.id !== roasterId));
+     setSelectedRoasters((prev) => prev.filter((r) => r.id !== roasterId));
+
+      const message =
+        days === 3
+          ? "Successfully snoozed for 3 days"
+          : days === 7
+          ? "Successfully snoozed for 1 week"
+          : days === 30
+          ? "Successfully snoozed for 1 month"
+          : `Successfully snoozed for ${days} days`;
+
+      notifySuccess(message);
+
+
+    } else {
+      console.warn("⚠️ moderation/roasters doc not found");
+    }
+  } catch (err) {
+    console.error("❌ Error snoozing roaster:", err);
+  } finally {
+    setSnoozeLoadingId(null);
+    setSnoozeLoading(false)
+  }
+}
+
+
+
+
+
+
   return (
     <div className="margeModerationRoasters">
       <h1>Marge Moderation Roasters</h1>
 
+
+{detailOpen ? 
+<MargeRoasterDetails roasters={detailInfo} handleCloseItem={handleCloseItem}/>
+ : 
+<>
+   
       <AnimatePresence>
         {selectedRoasters.length > 0 && (
           <motion.button
@@ -226,15 +328,58 @@ const MargeModerationRoasters = ({ roasters, setPage, formatDate,setRoasters }) 
                 <div className="ModerationRoasters-recordsCount">
                   records {roaster?.records?.length || 0}
                 </div>
-                {roaster?.records?.length > 0 && (
-                  <div className="ModerationRoasters-recordsList">
-                    {roaster.records.map((record, rIndex) => (
-                      <div key={rIndex} className="ModerationRoasters-recordItem">
-                        {formatDate(record.date)}
-                      </div>
-                    ))}
-                  </div>
-                )}
+
+               <div className="ModerationRoasters-recordsDetails">
+  <button onClick={(e) => handleOpenDetail(e, roaster)}>Detail</button>
+</div>
+
+
+{(SnoozeLoading && snoozeLoadingId === roaster.id) ? (
+  <div className="moderationBeansBtn-loading">
+    <Clock className="moderationBeansBtn-loadingIcon" />
+    <span>Loading...</span>
+  </div>
+) : (
+  <>
+    <p className="moderationBeansBtn-label">
+      Snooze moderation for a specific period:
+    </p>
+
+  <div className="moderationBeansBtn-container">
+  <button
+    onClick={(e) => {
+      e.stopPropagation();
+      handleSnoozeRoaster(roaster.id, 3);
+    }}
+    className="moderationBeansBtn moderationBeansBtn--3days"
+  >
+    <Clock className="moderationBeansBtn-icon" /> 3 days
+  </button>
+
+  <button
+    onClick={(e) => {
+      e.stopPropagation();
+      handleSnoozeRoaster(roaster.id, 7);
+    }}
+    className="moderationBeansBtn moderationBeansBtn--1week"
+  >
+    <Clock className="moderationBeansBtn-icon" /> 1 week
+  </button>
+
+  <button
+    onClick={(e) => {
+      e.stopPropagation();
+      handleSnoozeRoaster(roaster.id, 30);
+    }}
+    className="moderationBeansBtn moderationBeansBtn--1month"
+  >
+    <Clock className="moderationBeansBtn-icon" /> 1 month
+  </button>
+</div>
+
+  </>
+)}
+            
               </div>
             ))
             : similarRoasters.map((roaster, index) => (
@@ -252,6 +397,56 @@ const MargeModerationRoasters = ({ roasters, setPage, formatDate,setRoasters }) 
                 <div className="ModerationRoasters-recordsCount">
                   records {roaster?.records?.length || 0}
                 </div>
+
+                               <div className="ModerationRoasters-recordsDetails">
+  <button onClick={(e) => handleOpenDetail(e, roaster)}>Detail</button>
+</div>
+
+{(SnoozeLoading && snoozeLoadingId === roaster.id) ? (
+  <div className="moderationBeansBtn-loading">
+    <Clock className="moderationBeansBtn-loadingIcon" />
+    <span>Loading...</span>
+  </div>
+) : (
+  <>
+    <p className="moderationBeansBtn-label">
+      Snooze moderation for a specific period:
+    </p>
+
+  <div className="moderationBeansBtn-container">
+  <button
+    onClick={(e) => {
+      e.stopPropagation();
+      handleSnoozeRoaster(roaster.id, 3);
+    }}
+    className="moderationBeansBtn moderationBeansBtn--3days"
+  >
+    <Clock className="moderationBeansBtn-icon" /> 3 days
+  </button>
+
+  <button
+    onClick={(e) => {
+      e.stopPropagation();
+      handleSnoozeRoaster(roaster.id, 7);
+    }}
+    className="moderationBeansBtn moderationBeansBtn--1week"
+  >
+    <Clock className="moderationBeansBtn-icon" /> 1 week
+  </button>
+
+  <button
+    onClick={(e) => {
+      e.stopPropagation();
+      handleSnoozeRoaster(roaster.id, 30);
+    }}
+    className="moderationBeansBtn moderationBeansBtn--1month"
+  >
+    <Clock className="moderationBeansBtn-icon" /> 1 month
+  </button>
+</div>
+
+  </>
+)}
           
               </div>
             ))}
@@ -380,6 +575,10 @@ const MargeModerationRoasters = ({ roasters, setPage, formatDate,setRoasters }) 
           </div>
         </div>
       )}
+</>
+}
+
+
     </div>
   );
 };

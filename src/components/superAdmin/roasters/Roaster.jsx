@@ -12,66 +12,64 @@ import { countrysArray } from '../cafes/country';
 import defoultImg from '../../../assets/noImage.jpeg'
 
 
-const STORAGE_KEY = 'roasterPageState';
+const STORAGE_KEY = 'roasterState';
 
 const Roaster = () => {
   const navigate = useNavigate();
   const firstRoasters = useRef([]);
-  const mountedRef = useRef(false); // <-- флаг першого mount
+  const mountedRef = useRef(false);
+  const controllerRef = useRef(null);
+  const controllerCityRef = useRef(null);
 
-  // Ініціалізація станів з sessionStorage
-  const [roasters, setRoasters] = useState(() => {
-    const saved = sessionStorage.getItem(STORAGE_KEY);
-    return saved ? JSON.parse(saved).roasters : [];
-  });
-  const [inputState, setInputState] = useState(() => {
-    const saved = sessionStorage.getItem(STORAGE_KEY);
-    return saved ? JSON.parse(saved).inputState : '';
-  });
-  const [activeFilter, setActiveFilter] = useState(() => {
-    const saved = sessionStorage.getItem(STORAGE_KEY);
-    return saved ? JSON.parse(saved).activeFilter : { active: false, country: '' };
-  });
-  const [currentPage, setCurrentPage] = useState(() => {
-    const saved = sessionStorage.getItem(STORAGE_KEY);
-    return saved ? JSON.parse(saved).currentPage : 1;
-  });
-  const [count, setCount] = useState(() => {
-    const saved = sessionStorage.getItem(STORAGE_KEY);
-    return saved ? JSON.parse(saved).count : 10;
-  });
+  // --- useSessionState як у Cafes
+  function useSessionState(key, defaultValue) {
+    const [state, setState] = useState(() => {
+      const saved = sessionStorage.getItem(key);
+      if (saved !== null) {
+        try { return JSON.parse(saved); } 
+        catch { return saved; }
+      }
+      return defaultValue;
+    });
 
-  const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [searchActive, setSearchActive] = useState(false);
-  const [potentialInputValue, setPotentialInputValue] = useState([]);
+    useEffect(() => {
+      sessionStorage.setItem(key, JSON.stringify(state));
+    }, [key, state]);
 
-  const [totalPages, setTotalPages] = useState(() => {
-    const saved = sessionStorage.getItem(STORAGE_KEY);
-    return saved ? JSON.parse(saved).totalPages || 1 : 1;
-  });
+    return [state, setState];
+  }
 
-  // Логування
-  const logRoasters = (context, data) => {
-    console.log(`[${context}] roasters updated:`, data);
-  };
+  const [roasters, setRoasters] = useSessionState('roasters', []);
+  const [loading, setLoading] = useSessionState('loading', false);
+  const [success, setSuccess] = useSessionState('success', false);
+  const [count, setCount] = useSessionState('count', 10);
+  const [currentPage, setCurrentPage] = useSessionState('currentPage', 1);
+  const [totalPages, setTotalPages] = useSessionState('totalPages', 1);
+  const [searchActive, setSearchActive] = useSessionState('searchActive', false);
+  const [activeFilter, setActiveFilter] = useSessionState('activeFilter', { active: false, country: '' });
+  const [activeFilterCity, setActiveFilterCity] = useSessionState('activeFilterCity', { active: false, city: '' });
+  const [potentialInputValue, setPotentialInputValue] = useSessionState('potentialInputValue', []);
+  const [inputState, setInputState] = useSessionState('inputState', '');
 
-  // Збереження стану в sessionStorage при будь-якій зміні
-  useEffect(() => {
-    sessionStorage.setItem(STORAGE_KEY, JSON.stringify({
-      roasters,
-      inputState,
-      activeFilter,
-      currentPage,
-      count,
-      totalPages
-    }));
-  }, [roasters, inputState, activeFilter, currentPage, count, totalPages]);
+  // --- Логування
+  const logRoasters = (context, data) => console.log(`[${context}] roasters updated:`, data);
 
-  // Завантаження ростерів
-  const loadData = async () => {
+  // --- loadData повністю як у Cafes
+  const loadData = async (num) => {
     setSearchActive(false);
-    setLoading(true);
+
+    if (num === 2) {
+      const cachedRoasters = sessionStorage.getItem('roasters');
+      const cachedTotalPages = sessionStorage.getItem('totalPages');
+
+      if (cachedRoasters && cachedTotalPages && cachedRoasters !== "[]" && Number(cachedTotalPages) > 0) {
+        setRoasters(JSON.parse(cachedRoasters));
+        setTotalPages(Number(cachedTotalPages));
+        setLoading(false);
+        return;
+      }
+    }
+
     try {
       const token = localStorage.getItem('token');
       if (!token) throw new Error('Token is not available');
@@ -84,8 +82,10 @@ const Roaster = () => {
 
       firstRoasters.current = response.data.roasters;
       setRoasters(response.data.roasters);
-      logRoasters('loadData', response.data.roasters);
-      setTotalPages(Math.max(1, Math.ceil(response.data.totalCount / count)));
+      setTotalPages(Math.ceil(response.data.totalCount / count));
+
+      sessionStorage.setItem('roasters', JSON.stringify(response.data.roasters));
+      sessionStorage.setItem('totalPages', Math.ceil(response.data.totalCount / count));
     } catch (e) {
       console.log(e);
     } finally {
@@ -93,284 +93,321 @@ const Roaster = () => {
     }
   };
 
-  // ---- ОНОВЛЕНИЙ useEffect: лише на mount перевіряємо sessionStorage і ВСЕ,
-  // але при подальших змінах currentPage/count завжди викликаємо loadData()
-  useEffect(() => {
-    const saved = sessionStorage.getItem(STORAGE_KEY);
+  // --- Pagination
+  const handlePageChange = (page) => {
+    if (page < 1 || page > totalPages) return;
+    setCurrentPage(page);
+    setLoading(true);
+    loadData();
+  };
 
-    // Перший mount: відновлюємо стан із sessionStorage якщо там є дані для тієї ж сторінки
-    if (!mountedRef.current) {
-      mountedRef.current = true;
+  // --- Debounce search
+const handleSearch = debounce(async (e) => {
+  setLoading(true)
+  const value = e.target.value.trim();
+  setInputState(value);
+  setSuccess(false);
+  setRoasters([]);
+  setSearchActive(true);
 
-      if (saved) {
-        try {
-          const parsed = JSON.parse(saved);
+  // Якщо активний фільтр по країні і value порожнє, нічого не робимо
+  if (activeFilter.active && activeFilter.country.trim() !== '' && value === '') return;
 
-          // Якщо у сховищі є ростери і вони відповідають потрібній сторінці — відновлюємо і не фетчимо
-          if (Array.isArray(parsed.roasters) && parsed.roasters.length > 0 && parsed.currentPage === currentPage) {
-            firstRoasters.current = parsed.roasters;
-            setRoasters(parsed.roasters);
-            setInputState(parsed.inputState || '');
-            setActiveFilter(parsed.activeFilter || { active: false, country: '' });
-            setCount(parsed.count || 10);
-            setTotalPages(parsed.totalPages || 1);
-            setSearchActive(false);
-            setSuccess(false);
-            setLoading(false);
-            return; // skip initial load
-          }
-        } catch (err) {
-          console.warn('Failed to parse saved state', err);
-        }
-      }
+  // Повернення до початкових ростерів
+  if (!value) {
+    if (firstRoasters.current.length > 0) {
+      setRoasters(firstRoasters.current);
+      logRoasters('handleSearch - restored initial roasters', firstRoasters.current);
+      setLoading(false);
+      sessionStorage.setItem('roasters', JSON.stringify(firstRoasters.current));
+      sessionStorage.setItem('totalPages', '1');
+    } else {
+      setLoading(true);
+      await loadData();
+    }
+    return;
+  }
+
+  // Скасування попереднього запиту
+  if (controllerRef.current) controllerRef.current.abort();
+  const controller = new AbortController();
+  controllerRef.current = controller;
+
+  setLoading(true);
+
+  try {
+    let response;
+
+    if (activeFilter.country && activeFilter.country.trim() !== '') {
+      // Пошук по країні
+      response = await axios.post(
+        'https://us-central1-coffee-bee.cloudfunctions.net/searchRoasteries',
+        { roasteryName: value, country: activeFilter.country || '' },
+        { signal: controller.signal }
+      );
+    } else {
+      // Пошук по всіх ростеріях
+      response = await axios.post(
+        'https://us-central1-coffee-bee.cloudfunctions.net/getRoasterByInput',
+        { roasterName: value, country: '' },
+        { signal: controller.signal }
+      );
     }
 
-    // Якщо не mount або якщо дані в сховищі не підходять — вантажимо
-    loadData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentPage, count]);
+    if (Array.isArray(response.data) && response.data.length === 0) {
+      setSuccess(true);
+      setRoasters([]);
+      sessionStorage.setItem('roasters', JSON.stringify([]));
+      sessionStorage.setItem('totalPages', '1');
+      logRoasters('handleSearch - no results found', []);
+    } else {
+      setRoasters(response.data);
+      setSuccess(false);
+      sessionStorage.setItem('roasters', JSON.stringify(response.data));
+      sessionStorage.setItem('totalPages', '1');
+      logRoasters('handleSearch - search results', response.data);
+    }
+
+  } catch (err) {
+    if (axios.isCancel(err) || err.name === 'CanceledError' || err.code === 'ERR_CANCELED') {
+      console.log('🚫 Запит було скасовано');
+    } else {
+      console.error('🔥 handleSearch error:', err.message);
+    }
+  } finally {
+    setLoading(false);
+  }
+}, 500);
+
+
+  // --- Initial load effect, як у Cafes
+  useEffect(() => {
+    setLoading(true);
+    loadData(2);
+  }, []);
 
   useEffect(() => {
     if (currentPage > totalPages) setCurrentPage(totalPages);
   }, [totalPages]);
 
-  // Pagination
-  const handlePageChange = (page) => {
-    if (page < 1 || page > totalPages) return;
-    // Якщо натиснули ту ж саму сторінку — нічого не робимо
-    if (page === currentPage) return;
-    setCurrentPage(page);
-    // Після setCurrentPage наш ефект вище викличе loadData()
-  };
 
-  const renderPaginationButtons = () => {
-    if (searchActive || (activeFilter.active && activeFilter.country)) return null;
 
-    const pages = [];
-    let startPage = Math.max(1, currentPage - 2);
-    let endPage = Math.min(totalPages, currentPage + 2);
+  // --- Pagination
 
-    if (totalPages > 5) {
-      if (currentPage <= 3) endPage = 5;
-      else if (currentPage >= totalPages - 2) startPage = totalPages - 4;
-    }
+const loadRoastersByCountry = async (country) => {
+  setLoading(true);
+  setRoasters([]);
+  logRoasters('loadRoastersByCountry - cleared before fetch', []);
+  setLoading(true);
+  setSearchActive(false);
 
-    for (let i = startPage; i <= endPage; i++) pages.push(i);
+  try {
+    const token = localStorage.getItem('token');
+    if (!token) throw new Error('Token is not available');
 
-    return (
-      <div className="beansMain-pagination-container">
-        <ul className="beansMain-pagination-list">
-          <li className="beansMain-pagination-item">
-            <button
-              className="beansMain-pagination-link"
-              onClick={() => handlePageChange(currentPage - 1)}
-              disabled={currentPage === 1}
-            >
-              Prev
-            </button>
-          </li>
-          {pages.map((page) => (
-            <li key={page} className={`beansMain-pagination-item ${currentPage === page ? 'beansMain-pagination-item-active' : ''}`}>
-              <button
-                className="beansMain-pagination-link"
-                onClick={() => handlePageChange(page)}
-                aria-current={currentPage === page ? 'page' : undefined}
-              >
-                {page}
-              </button>
-            </li>
-          ))}
-          <li className="beansMain-pagination-item">
-            <button
-              className="beansMain-pagination-link"
-              onClick={() => handlePageChange(currentPage + 1)}
-              disabled={currentPage === totalPages}
-            >
-              Next
-            </button>
-          </li>
-        </ul>
-      </div>
+    const response = await axios.post(
+      'https://us-central1-coffee-bee.cloudfunctions.net/searchRoasteries',
+      { roasteryName: '', country },
+      { headers: { Authorization: `Bearer ${token}` } }
     );
-  };
 
-  // Delete
-  const handleDelete = async (roasterId) => {
-    setLoading(true);
-    try {
-      const token = localStorage.getItem('token');
-      const response = await axios.post('https://us-central1-coffee-bee.cloudfunctions.net/validAccesAdmin', {}, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+    setRoasters(response.data);
+    logRoasters('loadRoastersByCountry - fetched by country', response.data);
+    setSuccess(response.data.length === 0);
 
-      if (response.data.access) {
-        try {
-          const roasterRef = doc(db, 'roasters', roasterId);
-          await deleteDoc(roasterRef);
+    // Зберігаємо в sessionStorage для кешу
+    sessionStorage.setItem(`roasters_${country}`, JSON.stringify(response.data));
+    sessionStorage.setItem(`totalPages_${country}`, '1');
+  } catch (err) {
+    console.error('Помилка завантаження ростерів по країні:', err);
+  } finally {
+    setLoading(false);
+  }
+};
 
-          const logoRef = ref(storage, `roasters/${roasterId}/`);
-          const fileList = await listAll(logoRef);
-          const logoFiles = fileList.items.filter(item => item.name.startsWith('logo'));
+// --- Search main (для input)
+const handleSearchMain = async (e) => {
+ 
+  const value = e.target.value.trim();
+  setInputState(value);
+  setSuccess(false);
+  setSearchActive(true);
 
-          if (logoFiles.length > 0) await deleteObject(logoFiles[0]);
-        } catch (error) {
-          console.error('Помилка при видаленні обжарщика та логотипа:', error);
-        }
-      } else {
-        console.error('Немає доступу до цієї операції');
-      }
-
-      setRoasters(prev => {
-        const updated = prev.filter(r => r.id !== roasterId);
-        logRoasters('handleDelete', updated);
-        return updated;
-      });
-    } catch (e) {
-      console.log(e);
-    } finally {
+  if (activeFilter.active && activeFilter.country.trim() !== '') {
+    if (!value) {
+      setRoasters([]);
+      
+      await loadRoastersByCountry(activeFilter.country);
       setLoading(false);
+      return;
     }
-  };
+  }
 
-  // Edit
-  const handleEdit = (roaster) => {
-    navigate('/edit-roaster', { state: { roasterData: roaster } });
-  };
-
-  // Search
-  const handleSearch = debounce(async (e) => {
-    const value = e.target.value.trim();
-    if (activeFilter.active && activeFilter.country.trim() !== '' && value === '') return;
-
-    setSuccess(false);
-    setRoasters([]);
-    logRoasters('handleSearch - cleared before search', []);
-    setSearchActive(true);
+  if (activeFilter.active && activeFilter.country.trim() === '') {
+    const maxSuggestions = 5;
+    const countrys = [];
 
     if (!value) {
-      if (firstRoasters.current.length > 0) {
-        setRoasters(firstRoasters.current);
-        logRoasters('handleSearch - restored initial roasters', firstRoasters.current);
-        setLoading(false);
-      } else {
-        loadData();
-      }
+      setPotentialInputValue([]);
       return;
     }
 
-    setLoading(true);
-
-    try {
-      let response;
-      if (activeFilter.country && activeFilter.country.trim() !== '') {
-        response = await axios.post(
-          'https://us-central1-coffee-bee.cloudfunctions.net/searchRoasteries',
-          { roasteryName: value, country: activeFilter.country }
-        );
-      } else {
-        response = await axios.post(
-          'https://us-central1-coffee-bee.cloudfunctions.net/getRoasterByInput',
-          { roasterName: value, country: '' }
-        );
+    for (let i = 0; i < countrysArray.length; i++) {
+      const country = countrysArray[i];
+      if (country.toLowerCase().startsWith(value.toLowerCase())) {
+        countrys.push(country);
+        if (countrys.length === maxSuggestions) break;
       }
+    }
+    setPotentialInputValue(countrys);
+    return;
+  }
 
-      if (Array.isArray(response.data) && response.data.length === 0) {
-        setSuccess(true);
-        setRoasters([]);
-        logRoasters('handleSearch - no results found', []);
-      } else {
-        setRoasters(response.data);
-        logRoasters('handleSearch - search results', response.data);
-        setSuccess(false);
-      }
-    } catch (error) {
-      console.error(error);
-    } finally {
+  handleSearch(e);
+};
+
+// --- Кнопка зміни state фільтра по країні
+const btnChangeState = () => {
+  setInputState('');
+  if (activeFilter.active) {
+    setActiveFilter({ active: false, country: '' });
+    if (firstRoasters.current.length > 0) {
+      setRoasters(firstRoasters.current);
+      logRoasters('btnChangeState - restored initial roasters', firstRoasters.current);
       setLoading(false);
+    } else {
+      setLoading(true);
+      loadData(1);
     }
-  }, 500);
+  } else {
+    setActiveFilter({ active: true, country: '' });
+  }
+};
 
-  const loadRoastersByCountry = async (country) => {
-    setRoasters([]);
-    logRoasters('loadRoastersByCountry - cleared before fetch', []);
-    setLoading(true);
-    setSearchActive(false);
+// --- Вибір країни із підказок
+const handleChoiceCountry = (country) => {
+  setPotentialInputValue([]);
+  setActiveFilter({ active: true, country });
+  setInputState('');
+  loadRoastersByCountry(country);
+};
 
-    try {
-      const response = await axios.post(
-        'https://us-central1-coffee-bee.cloudfunctions.net/searchRoasteries',
-        { roasteryName: '', country }
-      );
+// --- Edit roaster
+const handleEdit = (roaster) => {
+  navigate('/edit-roaster', { state: { roasterData: roaster } });
+};
 
-      setRoasters(response.data);
-      logRoasters('loadRoastersByCountry - fetched by country', response.data);
-      setSuccess(response.data.length === 0);
-    } catch (e) {
-      console.log(e);
-    } finally {
-      setLoading(false);
-    }
-  };
+// --- Delete roaster
+const handleDelete = async (roasterId) => {
+  setLoading(true);
+  try {
+    const token = localStorage.getItem('token');
+    const response = await axios.post(
+      'https://us-central1-coffee-bee.cloudfunctions.net/validAccesAdmin',
+      {},
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
 
-  const handleSearchMain = async (e) => {
-    const value = e.target.value;
-    setInputState(value);
+    if (response.data.access) {
+      try {
+        const roasterRef = doc(db, 'roasters', roasterId);
+        await deleteDoc(roasterRef);
 
-    if (activeFilter.active && activeFilter.country.trim() !== '') {
-      if (value.trim() === '') {
-        setRoasters([]);
-        logRoasters('handleSearchMain - cleared before country fetch', []);
-        setLoading(true);
-        await loadRoastersByCountry(activeFilter.country);
-        setLoading(false);
-        return;
-      }
-    } else if (activeFilter.active && activeFilter.country.trim() === '') {
-      const maxSuggestions = 5;
-      const countrys = [];
-
-      if (value.trim() === '') {
-        setPotentialInputValue([]);
-        return;
-      }
-
-      for (let i = 0; i < countrysArray.length; i++) {
-        const country = countrysArray[i];
-        if (country.toLowerCase().startsWith(value.toLowerCase())) {
-          countrys.push(country);
-          if (countrys.length === maxSuggestions) break;
-        }
-      }
-      setPotentialInputValue(countrys);
-      return;
-    }
-
-    handleSearch(e);
-  };
-
-  const handleChoiceCountry = (country) => {
-    setPotentialInputValue([]);
-    setActiveFilter({ active: true, country });
-    setInputState('');
-    loadRoastersByCountry(country);
-  };
-
-  const btnChangeState = () => {
-    setInputState('');
-    if (activeFilter.active) {
-      setActiveFilter({ active: false, country: '' });
-      if (firstRoasters.current.length > 0) {
-        setRoasters(firstRoasters.current);
-        logRoasters('btnChangeState - restored initial roasters', firstRoasters.current);
-        setLoading(false);
-      } else {
-        setLoading(true);
-        loadData();
+        const logoRef = ref(storage, `roasters/${roasterId}/`);
+        const fileList = await listAll(logoRef);
+        const logoFiles = fileList.items.filter(item => item.name.startsWith('logo'));
+        if (logoFiles.length > 0) await deleteObject(logoFiles[0]);
+      } catch (err) {
+        console.error('Помилка при видаленні обжарщика та логотипа:', err);
       }
     } else {
-      setActiveFilter({ active: true, country: '' });
+      console.error('Немає доступу до цієї операції');
     }
-  };
+
+    setRoasters(prev => {
+      const updated = prev.filter(r => r.id !== roasterId);
+      logRoasters('handleDelete', updated);
+      return updated;
+    });
+  } catch (e) {
+    console.log(e);
+  } finally {
+    setLoading(false);
+  }
+};
+
+// --- Render pagination buttons
+const renderPaginationButtons = () => {
+  if (searchActive || (activeFilter.active && activeFilter.country)) return null;
+
+  const pages = [];
+  let startPage = Math.max(1, currentPage - 2);
+  let endPage = Math.min(totalPages, currentPage + 2);
+
+  if (totalPages > 5) {
+    if (currentPage <= 3) endPage = 5;
+    else if (currentPage >= totalPages - 2) startPage = totalPages - 4;
+  }
+
+  for (let i = startPage; i <= endPage; i++) pages.push(i);
+
+  return (
+    <div className="beansMain-pagination-container">
+      <ul className="beansMain-pagination-list">
+        <li className="beansMain-pagination-item">
+          <button
+            className="beansMain-pagination-link"
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+          >
+            Prev
+          </button>
+        </li>
+        {pages.map(page => (
+          <li key={page} className={`beansMain-pagination-item ${currentPage === page ? 'beansMain-pagination-item-active' : ''}`}>
+            <button
+              className="beansMain-pagination-link"
+              onClick={() => handlePageChange(page)}
+              aria-current={currentPage === page ? 'page' : undefined}
+            >
+              {page}
+            </button>
+          </li>
+        ))}
+        <li className="beansMain-pagination-item">
+          <button
+            className="beansMain-pagination-link"
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+          >
+            Next
+          </button>
+        </li>
+      </ul>
+    </div>
+  );
+};
+
+const roastersContainerRef = useRef(null);
+
+useEffect(() => {
+  const interval = setInterval(() => {
+    if (!roasters || roasters.length === 0) return;
+
+    // рахуємо кількість ростерів без логотипу або з дефолтним
+    const defaultLogoCount = roasters.filter(r => !r.logo || r.logo === defoultImg).length;
+
+    if (defaultLogoCount >= 10) {
+      setLoading(true);
+      loadData();
+      clearInterval(interval); // зупиняємо інтервал після першого виклику
+    }
+  }, 100);
+
+  return () => clearInterval(interval); // чистимо інтервал при демонтажі
+}, [roasters]);
+
+
 
   return (
     <div className="MainAdmin-roaster-page-con">
@@ -436,25 +473,26 @@ const Roaster = () => {
         )
       ) : (
         <>
-          <div className="activeRoasters-maincard-for-cards">
-            {roasters.map((roaster) => (
-              <div key={roaster.id} className="activeRoasters-card-con">
-              <Link to={`/roaster-info/${roaster.id}`}>
-  <img 
-    src={roaster.logo || defoultImg} 
-    alt="Roaster Logo" 
-    className="activeRoasters-card-img" 
-  />
-</Link>
-                <div className="activeRoasters-card-name">{roaster.name}</div>
-                <div className="activeRoasters-card-description">{roaster.description}</div>
-                <div className="activeRoastersAdmin-roaster-actions">
-                  <button onClick={() => handleEdit(roaster)} className="activeRoastersAdmin-btn-edit-roaster">Edit</button>
-                  <button onClick={() => handleDelete(roaster.id)} className="activeRoastersAdmin-btn-delete-roaster">Delete</button>
-                </div>
-              </div>
-            ))}
-          </div>
+     <div className="activeRoasters-maincard-for-cards" ref={roastersContainerRef}>
+  {roasters.map((roaster) => (
+    <div key={roaster.id} className="activeRoasters-card-con">
+      <Link to={`/roaster-info/${roaster.id}`}>
+        <img 
+          src={roaster.logo || defoultImg} 
+          alt="Roaster Logo" 
+          className="activeRoasters-card-img" 
+        />
+      </Link>
+      <div className="activeRoasters-card-name">{roaster.name}</div>
+      <div className="activeRoasters-card-description">{roaster.description}</div>
+      <div className="activeRoastersAdmin-roaster-actions">
+        <button onClick={() => handleEdit(roaster)} className="activeRoastersAdmin-btn-edit-roaster">Edit</button>
+        <button onClick={() => handleDelete(roaster.id)} className="activeRoastersAdmin-btn-delete-roaster">Delete</button>
+      </div>
+    </div>
+  ))}
+</div>
+
           {!searchActive && !loading && renderPaginationButtons()}
         </>
       )}

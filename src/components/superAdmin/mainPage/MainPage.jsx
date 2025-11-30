@@ -12,6 +12,8 @@ import Networks from '../networks/Networks';
 import ModerationCafe from '../moderationCafe/ModerationCafe';
 import ModerationBeans from '../moderationBeans/ModerationBeans';
 import ModerationRoasters from '../moderationRoasters/ModerationRoasters';
+import Analytics from '../Analytics/Analytics';
+import BeanFetch from '../BeanFetch/BeanFetch';
 
 
 const MainPage = () => {
@@ -61,6 +63,8 @@ const navigate = useNavigate();
       <div className={`navbar-main-admin ${activeTab === 'ModerationCafe' ? 'active' : ''}`} onClick={() => handleTabChange('ModerationCafe')}>Moderation Cafe</div>
       <div className={`navbar-main-admin ${activeTab === 'ModerationBeans' ? 'active' : ''}`} onClick={() => handleTabChange('ModerationBeans')}>Moderation Beans</div>
       <div className={`navbar-main-admin ${activeTab === 'Moderation Roasters' ? 'active' : ''}`} onClick={() => handleTabChange('Moderation Roasters')}>Moderation Roasters</div>
+      <div className={`navbar-main-admin ${activeTab === 'Analytics' ? 'active' : ''}`} onClick={() => handleTabChange('Analytics')}>Analytics</div>
+      <div className={`navbar-main-admin ${activeTab === 'BeanFetch' ? 'active' : ''}`} onClick={() => handleTabChange('BeanFetch')}>Bean Fetch</div>
       <div className="navbar-main-admin logout-main-admin-btn" onClick={() => dispatch(logoutUser())}>Logout</div>
     </div>
   </div>
@@ -69,9 +73,17 @@ const navigate = useNavigate();
       <ChooseSection />
     )}
 
+      {activeTab === 'BeanFetch' && (
+      <BeanFetch />
+    )}
+
 
        {activeTab === 'ModerationBeans' && (
       <ModerationBeans />
+    )}
+
+           {activeTab === 'Analytics' && (
+      <Analytics />
     )}
 
     

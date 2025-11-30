@@ -10,9 +10,11 @@ import { deleteDoc, doc } from 'firebase/firestore';
 import { deleteObject, listAll, ref } from 'firebase/storage';
 import { countrysArray } from './country';
 import noImage from '../../../assets/noImage.jpeg';
-
+import { useLocation } from 'react-router-dom';
 const Cafes = () => {
-function useSessionState(key, defaultValue) {
+  const location = useLocation();
+console.log(location.state?.someValue); 
+  function useSessionState(key, defaultValue) {
     const [state, setState] = useState(() => {
       const saved = sessionStorage.getItem(key);
       if (saved !== null) {
@@ -31,8 +33,7 @@ function useSessionState(key, defaultValue) {
 
     return [state, setState];
   }
-
-  // 🔥 Тепер використовуємо його для твоїх state (назви не змінював)
+const mountedRef = useRef(false);
   const [roasters, setRoasters] = useSessionState("roasters", []);
   const [loading, setLoading] = useSessionState("loading", false);
   const [success, setSuccess] = useSessionState("success", false);
@@ -48,48 +49,42 @@ function useSessionState(key, defaultValue) {
   const navigate = useNavigate();
   const controllerRef = useRef(null);
   const firstCafes = useRef([]);
-  
+  const skipPaginationEffect = useRef(true);
 
+const MAX_CAFES = 10;
 
 const loadData = async (num) => {
-  if (num !== 1) {
-    if (activeFilter.active && activeFilter.country.trim() !== '') {
-           
-      return loadCafesByCountry(activeFilter.country);
-
-    }
-  }
-
   setSearchActive(false);
 
-  // ⚡ спочатку перевіряємо sessionStorage
-  const cachedRoasters = sessionStorage.getItem('roasters');
-  const cachedTotalPages = sessionStorage.getItem('totalPages');
+  if (num === 2) {
+    const cachedRoasters = sessionStorage.getItem('roasters');
+    const cachedTotalPages = sessionStorage.getItem('totalPages');
 
-// if (cachedRoasters && cachedTotalPages && cachedRoasters !== "[]" && Number(cachedTotalPages) > 0) {
-//   setRoasters(JSON.parse(cachedRoasters));
-//   setTotalPages(Number(cachedTotalPages));
-//   setLoading(false);
-//   console.log('⚡ Завантажено з sessionStorage');
-//   return;
-// }
-
+    if (cachedRoasters && cachedTotalPages && cachedRoasters !== "[]" && Number(cachedTotalPages) > 0) {
+      const parsed = JSON.parse(cachedRoasters).slice(0, MAX_CAFES);
+      setRoasters(parsed);
+      setTotalPages(Math.min(Number(cachedTotalPages), 1));
+      setLoading(false);
+      return;
+    }
+  }
 
   try {
     const token = localStorage.getItem('token');
     if (!token) throw new Error('Token is not available');
+
     const response = await axios.post(
       `https://us-central1-coffee-bee.cloudfunctions.net/getAllCoffe?count=${count}&offset=${(currentPage - 1) * count}`,
       {},
       { headers: { Authorization: `Bearer ${token}` } }
     );
 
-    firstCafes.current = response.data.roasters;
-    setRoasters(response.data.roasters);
+    const limitedRoasters = response.data.roasters.slice(0, MAX_CAFES); // обмежуємо до 10
+    firstCafes.current = limitedRoasters;
+    setRoasters(limitedRoasters);
     setTotalPages(Math.ceil(response.data.totalCount / count));
 
-    // ⚡ кешуємо у sessionStorage
-    sessionStorage.setItem('roasters', JSON.stringify(response.data.roasters));
+    sessionStorage.setItem('roasters', JSON.stringify(limitedRoasters));
     sessionStorage.setItem('totalPages', Math.ceil(response.data.totalCount / count));
   } catch (e) {
     console.log(e);
@@ -99,66 +94,75 @@ const loadData = async (num) => {
 };
 
 
-
-  
-
   const handlePageChange = (page) => {
     if (page < 1 || page > totalPages) return;
     setCurrentPage(page);
+    setLoading(true);
+    loadData();
   };
 
-  const handleSearch = async (e) => {
-    const query = e.target.value.trim();
-    setInputState(query);
-    setSuccess(false);
-    setSearchActive(true);
-    setRoasters([]);
+const handleSearch = async (e) => {
+  setLoading(true)
+  const query = e.target.value.trim();
+  setInputState(query);
+  setSuccess(false);
+  setSearchActive(true);
 
-    if (!query) {
+  // не робимо запитів, якщо менше 3 символів
 
 
-      if (firstCafes.current.length > 0) {
-        setRoasters(firstCafes.current);
-        setLoading(false);
-      } else {
-        loadData();
-        return;
-      }
+  // якщо інпут порожній — завантажуємо дефолтні дані
+  if (query === '') {
+    setLoading(true);
+    setTimeout(() => {
+      loadData();
+    }, 500); // трохи швидше, ніж 1с
+    return;
+  }
+
+  // скасовуємо попередній запит
+  if (controllerRef.current) {
+    controllerRef.current.abort();
+  }
+  const controller = new AbortController();
+  controllerRef.current = controller;
+
+  setLoading(true);
+
+  try {
+    // зберігаємо локально, щоб перевірити після запиту
+    const currentQuery = query;
+
+    const res = await axios.post(
+      'https://us-central1-coffee-bee.cloudfunctions.net/searchCafes',
+      { coffeName: currentQuery, country: activeFilter.country },
+      { signal: controller.signal }
+    );
+
+    // перевіряємо: користувач міг стерти або змінити інпут
+    if (currentQuery !== e.target.value.trim()) return;
+
+    if (Array.isArray(res.data) && res.data.length === 0) {
+      setSuccess(true);
+      setRoasters([]);
+      sessionStorage.setItem('roasters', JSON.stringify([]));
+      sessionStorage.setItem('totalPages', '1');
+    } else {
+      setRoasters(res.data);
+      setSuccess(false);
+      sessionStorage.setItem('roasters', JSON.stringify(res.data));
+      sessionStorage.setItem('totalPages', '1');
     }
-
-    if (controllerRef.current) {
-      controllerRef.current.abort();
+  } catch (err) {
+    if (axios.isCancel(err) || err.name === 'CanceledError' || err.code === 'ERR_CANCELED') {
+      console.log('🚫 Запит скасовано');
+    } else {
+      console.error('🔥 ПОМИЛКА:', err.message);
     }
-
-    const controller = new AbortController();
-    controllerRef.current = controller;
-
-    try {
-      const res = await axios.post(
-        'https://us-central1-coffee-bee.cloudfunctions.net/searchCafes',
-        { coffeName: query, country: activeFilter.country },
-        { signal: controller.signal }
-      );
-
-      if (Array.isArray(res.data) && res.data.length === 0) {
-        setSuccess(true);
-        setRoasters([]);
-      } else {
-        setRoasters(res.data);
-        setSuccess(false);
-      }
-
-      setLoading(false);
-    } catch (err) {
-      if (axios.isCancel(err) || err.name === 'CanceledError' || err.code === 'ERR_CANCELED') {
-        console.log('🚫 Запит було скасовано');
-      } else {
-        console.error('🔥 ПОМИЛКА:', err.message);
-        setLoading(false);
-      }
-    }
-  };
-
+  } finally {
+    setLoading(false);
+  }
+};
 
 
   const controllerCityRef = useRef(null);
@@ -168,33 +172,37 @@ const loadData = async (num) => {
     setSuccess(false);
     setSearchActive(true);
     setRoasters([]);
-  
+
     if (!cityQuery) {
       loadData();
       return;
     }
-  
+
     if (controllerCityRef.current) {
       controllerCityRef.current.abort();
     }
-  
+
     const controller = new AbortController();
     controllerCityRef.current = controller;
     setLoading(true);
-  
+
     try {
       const response = await axios.post(
         'https://us-central1-coffee-bee.cloudfunctions.net/getCafeByCity',
         { city: cityQuery },
         { signal: controller.signal }
       );
-  
+
       if (Array.isArray(response.data) && response.data.length === 0) {
         setSuccess(true);
         setRoasters([]);
+        sessionStorage.setItem('roasters', JSON.stringify([]));
+        sessionStorage.setItem('totalPages', '1');
       } else {
         setRoasters(response.data);
         setSuccess(false);
+        sessionStorage.setItem('roasters', JSON.stringify(response.data));
+        sessionStorage.setItem('totalPages', '1');
       }
     } catch (err) {
       if (
@@ -210,19 +218,19 @@ const loadData = async (num) => {
       setLoading(false);
     }
   };
-  
-
-
-
 
   const handleSearchMain = (e) => {
-    setInputState(e.target.value);
+    const value = e.target.value;
+    setInputState(value);
 
-
-    if(activeFilterCity.active) {
-      return searchCafeByCity(e)
+    if (value.trim() === '') {
+      setLoading(true);
+      loadData();
     }
 
+    if (activeFilterCity.active) {
+      return searchCafeByCity(e);
+    }
 
     if (activeFilter.active && activeFilter.country.trim() !== '') {
       setLoading(true);
@@ -258,7 +266,7 @@ const loadData = async (num) => {
   useEffect(() => {
     setLoading(true);
     loadData(2);
-  }, [currentPage, count]);
+  }, []);
 
   useEffect(() => {
     if (currentPage > totalPages) {
@@ -276,6 +284,17 @@ const loadData = async (num) => {
   const loadCafesByCountry = async (country) => {
     setLoading(true);
     setSearchActive(false);
+
+    const cachedRoasters = sessionStorage.getItem(`roasters_${country}`);
+    const cachedTotalPages = sessionStorage.getItem(`totalPages_${country}`);
+
+    if (cachedRoasters && cachedTotalPages && cachedRoasters !== "[]" && Number(cachedTotalPages) > 0) {
+      setRoasters(JSON.parse(cachedRoasters));
+      setTotalPages(Number(cachedTotalPages));
+      setLoading(false);
+      return;
+    }
+
     try {
       const token = localStorage.getItem('token');
       if (!token) throw new Error('Token is not available');
@@ -300,41 +319,57 @@ const loadData = async (num) => {
   };
 
   const btnChangeState = () => {
-    setInputState('')
+    setInputState('');
     setActiveFilterCity({ active: false, city: '' });
     if (activeFilter.active) {
       setActiveFilter({ active: false, country: '' });
-  
-      if (firstCafes.current.length > 0) {
-        setRoasters(firstCafes.current);
-        setLoading(false);
-      } else {
-        setLoading(true);
-        loadData(1);
-      }
+      setLoading(true);
+      loadData(1);
     } else {
       setActiveFilter({ active: true, country: '' });
     }
   };
-  
 
   const btnChangeStateCity = () => {
-    setInputState('')
+    setInputState('');
     setActiveFilter({ active: false, country: '' });
-    const newState = !activeFilterCity.active;
-    setActiveFilterCity({ active: newState, city: '' });
-  
-    if (!newState) {
+
+    if (activeFilterCity.active) {
+      setActiveFilterCity({ active: false, city: '' });
       if (firstCafes.current.length > 1) {
         setRoasters(firstCafes.current);
       } else {
         setLoading(true);
         loadData(1);
       }
-      
+    } else {
+      setActiveFilterCity({ active: true, city: '' });
     }
   };
-  
+
+const cafesContainerRef = useRef(null);
+
+useEffect(() => {
+  const interval = setInterval(() => {
+    if (!cafesContainerRef.current) return;
+
+    // беремо всі "кафешки" з контейнера
+    const cafeElements = Array.from(cafesContainerRef.current.querySelectorAll('img'));
+
+    // рахуємо, скільки з них без фото (src === noImage)
+    const noPhotoCount = cafeElements.filter(img => img.src.includes(noImage)).length;
+
+    if (noPhotoCount >= 10) {
+      setLoading(true);
+      loadData();
+      clearInterval(interval); // зупиняємо інтервал після першого виклику
+    }
+  }, 100);
+
+  return () => clearInterval(interval);
+}, []);
+
+
 
   const renderPaginationButtons = () => {
     const pages = [];
@@ -349,6 +384,10 @@ const loadData = async (num) => {
     for (let i = startPage; i <= endPage; i++) {
       pages.push(i);
     }
+
+
+
+
 
     return (
       <div className="beansMain-pagination-container">
@@ -453,7 +492,7 @@ const loadData = async (num) => {
         )
       ) : (
         <>
-          <div className="activeRoasters-maincard-for-cards">
+          <div className="activeRoasters-maincard-for-cards" ref={cafesContainerRef}>
             {roasters.map((roaster) => (
               <Link to={`/cafe-info/${roaster.id}`} key={roaster?.placeid}>
                 <div className="activeRoasters-card-con" onClick={() => console.log(roaster.id)}>
@@ -475,7 +514,8 @@ const loadData = async (num) => {
               </Link>
             ))}
           </div>
-          {!searchActiva && !loading && renderPaginationButtons()}
+       {!searchActiva && !loading && renderPaginationButtons()}
+
         </>
       )}
     </div>

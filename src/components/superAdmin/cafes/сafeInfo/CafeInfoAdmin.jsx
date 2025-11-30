@@ -9,6 +9,7 @@ import { deleteObject, ref } from 'firebase/storage';
 import Loader from '../../../loader/Loader';
 import close from '../../../../assets/close.png';
 import threeDots from '../../../../assets/threeDots.png'
+import back from '../../../../assets/back.png'
 const CafeInfo = () => {
     const navigate = useNavigate()
     const { id } = useParams(); 
@@ -18,6 +19,12 @@ const CafeInfo = () => {
     const [findData, setFindData] = useState(false)
     const [modal, setModal] = useState(false); 
     const [localLoading2, setLocalLoading2] = useState({disabled: false, mot: 0})
+ 
+const handleBack = () => {
+  navigate(-1, { state: { someValue: 1 } });
+};
+
+
 
     const [localLoading, setLocalLoading] = useState(false)
     useEffect(() => {
@@ -34,7 +41,7 @@ const CafeInfo = () => {
             if (cafeDoc.exists()) {
                 const cafeData = cafeDoc.data(); 
                 setCafe({ id: cafeDoc.id, ...cafeDoc.data() });
-              
+                console.log({ id: cafeDoc.id, ...cafeDoc.data() })
                 setFindData(true)
                
                 const beanArray = []
@@ -194,6 +201,8 @@ const handleDeleteCafe = async () => {
       ) : findData ? (
           
          <div className='cafeInfoAdmin-con'>
+
+          <img className='cafeInfoAdmin-conBack-png' onClick={handleBack} src={back} alt="" />
 
 
 
