@@ -4,7 +4,13 @@ import { db } from '../../../../../firebase';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const RoasterInfo = ({ selectedRoaster, onClearSelection, onShowRoasterSelector }) => {
+const RoasterInfo = ({ selectedRoaster, onClearSelection, onShowRoasterSelector
+  ,
+  onSaveParser,
+  isSaveParserButtonActive,
+  savingParser,
+  isFromUrl
+ }) => {
   const [editingWebsite, setEditingWebsite] = useState(false);
   const [editingShop, setEditingShop] = useState(false);
   const [tempWebsite, setTempWebsite] = useState('');
@@ -170,9 +176,12 @@ const RoasterInfo = ({ selectedRoaster, onClearSelection, onShowRoasterSelector 
       />
       <div className="beanfetch-roaster-info">
         <div className="beanfetch-roaster-header">
-          <button onClick={onClearSelection} className="beanfetch-back-btn">
+          {/* {isFromUrl === false && 
+              <button onClick={onClearSelection} className="beanfetch-back-btn">
             ← Change Roaster
           </button>
+          } */}
+      
           <h1 className="beanfetch-title">
             Bean Fetch for: <span className="beanfetch-roaster-name">{selectedRoaster.name}</span>
           </h1>
@@ -299,6 +308,22 @@ const RoasterInfo = ({ selectedRoaster, onClearSelection, onShowRoasterSelector 
           </div>
         </div>
       </div>
+          {/* {selectedRoaster && (
+        <button
+          onClick={onSaveParser}
+          disabled={!isSaveParserButtonActive || savingParser}
+          className={`beanfetch-btn save-parser-btn ${savingParser ? 'loading' : ''}`}
+        >
+          {savingParser ? (
+            <>
+              <span className="spinner-small"></span>
+              Saving Parser...
+            </>
+          ) : (
+            '💾 Save Parser Configuration'
+          )}
+        </button>
+      )} */}
     </div>
   );
 };

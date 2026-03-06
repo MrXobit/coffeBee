@@ -17,11 +17,9 @@ const ResultsSection = ({
   onHandleLoad
 }) => {
 
-
-  
   const handleContinue = () => {
     if (results && results.continueToken) {
-      onHandleLoad(results.continueToken) // Використовуємо передану функцію
+      onHandleLoad(results.continueToken)
     }
   }
 
@@ -30,26 +28,33 @@ const ResultsSection = ({
       alert('Please enter URL for new page')
       return
     }
-    onHandleLoad(null, loadMoreUrl) // Використовуємо передану функцію
+    onHandleLoad(null, loadMoreUrl)
   }
+
+  // Безпечні змінні для рендерингу
+  const hasResults = results && results.data && results.data.length > 0
+  const successCount = hasResults ? results.data.filter(r => !r.error).length : 0
+  const showProgress = results && results.total && results.processed !== undefined
 
   return (
     <div className="beanfetch-results-section">
       <div className="beanfetch-results-header">
         <div>
           <h2 className="beanfetch-results-title">
-            Results ({results.data ? results.data.filter(r => !r.error).length : 0} products)
+            Results ({hasResults ? successCount : 0} products)
           </h2>
-          <div className="beanfetch-pagination-info">
-            Progress: {results.processed}/{results.total} 
-            ({Math.round((results.processed / results.total) * 100)}%)
-            {results.executionTime && (
-              <span className="beanfetch-time"> • Time: {results.executionTime}ms</span>
-            )}
-          </div>
+          {showProgress && (
+            <div className="beanfetch-pagination-info">
+              Progress: {results.processed}/{results.total} 
+              ({Math.round((results.processed / results.total) * 100)}%)
+              {results.executionTime && (
+                <span className="beanfetch-time"> • Time: {results.executionTime}ms</span>
+              )}
+            </div>
+          )}
         </div>
         <div className="beanfetch-results-actions">
-          {results.hasMore && (
+          {results && results.hasMore && (
             <button 
               onClick={handleContinue}
               disabled={continueLoading}
@@ -66,7 +71,7 @@ const ResultsSection = ({
             </button>
           )}
           
-          {results.data && results.data.length > 0 && selectedRoaster && (
+          {hasResults && selectedRoaster && (
             <button 
               onClick={onAddToDatabase}
               className="beanfetch-db-btn"
@@ -83,9 +88,11 @@ const ResultsSection = ({
             </button>
           )}
           
-          <button onClick={onClearResults} className="beanfetch-clear-btn">
-            Clear Results
-          </button>
+          {hasResults && (
+            <button onClick={onClearResults} className="beanfetch-clear-btn">
+              Clear Results
+            </button>
+          )}
         </div>
       </div>
 
@@ -113,7 +120,7 @@ const ResultsSection = ({
         </button>
       </div>
       
-      {results.data && results.data.length > 0 ? (
+      {hasResults ? (
         <div className="beanfetch-results-grid">
           {results.data.map((result, index) => (
             <div key={index} className={`beanfetch-result-card ${result.error ? 'error' : ''}`}>
@@ -189,11 +196,13 @@ const ResultsSection = ({
             </div>
           ))}
         </div>
-      ) : (
+      ) : results ? (
+        // Якщо results є, але немає даних
         <div className="beanfetch-no-results">
           No results found. Please check your selectors and try again.
         </div>
-      )}
+      ) : null}
+      {/* Якщо results = null, просто нічого не відображаємо (не показуємо повідомлення) */}
     </div>
   );
 };

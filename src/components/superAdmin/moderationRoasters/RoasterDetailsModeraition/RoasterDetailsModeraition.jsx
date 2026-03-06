@@ -31,90 +31,98 @@ const RoasterDetailsModeraition = () => {
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      setLoading(true);
 
-        console.log('🔄 Starting fetchData for roaster ID:', id);
+      console.log('🔄 Starting fetchData for roaster ID:', id);
 
-        const roasterRef = doc(db, "roasters", id);
-        const roasterSnap = await getDoc(roasterRef);
+      const roasterRef = doc(db, "roasters", id);
+      const roasterSnap = await getDoc(roasterRef);
 
-        if (roasterSnap.exists()) {
-          const roasterData = roasterSnap.data();
-          console.log('✅ Roaster found:', roasterData.name);
-          console.log('📋 Roaster data:', roasterData);
-          
-          setRoaster({ id: roasterSnap.id, ...roasterData });
+      if (roasterSnap.exists()) {
+        const roasterData = roasterSnap.data();
+        console.log('✅ Roaster found:', roasterData.name);
+        
+        setRoaster({ id: roasterSnap.id, ...roasterData });
 
-          const beansRef = collection(db, "beans");
-
-          // перший пошук — по id ростера
-          console.log('🔍 First query - searching by roaster ID:', id);
-          const q1 = query(
+        const beansRef = collection(db, "beans");
+        
+        // Отримуємо всі ID для пошуку (основний ID + aliasIds)
+        const allSearchIds = new Set();
+        
+        // Додаємо основний ID
+        allSearchIds.add(String(roasterSnap.id));
+        
+        // Додаємо aliasIds, якщо вони є і відрізняються від основного ID
+        const aliasIds = roasterData.aliasId;
+        console.log('🔍 Alias IDs found:', aliasIds);
+        
+        if (Array.isArray(aliasIds)) {
+          aliasIds.forEach(aliasId => {
+            if (aliasId && aliasId !== String(roasterSnap.id)) {
+              allSearchIds.add(String(aliasId));
+            }
+          });
+        }
+        
+        // Конвертуємо Set в масив для запиту
+        const uniqueSearchIds = Array.from(allSearchIds);
+        console.log('🔍 Unique IDs to search:', uniqueSearchIds);
+        
+        // Робимо ОДИН запит з усіма унікальними ID
+        if (uniqueSearchIds.length === 1) {
+          // Якщо тільки один ID
+          console.log('🔍 Single ID query for:', uniqueSearchIds[0]);
+          const q = query(
             beansRef,
-            where("roaster", "==", String(roasterSnap.id)),
+            where("roaster", "==", uniqueSearchIds[0]),
             where("isVerified", "==", true)
           );
-          const beansSnap1 = await getDocs(q1);
-          let beans = beansSnap1.docs.map((d) => ({ id: d.id, ...d.data() }));
-          
-          console.log('📊 First query results:', beans.length, 'beans');
-          beans.forEach(bean => {
-            console.log('   -', bean.name, '(ID:', bean.id, ')');
-          });
-
-          // другий пошук — тільки якщо aliasId є і їх більше ніж 1
-          const aliasIds = roasterData.aliasId;
-          console.log('🔍 Alias IDs found:', aliasIds);
-          
-          if (Array.isArray(aliasIds) && aliasIds.length > 1) {
-            console.log('🔍 Second query - searching by alias IDs:', aliasIds);
-            const q2 = query(
-              beansRef,
-              where("roaster", "in", aliasIds),
-              where("isVerified", "==", true)
-            );
-            const beansSnap2 = await getDocs(q2);
-            const beans2 = beansSnap2.docs.map((d) => ({
-              id: d.id,
-              ...d.data(),
-            }));
-
-            console.log('📊 Second query results:', beans2.length, 'beans');
-            beans2.forEach(bean => {
-              console.log('   -', bean.name, '(ID:', bean.id, ')');
-            });
-
-            // додаємо результати
-            beans = [...beans, ...beans2];
-          }
-
-          console.log('📦 Total beans after merge:', beans.length);
-          console.log('📋 Final beans list:');
-          beans.forEach(bean => {
-            console.log('   -', bean.name, '(roaster:', bean.roaster, ')');
-          });
-
+          const beansSnap = await getDocs(q);
+          const beans = beansSnap.docs.map((d) => ({ id: d.id, ...d.data() }));
+          console.log('📦 Beans array:', beans); // ДОДАНО ВИВЕДЕННЯ МАСИВУ
           setBeans(beans);
         } else {
-          console.log('❌ Roaster not found with ID:', id);
-          setRoaster(null);
-          setBeans([]);
+          // Якщо кілька ID
+          console.log('🔍 Multiple IDs query for:', uniqueSearchIds);
+          const q = query(
+            beansRef,
+            where("roaster", "in", uniqueSearchIds),
+            where("isVerified", "==", true)
+          );
+          const beansSnap = await getDocs(q);
+          
+          // Використовуємо Map для уникнення дублікатів за ID бобу
+          const beansMap = new Map();
+          beansSnap.docs.forEach(doc => {
+            const data = doc.data();
+            beansMap.set(doc.id, { id: doc.id, ...data });
+          });
+          
+          const beans = Array.from(beansMap.values());
+          console.log('📦 Beans array:', beans); // ДОДАНО ВИВЕДЕННЯ МАСИВУ
+          setBeans(beans);
         }
-      } catch (err) {
-        console.error('❌ Error loading roaster/beans:', err);
-        console.error('Error details:', err.message);
-        console.error('Error stack:', err.stack);
-      } finally {
-        setLoading(false);
-        console.log('🏁 FetchData completed');
+        
+        console.log('📦 Total unique beans found:', beans.length);
+        
+      } else {
+        console.log('❌ Roaster not found with ID:', id);
+        setRoaster(null);
+        setBeans([]);
       }
-    };
+    } catch (err) {
+      console.error('❌ Error loading roaster/beans:', err);
+    } finally {
+      setLoading(false);
+      console.log('🏁 FetchData completed');
+    }
+  };
 
-    fetchData();
-  }, [id]);
+  fetchData();
+}, [id]);
 
   // Функція для підтвердження видалення всіх зерен
   const confirmDeleteAllBeans = () => {
@@ -239,7 +247,8 @@ const RoasterDetailsModeraition = () => {
       producer: '👨‍🌾 Producer:',
       variety: '🌱 Variety:',
       roaster: '🏭 Roaster:',
-      name: '🌿 Name:'
+      name: '🌿 Name:',
+      url: '🔗 URL:' // Додаємо лейбл для URL
     };
 
     return (
@@ -248,6 +257,26 @@ const RoasterDetailsModeraition = () => {
         <span className="detail-value">
           {Array.isArray(value) ? value.join(', ') : value}
         </span>
+      </div>
+    );
+  };
+
+  // Функція для відображення URL
+  const renderUrl = (bean) => {
+    if (!bean.url) return null;
+    
+    return (
+      <div className="bean-detail url-detail">
+        <span className="detail-label">🔗 URL:</span>
+        <a 
+          href={bean.url} 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="bean-url-link"
+          title="Open product page"
+        >
+          {bean.url.length > 50 ? `${bean.url.substring(0, 47)}...` : bean.url}
+        </a>
       </div>
     );
   };
@@ -263,6 +292,7 @@ const RoasterDetailsModeraition = () => {
   return (
     <div className="RoasterDetailsModeraition-container">
       {/* Повідомлення про результат */}
+    
       {deleteResult && (
         <div className={`delete-result ${deleteResult.type}`}>
           {deleteResult.message}
@@ -377,41 +407,53 @@ const RoasterDetailsModeraition = () => {
         )}
       </div>
       
-      <div className="RoasterDetailsModeraition-beans-grid">
-        {beans.length > 0 ? (
-          beans.map((bean) => (
-            <div key={bean.id} className="RoasterDetailsModeraition-bean-card">
-              {/* Кнопка видалення окремого зерна */}
-              <button 
-                className="bean-delete-btn"
-                onClick={() => confirmDeleteBean(bean.id, bean.name)}
-                title="Delete this bean"
-                disabled={deleting}
-              >
-                {deleting ? "⏳" : "×"}
-              </button>
-              
-              <div className="bean-card-header">
-                <h3 className="bean-name">{bean.name}</h3>
-                {bean.price && (
-                  <span className="bean-price">{bean.price} ₴</span>
-                )}
-              </div>
-              
-              <div className="bean-details">
-                {/* Відображаємо всі дозволені поля */}
-                {ALLOWED_FIELD_NAMES.map(fieldName => 
-                  renderField(bean, fieldName)
-                )}
-              </div>
-            </div>
-          ))
-        ) : (
-          <div className="RoasterDetailsModeraition-no-beans">
-            <p>No beans found for this roaster</p>
-          </div>
-        )}
+<div className="RoasterDetailsModeraition-beans-grid">
+  {beans.length > 0 ? (
+    beans.map((bean) => (
+      <div key={bean.id} className="RoasterDetailsModeraition-bean-card">
+        {/* Кнопка видалення окремого зерна */}
+        <button 
+          className="bean-delete-btn"
+          onClick={() => confirmDeleteBean(bean.id, bean.name)}
+          title="Delete this bean"
+          disabled={deleting}
+        >
+          {deleting ? "⏳" : "×"}
+        </button>
+        
+        <div className="bean-card-header">
+          <h3 className="bean-name">{bean.name}</h3>
+          {bean.price && (
+            <span className="bean-price">{bean.price} ₴</span>
+          )}
+        </div>
+        
+        <div className="bean-details">
+          {/* Відображаємо всі дозволені поля */}
+          {ALLOWED_FIELD_NAMES.map(fieldName => 
+            renderField(bean, fieldName)
+          )}
+          
+          {/* Відображаємо URL - ВСТАВТЕ ТУТ */}
+      {bean.source_url && (
+  <a 
+    href={bean.source_url} 
+    target="_blank" 
+    rel="noopener noreferrer"
+    className="bean-url-link"
+  >
+    <span>{bean.source_url.length > 30 ? bean.source_url.substring(0, 27) + '...' : bean.source_url}</span>
+  </a>
+)}
+        </div>
       </div>
+    ))
+  ) : (
+    <div className="RoasterDetailsModeraition-no-beans">
+      <p>No beans found for this roaster</p>
+    </div>
+  )}
+</div>
     </div>
   );
 };

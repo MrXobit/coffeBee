@@ -757,3 +757,73 @@
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
 }
+
+
+
+
+
+
+/* Посилання на джерело зерна */
+.bean-url-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #3498db;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95em;
+  padding: 8px 16px;
+  border: 2px solid #3498db;
+  border-radius: 25px;
+  transition: all 0.3s ease;
+  background: rgba(52, 152, 219, 0.1);
+  margin-top: 8px;
+  width: fit-content;
+  box-shadow: 0 2px 8px rgba(52, 152, 219, 0.2);
+}
+
+.bean-url-link:hover {
+  background: #3498db;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+}
+
+.bean-url-link::before {
+  content: "🔗";
+  font-size: 1.1em;
+}
+
+/* Якщо URL довгий, обрізаємо його */
+.bean-url-link span {
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Альтернативний варіант з іконкою замість тексту для мобільних */
+@media (max-width: 480px) {
+  .bean-url-link {
+    font-size: 0.85em;
+    padding: 6px 12px;
+  }
+  
+  .bean-url-link span {
+    max-width: 150px;
+  }
+}
+
+/* Стиль для URL в деталях (якщо потрібно показати повний URL) */
+.bean-url-full {
+  display: block;
+  font-size: 0.85em;
+  color: #7f8c8d;
+  margin-top: 4px;
+  word-break: break-all;
+  padding: 6px 10px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 3px solid #3498db;
+}
+

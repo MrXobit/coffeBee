@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useState } from 'react'
 import FieldInput from '../FieldInput/FieldInput'
+import axios from 'axios';
 
 const ALLOWED_FIELD_NAMES = [
   'price',
@@ -10,7 +11,6 @@ const ALLOWED_FIELD_NAMES = [
   'name',
   'process',
   'producer', 
-  'roaster',
   'variety'
 ];
 
@@ -60,6 +60,39 @@ const ParsingForm = ({
 
   const handleLoadClick = () => {
     onHandleLoad(); // Викликаємо функцію з батьківського компонента
+  }
+
+  const [AiLoading, setAiLoading] = useState(false)
+  const [AiError, setAiError] = useState('')
+
+
+  const handleAiFindSelectors = async() => {
+    setAiLoading(true)
+    setAiError('')
+    try {
+      if(!siteUrl) return
+    const result = await axios.post(
+  'http://127.0.0.1:5001/coffee-bee/us-central1/AIparser',
+  { shopUrl: siteUrl },
+);
+
+    if (result?.data?.productLinkSelector) {
+      onNameBeanChange(result.data.productLinkSelector); 
+    }
+
+     if (result?.data?.beanSelectors && Array.isArray(result.data.beanSelectors)) {
+      onBeansChange(result.data.beanSelectors);
+    }
+
+  if (result?.data?.error) {
+      setAiError(result.data.error)
+    }
+
+    }catch(e) {
+     console.log(e)
+    }finally {
+      setAiLoading(false)
+    }
   }
 
   const selectorPreview = getSelectorPreview(nameBean)
@@ -168,6 +201,23 @@ const ParsingForm = ({
             </div>
           </div>
         )}
+
+<button 
+  disabled={!siteUrl || AiLoading}
+  className={`beanfetch-aiFindSelector ${AiLoading ? 'loading with-text' : ''}`}
+  onClick={handleAiFindSelectors}
+>
+  {AiLoading ? (
+    <>
+      <span className="spinner"></span>
+      Searching...
+    </>
+  ) : 'AI find selectors'}
+</button>
+
+{AiError && (
+  <p className='beanfetch-AiError'>{AiError}</p>
+)}
 
         <div className="beanfetch-tips">
           <h4>💡 Tips:</h4>

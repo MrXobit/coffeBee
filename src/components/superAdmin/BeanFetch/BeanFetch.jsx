@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react'
+import { useParams } from 'react-router-dom'
 import axios from 'axios'
 import './BeanFetch.css'
 import { v4 as uuidv4 } from 'uuid'
-import { collection, addDoc, query, where, getDocs, updateDoc, doc, setDoc, deleteDoc } from 'firebase/firestore'
+import { collection, addDoc, query, where, getDocs, updateDoc, doc, setDoc, deleteDoc, getDoc } from 'firebase/firestore'
 import { db } from '../../../firebase'
 import RoasterInfo from './components/RoasterInfo/RoasterInfo'
 import ParsingForm from './components/ParsingForm/ParsingForm'
@@ -20,36 +21,16 @@ const ALLOWED_FIELD_NAMES = [
   'name',
   'process',
   'producer', 
-  'variety'
+  'variety',
+  'url'
 ]
 
-const BeanFetch = () => {
-  const loadState = () => {
-    try {
-      const savedState = sessionStorage.getItem('beanFetchState')
-      if (savedState) {
-        return JSON.parse(savedState)
-      }
-    } catch (error) {
-      console.error('Error loading state from sessionStorage:', error)
-    }
-    return null
-  }
-
-  const saveState = (state) => {
-    try {
-      sessionStorage.setItem('beanFetchState', JSON.stringify(state))
-    } catch (error) {
-      console.error('Error saving state to sessionStorage:', error)
-    }
-  }
-
-  const savedState = loadState()
-
-  const [siteUrl, setSiteUrl] = useState(savedState?.siteUrl || '')
-  const [nameBean, setBeanName] = useState(savedState?.nameBean || '')
-  const [beans, setBeans] = useState(savedState?.beans || [{ name: '', container: '' }])
-  const [selectedRoaster, setSelectedRoaster] = useState(savedState?.selectedRoaster || null)
+const BeanFetch = ({fetchDataParser, onBackToList}) => {
+  const { id } = useParams()
+  const [siteUrl, setSiteUrl] = useState('')
+  const [nameBean, setBeanName] = useState('')
+  const [beans, setBeans] = useState([{ name: '', container: '' }])
+  const [selectedRoaster, setSelectedRoaster] = useState(null)
   const [loading, setLoading] = useState(false)
   const [results, setResults] = useState(null)
   const [continueLoading, setContinueLoading] = useState(false)
@@ -59,7 +40,8 @@ const BeanFetch = () => {
   const [showRoasterSelector, setShowRoasterSelector] = useState(false)
   const [addingToDatabase, setAddingToDatabase] = useState(false)
   const [notification, setNotification] = useState(null)
-
+  const [savingParser, setSavingParser] = useState(false)
+  const [initialLoading, setInitialLoading] = useState(!!id) 
   const showNotification = (message, type = 'info') => {
     setNotification({ message, type })
   }
@@ -68,26 +50,82 @@ const BeanFetch = () => {
     setNotification(null)
   }
 
-  useEffect(() => {
-    const savedState = loadState()
-    if (savedState) {
-      setSiteUrl(savedState.siteUrl || '')
-      setBeanName(savedState.nameBean || '')
-      setBeans(savedState.beans || [{ name: '', container: '' }])
-      setSelectedRoaster(savedState.selectedRoaster || null)
+useEffect(() => {
+  const loadParserData = async () => {
+    if (id) {
+      try {
+        setInitialLoading(true)
+        const parserDoc = await getDoc(doc(db, 'parser', id))
+        if (parserDoc.exists()) {
+          const parserData = parserDoc.data()
+          setSiteUrl(parserData.siteUrl || '')
+          setBeanName(parserData.nameBean || '')
+          setBeans(parserData.beans || [{ name: '', container: '' }])
+          setLoadMoreUrl(parserData.loadMoreUrl || '') // Додав це
+          
+          if (parserData.roasterId && parserData.roasterName) {
+            setSelectedRoaster({
+              id: parserData.roasterId,
+              name: parserData.roasterName,
+              shop: parserData.siteUrl,
+              website: parserData.website // Додав це
+            })
+          }
+          
+          showNotification(`✅ Parser loaded from database`, 'success')
+        }
+      } catch (err) {
+        showNotification(`Error loading parser: ${err.message}`, 'error')
+      } finally {
+        setInitialLoading(false)
+      }
+    } else {
+      const loadState = () => {
+        try {
+          const savedState = sessionStorage.getItem('beanFetchState')
+          if (savedState) {
+            return JSON.parse(savedState)
+          }
+        } catch (error) {
+          console.error('Error loading state from sessionStorage:', error)
+        }
+        return null
+      }
+      
+      const savedState = loadState()
+      if (savedState) {
+        setSiteUrl(savedState.siteUrl || '')
+        setBeanName(savedState.nameBean || '')
+        setBeans(savedState.beans || [{ name: '', container: '' }])
+        setLoadMoreUrl(savedState.loadMoreUrl || '') // Додав це
+        setSelectedRoaster(savedState.selectedRoaster || null)
+      }
     }
-  }, [])
+  }
 
-  useEffect(() => {
+  loadParserData()
+}, [id])
+
+useEffect(() => {
+  if (!id) {
+    const saveState = (state) => {
+      try {
+        sessionStorage.setItem('beanFetchState', JSON.stringify(state))
+      } catch (error) {
+        console.error('Error saving state to sessionStorage:', error)
+      }
+    }
+    
     const stateToSave = {
       siteUrl,
       nameBean,
       beans,
-      selectedRoaster
+      selectedRoaster,
+      loadMoreUrl 
     }
     saveState(stateToSave)
-  }, [siteUrl, nameBean, beans, selectedRoaster])
-
+  }
+}, [siteUrl, nameBean, beans, selectedRoaster, loadMoreUrl, id]) // Додав loadMoreUrl в залежності
   const handleRoasterSelect = (roaster) => {
     setSelectedRoaster(roaster)
     if (roaster?.shop) {
@@ -106,8 +144,76 @@ const BeanFetch = () => {
     setSelectedProduct(null)
     setLoading(false)
     setContinueLoading(false)
-    sessionStorage.removeItem('beanFetchState')
+    if (!id) {
+      sessionStorage.removeItem('beanFetchState')
+    }
   }
+
+  const saveParserToDatabase = async () => {
+    if (!selectedRoaster || !siteUrl || beans.length === 0 || !nameBean) {
+      showNotification('Please select a roaster, enter website URL and add at least one field', 'warning')
+      return
+    }
+
+    const hasValidFields = beans.some(bean => bean.name && bean.container)
+    if (!hasValidFields) {
+      showNotification('Please add at least one valid field with name and selector', 'warning')
+      return
+    }
+
+    setSavingParser(true)
+
+    try {
+      const parsersQuery = query(collection(db, 'parser'), where("roasterId", "==", String(selectedRoaster.id)))
+      const existingParserSnapshot = await getDocs(parsersQuery)
+      
+      const parserData = {
+        roasterId: String(selectedRoaster.id),
+        roasterName: selectedRoaster.name,
+        siteUrl: siteUrl,
+        nameBean: nameBean,
+        beans: beans,
+        updatedAt: new Date(),
+        website: selectedRoaster?.website || undefined,
+        loadMoreUrl: loadMoreUrl ?? undefined
+      }
+
+      let message = ""
+
+      if (existingParserSnapshot.size > 0) {
+        const existingParser = existingParserSnapshot.docs[0]
+        const parserId = existingParser.id
+        
+        const updateData = {
+          ...parserData,
+          updatedAt: new Date()
+        }
+        
+        await updateDoc(doc(db, 'parser', parserId), updateData)
+        message = `✅ Parser updated successfully for ${selectedRoaster.name}!`
+      } else {
+        const parserId = uuidv4()
+        const newParserData = {
+          ...parserData,
+          id: parserId,
+          createdAt: new Date()
+        }
+        
+        await setDoc(doc(db, 'parser', parserId), newParserData)
+        message = `✅ Parser saved successfully! Parser ID: ${parserId.substring(0, 8)}...`
+      }
+      
+    
+      showNotification(message, 'success')
+ 
+    } catch (err) {
+      showNotification(`Error saving parser: ${err.message}`, 'error')
+    } finally {
+      setSavingParser(false)
+    }
+  }
+
+  const isSaveParserButtonActive = selectedRoaster && nameBean && siteUrl && beans.some(bean => bean.name && bean.container)
 
   const addToDatabase = async () => {
     if (!selectedRoaster || !results || !results.data) {
@@ -201,7 +307,8 @@ const BeanFetch = () => {
             roasterName: selectedRoaster.name,
             createdAt: new Date(),
             updatedAt: new Date(),
-            isVerified: true
+            isVerified: true,
+          
           }
           
           ALLOWED_FIELD_NAMES.forEach(field => {
@@ -214,6 +321,8 @@ const BeanFetch = () => {
           return { action: 'added', name: product.name }
         }
       })
+
+
 
       const operationResults = await Promise.all(promises)
       const addedCount = operationResults.filter(r => r.action === 'added').length
@@ -447,16 +556,74 @@ const BeanFetch = () => {
   }
 
 
+  if (initialLoading) {
+  return (
+    <div className="MainRoasterBeanFetch-loading">
+      <div className="MainRoasterBeanFetch-spinner"></div>
+      <div className="MainRoasterBeanFetch-loading-text">Loading parser configuration...</div>
+    </div>
+  )
+}
+
+
 
   return (
-    <div className="beanfetch">
-    
+    <div className="MainRoasterBeanFetch-container">
+
+      {onBackToList && (
+        <div className="MainRoasterBeanFetch-back-btn-container">
+          <button
+            onClick={onBackToList}
+            className="MainRoasterBeanFetch-back-btn"
+            title="Go back to parsers list"
+          >
+            ← Back to Parsers List
+          </button>
+        </div>
+      )}
+
+   {id && (
+      <div className="MainRoasterBeanFetch-back-btn-container">
+        <button
+          onClick={() => window.history.back()}
+          className="MainRoasterBeanFetch-back-btn"
+          title="Go back to parsers list"
+        >
+          ← Back to Parsers
+        </button>
+      </div>
+    )}
 
       <RoasterInfo
         selectedRoaster={selectedRoaster}
         onClearSelection={clearRoasterSelection}
         onShowRoasterSelector={() => setShowRoasterSelector(true)}
+        isFromUrl={!!id}
       />
+{selectedRoaster?.id && 
+     <div className="MainRoasterBeanFetch-actions">
+        <button
+          onClick={saveParserToDatabase}
+          disabled={!isSaveParserButtonActive || savingParser}
+          className={`MainRoasterBeanFetch-save-btn ${savingParser ? 'MainRoasterBeanFetch-loading' : ''}`}
+          title="Save current parser configuration to database"
+        >
+          {savingParser ? (
+            <>
+              <span className="MainRoasterBeanFetch-btn-text">Saving...</span>
+            </>
+          ) : (
+            <>
+              <span className="MainRoasterBeanFetch-btn-icon">💾</span>
+              <span className="MainRoasterBeanFetch-btn-text">
+                {id ? 'Update Parser' : 'Save Parser'}
+              </span>
+            </>
+          )}
+        </button>
+      </div>
+}
+ 
 
       <div className="beanfetch-content">
         {selectedRoaster ? (
@@ -493,27 +660,29 @@ const BeanFetch = () => {
           </div>
         )}
 
-        {results && (
-          <ResultsSection
-            results={results}
-            loadMoreUrl={loadMoreUrl}
-            onLoadMoreUrlChange={setLoadMoreUrl}
-            onContinue={setResults}
-            onLoadMore={setResults}
-            onClearResults={() => setResults(null)}
-            selectedRoaster={selectedRoaster}
-            addingToDatabase={addingToDatabase}
-            onAddToDatabase={addToDatabase}
-            onViewJson={viewProductJson}
-            onRemoveResult={removeResult}
-            loading={loading}
-            continueLoading={continueLoading}
-            onHandleLoad={handleLoad}
-            normalizeSelector={normalizeSelector} 
-            validateFields={validateFields} 
-            areAllFieldsFilled={areAllFieldsFilled} 
-          />
-        )}
+        {/* {results && ( */}
+   {selectedRoaster && (
+  <ResultsSection
+    results={results}
+    loadMoreUrl={loadMoreUrl}
+    onLoadMoreUrlChange={setLoadMoreUrl}
+    onContinue={setResults}
+    onLoadMore={setResults}
+    onClearResults={() => setResults(null)}
+    selectedRoaster={selectedRoaster}
+    addingToDatabase={addingToDatabase}
+    onAddToDatabase={addToDatabase}
+    onViewJson={viewProductJson}
+    onRemoveResult={removeResult}
+    loading={loading}
+    continueLoading={continueLoading}
+    onHandleLoad={handleLoad}
+    normalizeSelector={normalizeSelector} 
+    validateFields={validateFields} 
+    areAllFieldsFilled={areAllFieldsFilled} 
+  />
+)}
+        {/* )} */}
 
         {showJson && selectedProduct && (
           <JsonModal
@@ -522,11 +691,17 @@ const BeanFetch = () => {
           />
         )}
 
-        <RoasterSelector
-          isOpen={showRoasterSelector}
-          onClose={() => setShowRoasterSelector(false)}
-          onRoasterSelect={handleRoasterSelect}
-        />
+{!id && !initialLoading && showRoasterSelector && (
+  <RoasterSelector
+    isOpen={showRoasterSelector}
+    onClose={() => setShowRoasterSelector(false)}
+    onRoasterSelect={handleRoasterSelect}
+  />
+)}
+
+
+
+     
 
         {notification && (
           <NotificationModal

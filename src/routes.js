@@ -10,6 +10,7 @@ import AddBeans from "./components/beans/AddBeans";
 import RoasteryDetails from "./components/roasters/roasteryDetails/RoasteryDetails";
 import AdminNetwork from "./components/CoffeeNetwork/AdminNetwork/AdminNetwork";
 import UpdatePassword from "./components/updatePasword/UpdatePasword";
+import BeanFetch from "./components/superAdmin/BeanFetch/BeanFetch";
 
 export const authRoutes = [
     {

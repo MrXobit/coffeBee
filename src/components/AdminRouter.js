@@ -12,6 +12,7 @@ import CafeInfo from './cafeInfo/CafeInfo';
 import NetworkDetails from './superAdmin/networks/networkDetails/NetworkDetails';
 import AddNet from './superAdmin/networks/addNet/AddNet';
 import RoasterDetailsModeraition from './superAdmin/moderationRoasters/RoasterDetailsModeraition/RoasterDetailsModeraition';
+import BeanFetch from './superAdmin/BeanFetch/BeanFetch';
 
 
 const AdminRouter = () => {
@@ -37,6 +38,7 @@ const AdminRouter = () => {
                 <Route path="/network-info/:id" element={<NetworkDetails/>} />
                 <Route path="/add-network" element={<AddNet/>} />
                 <Route path="/roaster-info/:id" element={<RoasterDetailsModeraition />} />
+                 <Route path="/bean-fetch/:id" element={<BeanFetch />} />
               </>
             )}
           </Routes>

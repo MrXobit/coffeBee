@@ -411,7 +411,6 @@ useEffect(() => {
 
   return (
     <div className="MainAdmin-roaster-page-con">
-    
       <h1 className="MainAdmin-roaster-page-mainTitle">Roaster page</h1>
 
       <Link to="/add-new-roaster" className="roasterMainAdmin-add-new-cafe-pass-con">

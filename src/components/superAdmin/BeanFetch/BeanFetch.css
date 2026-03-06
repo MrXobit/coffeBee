@@ -2345,3 +2345,191 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.beanfetch-aiFindSelector {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+  color: white;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 
+    0 2px 8px rgba(59, 130, 246, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  text-transform: none;
+  letter-spacing: 0.3px;
+  min-width: 180px;
+}
+
+.beanfetch-aiFindSelector:hover {
+  transform: translateY(-1px);
+  box-shadow: 
+    0 4px 16px rgba(59, 130, 246, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+}
+
+.beanfetch-aiFindSelector:active {
+  transform: translateY(0);
+  box-shadow: 
+    0 1px 4px rgba(59, 130, 246, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.beanfetch-aiFindSelector::before {
+  content: '🤖';
+  font-size: 16px;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.2));
+}
+
+
+
+/* Проста анімація кружочка */
+.beanfetch-aiFindSelector {
+  /* ... інші стилі ... */
+  transition: all 0.3s ease;
+}
+
+.beanfetch-aiFindSelector.loading {
+  position: relative;
+  color: transparent;
+}
+
+.beanfetch-aiFindSelector.loading::before {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top: 2px solid white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Анімація з текстом */
+.beanfetch-aiFindSelector.loading.with-text {
+  color: white;
+  gap: 12px;
+}
+
+.beanfetch-aiFindSelector.loading.with-text::before {
+  position: static;
+  margin-right: 8px;
+}
+
+
+
+.beanfetch-aiFindSelector:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+  background: linear-gradient(135deg, #a0aec0 0%, #718096 100%);
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.beanfetch-aiFindSelector:disabled:hover {
+  transform: none !important;
+  box-shadow: none !important;
+  background: linear-gradient(135deg, #a0aec0 0%, #718096 100%);
+}
+
+.beanfetch-aiFindSelector:disabled.loading {
+  cursor: wait;
+  opacity: 0.8;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.beanfetch-aiFindSelector:disabled.loading:hover {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* Якщо ви хочете різні курсори для різних станів: */
+.beanfetch-aiFindSelector:disabled:not(.loading) {
+  cursor: not-allowed; /* заборонений курсор для вимкненої кнопки */
+}
+
+.beanfetch-aiFindSelector:disabled.loading {
+  cursor: wait; /* курсор годинника для завантаження */
+}
+
+/* Або progress курсор (якщо підтримується браузером) */
+.beanfetch-aiFindSelector:disabled.loading {
+  cursor: progress;
+}
+
+/* Можна додати fallback для старих браузерів */
+@supports not (cursor: wait) {
+  .beanfetch-aiFindSelector:disabled.loading {
+    cursor: progress;
+  }
+}
+
+/* Для кращої доступності додамо focus стилі для disabled стану */
+.beanfetch-aiFindSelector:disabled:focus-visible {
+  outline: 2px dashed rgba(102, 126, 234, 0.5);
+  outline-offset: 2px;
+}
+
+
+
+
+
+
+
+
+
+
+
+.beanfetch-AiError {
+  color: #dc2626;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 12px 16px;
+  margin: 12px 0;
+  background-color: #fef2f2;
+  border-left: 4px solid #dc2626;
+  border-radius: 6px;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -60,6 +60,7 @@ const BeansRo = () => {
       const fullData = {
         ...formData,
         roaster: roasterData.id,
+        isVerified: true,
         id: beanId
       };
 

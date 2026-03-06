@@ -16,34 +16,59 @@ const RoasterSelector = ({ isOpen, onClose, onRoasterSelect }) => {
   }, [isOpen])
 
   const fetchRoasters = async () => {
-    try {
-      setLoading(true)
-      console.log('🌐 Fetching roasters from Firebase...')
+  try {
+    setLoading(true)
+    console.log('🌐 Fetching roasters from Firebase...')
 
-      const roastersRef = collection(db, 'roasters')
-      const querySnapshot = await getDocs(roastersRef)
+    // Отримуємо всіх ростерів з колекції roasters
+    const roastersRef = collection(db, 'roasters')
+    const roastersSnapshot = await getDocs(roastersRef)
 
-      const roastersData = []
-      querySnapshot.forEach((doc) => {
-        const data = doc.data()
+    // Отримуємо всі записи з колекції parser для перевірки
+    const parserRef = collection(db, 'parser')
+    const parserSnapshot = await getDocs(parserRef)
+    
+    // Створюємо Set для швидкого пошуку імен ростерів з parser
+    const parserRoasterNames = new Set()
+    parserSnapshot.forEach((doc) => {
+      const data = doc.data()
+      if (data.roasterName && data.roasterName.trim() !== '') {
+        parserRoasterNames.add(data.roasterName.trim().toLowerCase())
+      }
+    })
+
+    console.log('📊 Found in parser collection:', Array.from(parserRoasterNames))
+
+    const roastersData = []
+    roastersSnapshot.forEach((doc) => {
+      const data = doc.data()
+      const roasterName = data.name || 'No Name'
+      
+      // Перевіряємо, чи є ця ростерія в колекції parser
+      const existsInParser = parserRoasterNames.has(roasterName.trim().toLowerCase())
+      
+      if (!existsInParser) {
         roastersData.push({
           id: doc.id,
-          name: data.name || 'No Name',
+          name: roasterName,
           website: data.website || 'No website',
           shop: data.shop || ''
         })
-      })
+      } else {
+        console.log(`⏭️ Skipping roaster "${roasterName}" - already exists in parser collection`)
+      }
+    })
 
-      roastersData.sort((a, b) => a.name.localeCompare(b.name))
+    roastersData.sort((a, b) => a.name.localeCompare(b.name))
 
-      console.log('✅ Roasters fetched from Firebase:', roastersData)
-      setRoasters(roastersData)
-    } catch (err) {
-      console.error('❌ Error fetching roasters from Firebase:', err)
-    } finally {
-      setLoading(false)
-    }
+    console.log('✅ Filtered roasters fetched from Firebase:', roastersData)
+    setRoasters(roastersData)
+  } catch (err) {
+    console.error('❌ Error fetching roasters from Firebase:', err)
+  } finally {
+    setLoading(false)
   }
+}
 
   // Фільтрація ростерів по імені та сайту
   const filteredRoasters = roasters.filter(roaster =>
